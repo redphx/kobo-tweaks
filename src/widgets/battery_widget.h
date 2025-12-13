@@ -57,7 +57,7 @@ public:
         if (hardwareType == QStringLiteral("MTK")) {
             getBatteryLevelFn = MTK_getBatteryLevel;
             chargingStateFn = MTK_chargingState;
-        } else if (hardwareType == QStringLiteral("iMX508")) {
+        } else if (hardwareType == QStringLiteral("iMX508") || hardwareType == QStringLiteral("iMX508Netronix") || hardwareType == QStringLiteral("iMX6Netronix")) {
             getBatteryLevelFn = iMX508_getBatteryLevel;
             chargingStateFn = iMX508_chargingState;
         } else if (hardwareType == QStringLiteral("AllWinner")) {
