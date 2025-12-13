@@ -44,13 +44,3 @@ extern int (*iMX508_getBatteryLevel)(HardwareInterface* self);
 extern uint (*iMX508_chargingState)(HardwareInterface* self);
 extern int (*AllWinner_getBatteryLevel)(HardwareInterface* self);
 extern uint (*AllWinner_chargingState)(HardwareInterface* self);
-
-class BaseEventFilter : public QObject {
-public:
-    explicit BaseEventFilter(QObject* parent = nullptr) : QObject(parent) {}
-
-protected:
-    bool eventFilter(QObject* obj, QEvent* event) override {
-        return QObject::eventFilter(obj, event);
-    }
-};
