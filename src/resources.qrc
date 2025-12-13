@@ -1,0 +1,49 @@
+<!-- Use version 1 format: https://doc.qt.io/archives/qt-5.15/resources.html#resource-collection-files-op-op-qrc -->
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file alias="kobo_tweaks/images/battery_1.png">resources/images/battery_1.png</file>
+        <file alias="kobo_tweaks/images/battery_2.png">resources/images/battery_2.png</file>
+        <file alias="kobo_tweaks/images/battery_3.png">resources/images/battery_3.png</file>
+        <file alias="kobo_tweaks/images/battery_4.png">resources/images/battery_4.png</file>
+        <file alias="kobo_tweaks/images/battery_5.png">resources/images/battery_5.png</file>
+        <file alias="kobo_tweaks/images/battery_6.png">resources/images/battery_6.png</file>
+        <file alias="kobo_tweaks/images/battery_7.png">resources/images/battery_7.png</file>
+        <file alias="kobo_tweaks/images/battery_8.png">resources/images/battery_8.png</file>
+        <file alias="kobo_tweaks/images/battery_9.png">resources/images/battery_9.png</file>
+        <file alias="kobo_tweaks/images/battery_10.png">resources/images/battery_10.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_1.png">resources/images/battery_charging_1.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_2.png">resources/images/battery_charging_2.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_3.png">resources/images/battery_charging_3.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_4.png">resources/images/battery_charging_4.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_5.png">resources/images/battery_charging_5.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_6.png">resources/images/battery_charging_6.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_7.png">resources/images/battery_charging_7.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_8.png">resources/images/battery_charging_8.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_9.png">resources/images/battery_charging_9.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_10.png">resources/images/battery_charging_10.png</file>
+        <file alias="kobo_tweaks/images/battery_charged.png">resources/images/battery_charged.png</file>
+
+        <file alias="kobo_tweaks/images/battery_1_dark.png">resources/images/battery_1_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_2_dark.png">resources/images/battery_2_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_3_dark.png">resources/images/battery_3_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_4_dark.png">resources/images/battery_4_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_5_dark.png">resources/images/battery_5_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_6_dark.png">resources/images/battery_6_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_7_dark.png">resources/images/battery_7_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_8_dark.png">resources/images/battery_8_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_9_dark.png">resources/images/battery_9_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_10_dark.png">resources/images/battery_10_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_1_dark.png">resources/images/battery_charging_1_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_2_dark.png">resources/images/battery_charging_2_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_3_dark.png">resources/images/battery_charging_3_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_4_dark.png">resources/images/battery_charging_4_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_5_dark.png">resources/images/battery_charging_5_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_6_dark.png">resources/images/battery_charging_6_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_7_dark.png">resources/images/battery_charging_7_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_8_dark.png">resources/images/battery_charging_8_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_9_dark.png">resources/images/battery_charging_9_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charging_10_dark.png">resources/images/battery_charging_10_dark.png</file>
+        <file alias="kobo_tweaks/images/battery_charged_dark.png">resources/images/battery_charged_dark.png</file>
+    </qresource>
+</RCC>

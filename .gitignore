@@ -1,0 +1,8 @@
+bin/
+.env
+KoboRoot.tgz
+*.so
+*.moc
+*.o
+*.rcc
+*.qrc.cpp
