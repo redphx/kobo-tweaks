@@ -51,18 +51,8 @@ public:
     {
         setObjectName(QStringLiteral("twks_battery"));
 
-        // getBatteryLevelFn(blFn), chargingStateFn(csFn);
-        QString hardwareType = hw->metaObject()->className();
-        if (hardwareType == QStringLiteral("MTK")) {
-            getBatteryLevelFn = MTK_getBatteryLevel;
-            chargingStateFn = MTK_chargingState;
-        } else if (hardwareType == QStringLiteral("iMX508") || hardwareType == QStringLiteral("iMX508Netronix") || hardwareType == QStringLiteral("iMX6Netronix")) {
-            getBatteryLevelFn = iMX508_getBatteryLevel;
-            chargingStateFn = iMX508_chargingState;
-        } else if (hardwareType == QStringLiteral("AllWinner")) {
-            getBatteryLevelFn = AllWinner_getBatteryLevel;
-            chargingStateFn = AllWinner_chargingState;
-        }
+        getBatteryLevelFn = getDerivedHWInterfaceMethod<GetBatteryLevelFn>(HardwareInterface_getBatteryLevel);
+        chargingStateFn = getDerivedHWInterfaceMethod<ChargingStateFn>(HardwareInterface_chargingState);
 
         iconLabel = new QLabel();
         iconLabel->setContentsMargins(0, 0, 0, 0);
@@ -100,6 +90,32 @@ protected:
     }
 
 private:
+    template <typename F>
+    F getDerivedHWInterfaceMethod(F HWInterfaceFunc)
+    {
+        struct VPtr {
+            uintptr_t** v;
+        };
+        // The list of method pointers starts from the third entry
+        // in the vtable (this is what the class vptr variable points to)
+        uintptr_t** hwiVtr = HardwareInterface_vtable + 2;
+        
+        // Search the HardwareInterface vtable for the offset to the method 
+        // we want to call on the derived object. 
+        // Iterate at least 8 times, because the vtable has a null pointer
+        // at the destructor offset (4).
+        for (int offset = 0; offset < 8 || hwiVtr[offset] != nullptr; ++offset) {
+            uintptr_t* f = hwiVtr[offset];
+
+            // Method found at this offset
+            // Return the method at this offset in the derived vtable
+            if (f == reinterpret_cast<uintptr_t*>(HWInterfaceFunc)) {
+                auto derivedVptr = reinterpret_cast<VPtr*>(hw);
+                return reinterpret_cast<F>(derivedVptr->v[offset]);
+            }
+        }
+        return nullptr;
+    }
     void updateDisplay() {
         // Hide layout when level is above the threshold
         if (currentChargingState == ChargingState::Unplugged && currentBatteryLevel > showWhenBelow) {

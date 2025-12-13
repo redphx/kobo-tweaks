@@ -8,9 +8,6 @@ void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString con
 QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image) = nullptr;
 
 HardwareInterface* (*HardwareFactory_sharedInstance)() = nullptr;
-int (*MTK_getBatteryLevel)(HardwareInterface* self) = nullptr;
-uint (*MTK_chargingState)(HardwareInterface* self) = nullptr;
-int (*iMX508_getBatteryLevel)(HardwareInterface* self) = nullptr;
-uint (*iMX508_chargingState)(HardwareInterface* self) = nullptr;
-int (*AllWinner_getBatteryLevel)(HardwareInterface* self) = nullptr;
-uint (*AllWinner_chargingState)(HardwareInterface* self) = nullptr;
+uintptr_t** HardwareInterface_vtable = nullptr;
+int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self) = nullptr;
+uint (*HardwareInterface_chargingState)(HardwareInterface* self) = nullptr;
