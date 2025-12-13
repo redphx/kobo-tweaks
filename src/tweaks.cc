@@ -102,13 +102,13 @@ struct nh_dlsym TweaksDlsym[] = {
     },
 
     {
-        .name     = "_ZNK3AllWinner15getBatteryLevelEv",
+        .name     = "_ZNK9AllWinner15getBatteryLevelEv",
         .out      = nh_symoutptr(AllWinner_getBatteryLevel),
         .desc     = "AllWinner getBatteryLevel()",
         .optional = true,
     },
     {
-        .name     = "_ZN9AllWinner13chargingState",
+        .name     = "_ZN9AllWinner13chargingStateEv",
         .out      = nh_symoutptr(AllWinner_chargingState),
         .desc     = "AllWinner chargingState()",
         .optional = true,
