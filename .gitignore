@@ -5,4 +5,6 @@ KoboRoot.tgz
 *.moc
 *.o
 *.rcc
-*.qrc.cpp
+*.qrc.cc
+compile_commands.json
+.cache
