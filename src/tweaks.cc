@@ -30,7 +30,7 @@ bool tweaksUninstall() {
 
 struct nh_hook TweaksHook[] = {
     {
-        .sym      = "_ZN11ReadingViewC1EP7QWidget",
+        .sym      = "_ZN11ReadingViewC1EP7QWidget", //libnickel 4.30 * _ZN11ReadingViewC1EP7QWidget
         .sym_new  = "hook_ReadingView_constructor",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(ReadingView_constructor),
@@ -38,7 +38,7 @@ struct nh_hook TweaksHook[] = {
         .optional = true,
     },
     {
-        .sym      = "_ZN13ReadingFooter15setFooterMarginEi",
+        .sym      = "_ZN13ReadingFooter15setFooterMarginEi", //libnickel 4.30 * _ZN13ReadingFooter15setFooterMarginEi
         .sym_new  = "hook_ReadingFooter_setFooterMargin",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(ReadingFooter_setFooterMargin),
@@ -46,7 +46,7 @@ struct nh_hook TweaksHook[] = {
         .optional = true,
     },
     {
-        .sym      = "_ZNK28SearchAutoCompleteController21handleSpecialCommandsERK7QString",
+        .sym      = "_ZNK28SearchAutoCompleteController21handleSpecialCommandsERK7QString", //libnickel 4.30 * _ZNK28SearchAutoCompleteController21handleSpecialCommandsERK7QString
         .sym_new  = "hook_SearchAutoCompleteController_handleSpecialCommands",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(SearchAutoCompleteController_handleSpecialCommands),
@@ -54,7 +54,7 @@ struct nh_hook TweaksHook[] = {
         .optional = true,
     },
     {
-        .sym      = "_ZN14DogEarDelegateC2EP7QWidgetRK7QString",
+        .sym      = "_ZN14DogEarDelegateC2EP7QWidgetRK7QString", //libnickel 4.30 * _ZN14DogEarDelegateC2EP7QWidgetRK7QString
         .sym_new  = "hook_DogEarDelegate_constructor",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(DogEarDelegate_constructor),
@@ -66,50 +66,50 @@ struct nh_hook TweaksHook[] = {
 
 struct nh_dlsym TweaksDlsym[] = {
     {
-        .name = "_ZN15HardwareFactory14sharedInstanceEv",
+        .name = "_ZN15HardwareFactory14sharedInstanceEv", //libnickel 4.30 * _ZN15HardwareFactory14sharedInstanceEv
         .out  = nh_symoutptr(HardwareFactory_sharedInstance),
     },
     {
-        .name     = "_ZNK3MTK15getBatteryLevelEv",
+        .name     = "_ZNK3MTK15getBatteryLevelEv", //libnickel 4.36.21095 * _ZNK3MTK15getBatteryLevelEv
         .out      = nh_symoutptr(MTK_getBatteryLevel),
         .desc     = "MTK getBatteryLevel()",
         .optional = true,
     },
     {
-        .name     = "_ZN3MTK13chargingStateEv",
+        .name     = "_ZN3MTK13chargingStateEv", //libnickel 4.36.21095 * _ZN3MTK13chargingStateEv
         .out      = nh_symoutptr(MTK_chargingState),
         .desc     = "MTK chargingState()",
         .optional = true,
     },
 
     {
-        .name     = "_ZNK6iMX50815getBatteryLevelEv",
+        .name     = "_ZNK6iMX50815getBatteryLevelEv", //libnickel 4.30 * _ZNK6iMX50815getBatteryLevelEv
         .out      = nh_symoutptr(iMX508_getBatteryLevel),
         .desc     = "iMX508 getBatteryLevel()",
         .optional = true,
     },
     {
-        .name     = "_ZN6iMX50813chargingStateEv",
+        .name     = "_ZN6iMX50813chargingStateEv", //libnickel 4.30 * _ZN6iMX50813chargingStateEv
         .out      = nh_symoutptr(iMX508_chargingState),
         .desc     = "iMX508 chargingState()",
         .optional = true,
     },
 
     {
-        .name     = "_ZNK9AllWinner15getBatteryLevelEv",
+        .name     = "_ZNK9AllWinner15getBatteryLevelEv", //libnickel 4.30 * _ZNK9AllWinner15getBatteryLevelEv
         .out      = nh_symoutptr(AllWinner_getBatteryLevel),
         .desc     = "AllWinner getBatteryLevel()",
         .optional = true,
     },
     {
-        .name     = "_ZN9AllWinner13chargingStateEv",
+        .name     = "_ZN9AllWinner13chargingStateEv", //libnickel 4.30 * _ZN9AllWinner13chargingStateEv
         .out      = nh_symoutptr(AllWinner_chargingState),
         .desc     = "AllWinner chargingState()",
         .optional = true,
     },
 
     {
-        .name = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_",
+        .name = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_", //libnickel 4.30 * _ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_
         .out = nh_symoutptr(ConfirmationDialogFactory_showOKDialog)
     },
 
