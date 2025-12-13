@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include <NickelHook.h>
+
 #ifndef DATA_DIR
     #define DATA_DIR "/mnt/onboard/.adds/tweaks"
 #endif
@@ -17,6 +19,7 @@
 enum class ReadingFooterPosition { Header, Footer };
 
 typedef QWidget ReadingView;
+typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
@@ -24,9 +27,8 @@ typedef void SearchAutoCompleteController;
 using GetBatteryLevelFn = int(*)(HardwareInterface*);
 using ChargingStateFn = uint(*)(HardwareInterface*);
 
-extern ReadingView* (*ReadingView_constructor)(ReadingView* self);
+extern void (*ReadingView_constructor)(ReadingView* self);
 extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
-extern void (*ReadingView_pageChanged)(ReadingView* self, int pageIndex);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
 extern void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString const& body);
 extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);

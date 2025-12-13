@@ -1,10 +1,7 @@
 #include "settings.h"
 #include "../utils.h"
 
-TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {
-    load();
-    sync();
-}
+TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {}
 
 QString validateImage(const QString& path) {
     QPixmap pix;

@@ -135,11 +135,11 @@ class TweaksSettings {
 
         TweaksSettings();
         void sync();
+        void load();
 
     private:
         QSettings qSettings;
         TweaksReadingSettings readingSettings;
 
-        void load();
         void loadReadingSettings();
 };

@@ -9,21 +9,35 @@
 
 
 namespace ReadingViewHook {
-    struct WidgetRefs {
-        ReadingView* readingView = nullptr;
-        QWidget* gestureContainer = nullptr;
-        ReadingFooter* header = nullptr;
-        ReadingFooter* footer = nullptr;
+    class PageChangedAdapter : public QObject {
+        Q_OBJECT
 
-        TwClockWidget* clockWidget = nullptr;
-        TwBatteryWidget* batteryWidget = nullptr;
+    public:
+        explicit PageChangedAdapter(ReadingView *parent);
+
+    private slots:
+        void notifyPageChanged();
+
+    signals:
+        void pageChanged();
     };
 
-    void _insertWidgets(ReadingFooter footer, WidgetTypeEnum leftType, WidgetTypeEnum rightType);
-    void _updateWidgets();
+    class DarkModeAdapter : public QObject {
+        Q_OBJECT
 
-    ReadingView* constructor(ReadingView* self);
-    void pageChanged(ReadingView* self, int page);
+    public:
+        explicit DarkModeAdapter(GestureReceivingContainer *parent, ReadingView *view);
+
+        bool getDarkMode();
+
+    private slots:
+        void notifyDarkModeChanged();
+
+    signals:
+        void darkModeChanged(bool dark);
+    };
+
+    void constructor(ReadingView* self);
     void setFooterMargin(QWidget* self, int margin);
 
     namespace DogEarDelegate {

@@ -1,38 +1,63 @@
 #include "reading_view.h"
 
 namespace ReadingViewHook {
-    TweaksSettings* settings;
-    const TweaksReadingSettings* readingSettings = nullptr;
-    bool isDarkMode = false;
-    WidgetRefs refs;
+    static TweaksSettings settings;
+    static bool isDarkMode = false;
 
-    class GestureContainerEventFilter : public BaseEventFilter {
-        bool eventFilter(QObject* obj, QEvent* event) override {
-            QEvent::Type type = event->type();
-            if (type == QEvent::DynamicPropertyChange) {
-                auto *e = static_cast<QDynamicPropertyChangeEvent *>(event);
-
-                const QByteArray name = e->propertyName();
-                if (name == QStringLiteral("darkMode")) {
-                    isDarkMode = obj->property(name.constData()).toBool();
-                    _updateWidgets();
-                }
-            }
-
-            return BaseEventFilter::eventFilter(obj, event);
+    PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
+        if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
+            nh_log("failed to connect _ZN11ReadingView11pageChangedEi");
         }
-    };
+    }
 
-    void _insertWidgets(ReadingFooter* footer, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType, bool isDarkMode) {
+    void PageChangedAdapter::notifyPageChanged() {
+        nh_log("page changed");
+        pageChanged();
+    }
+
+    DarkModeAdapter::DarkModeAdapter(GestureReceivingContainer *parent, ReadingView *view) : QObject(parent) {
+        if (!QObject::connect(view, SIGNAL(darkModeChangedSignal()), this, SLOT(notifyDarkModeChanged()), Qt::UniqueConnection)) {
+            nh_log("failed to connect _ZN11ReadingView21darkModeChangedSignalEv");
+        }
+    }
+
+    bool DarkModeAdapter::getDarkMode() {
+        // the property is set by ReadingView by ReadingView::darkModeChanged
+        // (which calls darkModeChangedSignal afterwards) on the
+        // GestureReceivingContainer set up in Ui_ReadingView::setupUi called by
+        // the constructor
+
+        // if this is no longer viable, we could also call
+        // ReadingSettings::getDarkMode, but this won't handle the cases where
+        // ReadingView doesn't support dark mode for the current format (e.g.,
+        // audiobooks)
+
+        // it's also stored as a field on ReadingView, but that would require
+        // hardcoding offsets
+
+        auto prop = parent()->property("darkMode");
+        if (!prop.isValid()) {
+            nh_log("darkMode property not set on GestureReceivingContainer");
+            return false;
+        }
+        return prop.toBool();
+    }
+
+    void DarkModeAdapter::notifyDarkModeChanged() {
+        auto dark = getDarkMode();
+        nh_log("dark mode changed (%s)", dark ? "dark" : "light");
+        darkModeChanged(dark);
+    }
+
+
+    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* footer, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
         bool hasLeft = false;
+        auto readingSettings = settings.getReadingSettings();
 
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
         footer->setStyleSheet(qss);
         footer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
-
-        TwClockWidgetConfig clockConfig {};
-        TwBatteryWidgetConfig batteryConfig {};
 
         for (auto p : {leftType, rightType}) {
             bool isLeft = p == leftType;
@@ -40,21 +65,30 @@ namespace ReadingViewHook {
 
             switch (p) {
                 case WidgetTypeEnum::Clock:
-                    clockConfig.isLeft = isLeft;
-                    clockConfig.is24hFormat = readingSettings->widgetClock24hFormat;
+                    {
+                        TwClockWidgetConfig config {};
+                        config.isLeft = isLeft;
+                        config.is24hFormat = readingSettings.widgetClock24hFormat;
 
-                    widget = new TwClockWidget(clockConfig);
-                    refs.clockWidget = qobject_cast<TwClockWidget*>(widget);
+                        auto clock = new TwClockWidget(config);
+                        QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, clock, &TwClockWidget::updateTime, Qt::UniqueConnection);
+                        widget = clock;
+                    }
                     break;
                 case WidgetTypeEnum::Battery:
-                    batteryConfig.isLeft = isLeft;
-                    batteryConfig.isDarkMode = isDarkMode;
-                    batteryConfig.defaultStyle = readingSettings->widgetBatteryStyle;
-                    batteryConfig.chargingStyle = readingSettings->widgetBatteryStyleCharging;
-                    batteryConfig.showWhenBelow = readingSettings->widgetBatteryShowWhenBelow;
+                    {
+                        TwBatteryWidgetConfig config {};
+                        config.isDarkMode = darkModeAdapter->getDarkMode();
+                        config.isLeft = isLeft;
+                        config.defaultStyle = readingSettings.widgetBatteryStyle;
+                        config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
+                        config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
 
-                    widget = new TwBatteryWidget(batteryConfig, hardwareInterface);
-                    refs.batteryWidget = qobject_cast<TwBatteryWidget*>(widget);
+                        auto battery = new TwBatteryWidget(config, hardwareInterface);
+                        QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, battery, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
+                        QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, battery, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
+                        widget = battery;
+                    }
                     break;
                 default:
                     continue;
@@ -98,30 +132,20 @@ namespace ReadingViewHook {
         }
     }
 
-    void _updateWidgets() {
-        if (refs.clockWidget) {
-            refs.clockWidget->updateTime();
-        }
+    void constructor(ReadingView* view) {
+        // Must parse settings before constructor since other widgets use them
+        settings.load();
+        settings.sync();
 
-        if (refs.batteryWidget) {
-            refs.batteryWidget->updateLevel(isDarkMode);
-        }
-    }
+        ReadingView_constructor(view);
 
-    ReadingView* constructor(ReadingView* self) {
-        // Must parse settings before constructor
-        settings = new TweaksSettings();
-        readingSettings = &settings->getReadingSettings();
+        // MUST NOT KEEP REFS TO THE WIDGETS, AS WE DON'T CONTROL THE LIFETIME
 
-        auto view = ReadingView_constructor(self);
-
-        refs = WidgetRefs{};
-        refs.readingView = view;
-
-        QWidget* gestureContainer = view->findChild<QWidget*>(QStringLiteral("gestureContainer"), Qt::FindDirectChildrenOnly);
+        // Note: created and passed to grabGestures in the constructor, most events are passed to it
+        QWidget* gestureContainer = view->findChild<GestureReceivingContainer*>(QStringLiteral("gestureContainer"), Qt::FindDirectChildrenOnly);
         if (!gestureContainer) {
             nh_log("could not find \"gestureContainer\"");
-            return view;
+            return;
         }
 
         // Find "header"
@@ -129,40 +153,35 @@ namespace ReadingViewHook {
         QWidget* footer = gestureContainer->findChild<ReadingFooter*>(QStringLiteral("footer"), Qt::FindDirectChildrenOnly);
         if (!header || !footer) {
             nh_log("could not find \"header/footer\"");
-            return view;
+            return;
         }
 
-        refs.gestureContainer = gestureContainer;
-        refs.header = header;
-        refs.footer = footer;
+        // These adapters abstract the logic and ensure that the update methods on the widgets aren't called after either the widget or the ReadingView has been destroyed
+        auto pageChangedAdapter = new PageChangedAdapter(view);
+        auto darkModeAdapter = new DarkModeAdapter(gestureContainer, view);
 
-        // Detect Dark mode
-        isDarkMode = gestureContainer->property("darkMode").toBool();
+        auto readingSettings = settings.getReadingSettings();
+
+        isDarkMode = darkModeAdapter->getDarkMode();
+
+        QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, [](bool dark) {
+            isDarkMode = dark;
+        });
 
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
         QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_clock #label") << QStringLiteral("#twks_battery #label"));
 
-        if (readingSettings->headerFooterHeightScale < 100) {
-            patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings->headerFooterHeightScale);
+        if (readingSettings.headerFooterHeightScale < 100) {
+            patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
 
-        _insertWidgets(refs.header, patchedQss, readingSettings->widgetHeaderLeft, readingSettings->widgetHeaderRight, isDarkMode);
-        _insertWidgets(refs.footer, patchedQss, readingSettings->widgetFooterLeft, readingSettings->widgetFooterRight, isDarkMode);
-
-        // Register event filter for "darkMode" property
-        gestureContainer->installEventFilter(new GestureContainerEventFilter());
-
-        return view;
-    }
-
-    void pageChanged(ReadingView* self, int page) {
-        // nh_log("hook_ReadingView_pageChanged");
-
-        _updateWidgets();
-        ReadingView_pageChanged(self, page);
+        insertWidgets(pageChangedAdapter, darkModeAdapter, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
+        insertWidgets(pageChangedAdapter, darkModeAdapter, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
     }
 
     void setFooterMargin(QWidget* self, int margin) {
+        auto readingSettings = settings.getReadingSettings();
+
         // Store the original margin to "twks_margin"
         self->setProperty("twks_margin", margin);
 
@@ -172,11 +191,11 @@ namespace ReadingViewHook {
         WidgetTypeEnum leftType = WidgetTypeEnum::Invalid;
         WidgetTypeEnum rightType = WidgetTypeEnum::Invalid;
         if (widgetName == QStringLiteral("header")) {
-            leftType = readingSettings->widgetHeaderLeft;
-            rightType = readingSettings->widgetHeaderRight;
+            leftType = readingSettings.widgetHeaderLeft;
+            rightType = readingSettings.widgetHeaderRight;
         } else {
-            leftType = readingSettings->widgetFooterLeft;
-            rightType = readingSettings->widgetFooterRight;
+            leftType = readingSettings.widgetFooterLeft;
+            rightType = readingSettings.widgetFooterRight;
         }
 
         int leftMargin = leftType != WidgetTypeEnum::Invalid ? 0 : margin;
@@ -186,7 +205,7 @@ namespace ReadingViewHook {
 
     namespace DogEarDelegate {
         QWidget* constructor(QWidget* self, QWidget* parent, const QString& orgImgPath) {
-            QString imgPath = settings->getReadingBookmarkImage(isDarkMode);
+            QString imgPath = settings.getReadingBookmarkImage(isDarkMode);
             if (imgPath.isEmpty()) {
                 imgPath = orgImgPath;
             }
