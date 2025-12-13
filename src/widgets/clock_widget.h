@@ -56,19 +56,19 @@ public:
 
     void updateTime() {
         // nh_log("updateTime");
-        QTime time = QTime::currentTime();
+        const QTime time = QTime::currentTime();
 
-        QString timeStr = time.toString(is24hFormat ? QStringLiteral("HH:mm") : QStringLiteral("hh:mm AP"));
+        const QString timeStr = time.toString(is24hFormat ? QStringLiteral("HH:mm") : QStringLiteral("hh:mm AP"));
         label->setText(timeStr);
 
         // schedule next update at next 2 full minutes
-        int msecToNextUpdate = (120 - QTime::currentTime().second()) * 1000 - QTime::currentTime().msec();
+        const int msecToNextUpdate = (120 - QTime::currentTime().second()) * 1000 - QTime::currentTime().msec();
         timer->start(msecToNextUpdate);
     }
 
 protected:
     bool event(QEvent* e) override {
-        QEvent::Type eventType = e->type();
+        const QEvent::Type eventType = e->type();
         if (eventType == QEvent::Show) {
             // Update time when visible
             updateTime();

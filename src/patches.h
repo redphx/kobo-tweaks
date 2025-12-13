@@ -3,6 +3,6 @@
 
 namespace Patch {
     namespace ReadingView {
-        QString scaleHeaderFooterHeight(QString &qss, int scale);
+        QString scaleHeaderFooterHeight(const QString &qss, int scale);
     }
 }

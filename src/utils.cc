@@ -39,7 +39,7 @@ namespace Qss {
         if (!file.open(QFile::ReadOnly | QFile::Text))
             return QString();
 
-        QString content = QString::fromUtf8(file.readAll());
+        const QString content = QString::fromUtf8(file.readAll());
         cache.insert(path, content);
 
         return content;
@@ -60,8 +60,8 @@ namespace Qss {
             }
 
             startPos = selectorStart;
-            int blockStart = result.indexOf('{', selectorStart);
-            int blockEnd = result.indexOf('}', blockStart);
+            const int blockStart = result.indexOf('{', selectorStart);
+            const int blockEnd = result.indexOf('}', blockStart);
             if (blockStart == -1 || blockEnd == -1) {
                 continue;
             }
@@ -70,21 +70,21 @@ namespace Qss {
             QString blockContent = result.mid(blockStart + 1, blockEnd - blockStart - 1);
 
             for (const auto &property : properties) {
-                QString prop = property.first;
+                const QString prop = property.first;
 
-                int propPos = blockContent.indexOf(prop + ':');
+                const int propPos = blockContent.indexOf(prop + ':');
                 if (propPos == -1) {
                     continue;
                 }
 
-                int semicolonPos = blockContent.indexOf(';', propPos);
+                const int semicolonPos = blockContent.indexOf(';', propPos);
                 if (semicolonPos == -1) {
                     continue;
                 }
 
                 // Replace the value
-                int valueStart = propPos + prop.length() + 1; // skip ":"
-                int valueLength = semicolonPos - valueStart;
+                const int valueStart = propPos + prop.length() + 1; // skip ":"
+                const int valueLength = semicolonPos - valueStart;
                 QString value = blockContent.mid(valueStart, valueLength);
 
                 QString newProperty = resolveNewProperty(property.second, prop, value);
@@ -124,7 +124,7 @@ namespace Qss {
 
 namespace Utils {
     QString appendFileName(const QString& filePath, const QString append) {
-        QFileInfo fi(filePath);
+        const QFileInfo fi(filePath);
 
         const QString dir  = fi.absolutePath();
         const QString name = fi.completeBaseName();
