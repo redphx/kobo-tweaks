@@ -142,4 +142,5 @@ class TweaksSettings {
         TweaksReadingSettings readingSettings;
 
         void loadReadingSettings();
+        int getIntValue(const QString& key, int defaultValue);
 };
