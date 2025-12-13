@@ -1,0 +1,43 @@
+name: Bug Report 🐞
+description: File a bug report
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!note]
+        > - Use `Discussions` if you want to ask for questions
+
+  - type: input
+    id: device_model
+    attributes:
+      label: "Device model"
+      placeholder: "e.g., Clara BW"
+    validations:
+      required: true
+
+  - type: input
+    id: device_firmware
+    attributes:
+      label: "Firmware version"
+      placeholder: "e.g., 4.44.23552"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Describe the bug"
+    validations:
+      required: true
+
+  - type: textarea
+    id: media
+    attributes:
+      label: "Screenshot/video"
+      description: |
+        Please provide screenshot/video of the bug if possible.
+    validations:
+      required: false

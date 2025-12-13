@@ -1,0 +1,42 @@
+name: Feature Request 🚀
+description: Request a new feature, improvement, or general suggestion
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out the following information to help us understand your request.
+
+  - type: input
+    id: device_model
+    attributes:
+      label: "Device model"
+      placeholder: "e.g., Clara BW"
+    validations:
+      required: true
+
+  - type: input
+    id: device_firmware
+    attributes:
+      label: "Firmware version"
+      placeholder: "e.g., 4.44.23552"
+    validations:
+      required: true
+
+  - type: input
+    id: patch_name
+    attributes:
+      label: "Original patch"
+      placeholder: "(Optional) Name of the original kobopatch"
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: "Suggestion"
+      description: "What do you want to suggest? Include (mockup) screenshot if possible."
+    validations:
+      required: true
