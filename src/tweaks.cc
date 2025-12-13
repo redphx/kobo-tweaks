@@ -13,6 +13,7 @@ struct nh_info Tweaks = {
     .name = "Kobo Tweaks",
     .desc = "Tweaks",
     .uninstall_flag = KOBO_TWEAKS_DELETE_FILE,
+    .uninstall_xflag = KOBO_TWEAKS_INSTALL_FILE,
 };
 
 int tweaksInit() {
@@ -23,6 +24,8 @@ int tweaksInit() {
 }
 
 bool tweaksUninstall() {
+    // Remove uninstall flag even if we're uninstalling using the other uninstall file
+    QFile(KOBO_TWEAKS_INSTALL_FILE).remove();
     return true;
 }
 

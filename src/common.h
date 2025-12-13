@@ -14,6 +14,10 @@
 	#define KOBO_TWEAKS_DELETE_FILE DATA_DIR "/uninstall"
 #endif
 
+#ifndef KOBO_TWEAKS_INSTALL_FILE
+	#define KOBO_TWEAKS_INSTALL_FILE DATA_DIR "/DELETE_TO_UNINSTALL"
+#endif
+
 enum class ReadingFooterPosition { Header, Footer };
 
 typedef QWidget ReadingView;
