@@ -1,4 +1,3 @@
-#include <NickelHook.h>
 #include "tweaks.h"
 #include "common.h"
 #include "debug_utils.h"
@@ -43,14 +42,6 @@ struct nh_hook TweaksHook[] = {
         .sym_new  = "hook_ReadingFooter_setFooterMargin",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(ReadingFooter_setFooterMargin),
-        .desc     = "ReadingView",
-        .optional = true,
-    },
-    {
-        .sym      = "_ZN11ReadingView11pageChangedEi", 
-        .sym_new  = "hook_ReadingView_pageChanged",
-        .lib      = "libnickel.so.1.0.0",
-        .out      = nh_symoutptr(ReadingView_pageChanged),
         .desc     = "ReadingView",
         .optional = true,
     },
@@ -135,19 +126,13 @@ NickelHook(
 
 // HOOKS
 extern "C" __attribute__((visibility("default")))
-ReadingView* hook_ReadingView_constructor(ReadingView* self) {
-    return ReadingViewHook::constructor(self);
+void hook_ReadingView_constructor(ReadingView* self) {
+    ReadingViewHook::constructor(self);
 }
 
 extern "C" __attribute__((visibility("default")))
 void hook_ReadingFooter_setFooterMargin(QWidget* self, int margin) {
     ReadingViewHook::setFooterMargin(self, margin);
-}
-
-
-extern "C" __attribute__((visibility("default")))
-void hook_ReadingView_pageChanged(ReadingView* self, int page_index) {
-    ReadingViewHook::pageChanged(self, page_index);
 }
 
 extern "C" __attribute__((visibility("default")))

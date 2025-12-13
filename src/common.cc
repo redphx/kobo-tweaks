@@ -1,6 +1,6 @@
 #include "common.h"
 
-ReadingView* (*ReadingView_constructor)(ReadingView* self) = nullptr;
+void (*ReadingView_constructor)(ReadingView* self) = nullptr;
 void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin) = nullptr;
 void (*ReadingView_pageChanged)(ReadingView* self, int pageIndex) = nullptr;
 void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command) = nullptr;

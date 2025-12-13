@@ -10,7 +10,6 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QEvent>
-#include <NickelHook.h>
 
 struct TwBatteryWidgetConfig {
     bool isDarkMode = false;
@@ -76,17 +75,84 @@ public:
         levelLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         // levelLabel->setStyleSheet("border: 1px solid black;");
 
-        updateLevel(currentDarkMode);
+        updateLevel();
         show();
+    }
+
+    void setDarkMode(bool dark) {
+        currentDarkMode = dark;
+        updateDisplay();
+    }
+
+    void updateLevel() {
+        pollBatteryLevel();
+        pollChargingState();
+        updateDisplay();
     }
 
 protected:
     bool event(QEvent* e) override {
         if (e->type() == QEvent::Show) {
-            updateLevel(currentDarkMode);
+            updateLevel();
         }
 
         return QWidget::event(e);
+    }
+
+private:
+    void updateDisplay() {
+        // Hide layout when level is above the threshold
+        if (currentChargingState == ChargingState::Unplugged && currentBatteryLevel > showWhenBelow) {
+            hide();
+            return;
+        }
+
+        show();
+
+        currentStyle = currentChargingState == ChargingState::Unplugged ? defaultStyle : chargingStyle;
+        if (currentStyle != lastStyle) {
+            refreshStyle();
+            lastStyle = currentStyle;
+        }
+
+        if (lastDarkMode == currentDarkMode && lastBatteryLevel == currentBatteryLevel && lastChargingState == currentChargingState) {
+            return;
+        }
+
+        lastBatteryLevel = currentBatteryLevel;
+        lastChargingState = currentChargingState;
+        lastDarkMode = currentDarkMode;
+
+        int pixmapIndex = getPixmapIndex(currentBatteryLevel);
+        QString iconPath;
+        switch (currentChargingState) {
+            case ChargingState::Charged:
+                iconPath = QStringLiteral(":/kobo_tweaks/images/battery_charged.png");
+                currentBatteryLevel = 100;
+                break;
+            case ChargingState::Charging:
+                iconPath = QStringLiteral(":/kobo_tweaks/images/battery_charging_%1.png").arg(pixmapIndex);
+                break;
+            default:
+                iconPath = QStringLiteral(":/kobo_tweaks/images/battery_%1.png").arg(pixmapIndex);
+                break;
+        }
+
+        if (currentDarkMode) {
+            iconPath = Utils::appendFileName(iconPath, QStringLiteral("_dark"));
+        }
+
+        QPixmap icon(iconPath);
+        iconLabel->setPixmap(icon);
+        iconLabel->setFixedSize(icon.size());
+
+        QString text;
+        if (currentBatteryLevel > 0) {
+            text = QStringLiteral("%1\%").arg(currentBatteryLevel);
+        } else {
+            text = QStringLiteral("??%");
+        }
+        levelLabel->setText(text);
     }
 
     void refreshStyle() {
@@ -157,65 +223,5 @@ protected:
 
     int getPixmapIndex(int batteryLevel) {
         return qBound(1, (batteryLevel + 9) / 10, 10);
-    }
-
-public slots:
-    void updateLevel(bool dark) {
-        pollBatteryLevel();
-        pollChargingState();
-
-        // Hide layout when level is above the threshold
-        if (currentChargingState == ChargingState::Unplugged && currentBatteryLevel > showWhenBelow) {
-            hide();
-            return;
-        }
-
-        show();
-
-        currentDarkMode = dark;
-        currentStyle = currentChargingState == ChargingState::Unplugged ? defaultStyle : chargingStyle;
-        if (currentStyle != lastStyle) {
-            refreshStyle();
-            lastStyle = currentStyle;
-        }
-
-        if (lastDarkMode == currentDarkMode && lastBatteryLevel == currentBatteryLevel && lastChargingState == currentChargingState) {
-            return;
-        }
-
-        lastBatteryLevel = currentBatteryLevel;
-        lastChargingState = currentChargingState;
-        lastDarkMode = currentDarkMode;
-
-        int pixmapIndex = getPixmapIndex(currentBatteryLevel);
-        QString iconPath;
-        switch (currentChargingState) {
-            case ChargingState::Charged:
-                iconPath = QStringLiteral(":/kobo_tweaks/images/battery_charged.png");
-                currentBatteryLevel = 100;
-                break;
-            case ChargingState::Charging:
-                iconPath = QStringLiteral(":/kobo_tweaks/images/battery_charging_%1.png").arg(pixmapIndex);
-                break;
-            default:
-                iconPath = QStringLiteral(":/kobo_tweaks/images/battery_%1.png").arg(pixmapIndex);
-                break;
-        }
-
-        if (currentDarkMode) {
-            iconPath = Utils::appendFileName(iconPath, QStringLiteral("_dark"));
-        }
-
-        QPixmap icon(iconPath);
-        iconLabel->setPixmap(icon);
-        iconLabel->setFixedSize(icon.size());
-
-        QString text;
-        if (currentBatteryLevel > 0) {
-            text = QStringLiteral("%1\%").arg(currentBatteryLevel);
-        } else {
-            text = QStringLiteral("??%");
-        }
-        levelLabel->setText(text);
     }
 };
