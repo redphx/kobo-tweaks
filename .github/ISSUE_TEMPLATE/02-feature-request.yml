@@ -15,7 +15,7 @@ body:
       label: "Device model"
       placeholder: "e.g., Clara BW"
     validations:
-      required: true
+      required: false
 
   - type: input
     id: device_firmware
@@ -23,7 +23,7 @@ body:
       label: "Firmware version"
       placeholder: "e.g., 4.44.23552"
     validations:
-      required: true
+      required: false
 
   - type: input
     id: patch_name
