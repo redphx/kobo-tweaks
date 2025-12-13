@@ -11,7 +11,7 @@ namespace ReadingViewHook {
     }
 
     void PageChangedAdapter::notifyPageChanged() {
-        nh_log("page changed");
+        // nh_log("page changed");
         pageChanged();
     }
 
@@ -117,7 +117,7 @@ namespace ReadingViewHook {
                 }
             }
 
-            // Set TimeLabel width to the original margin value
+            // Set widget's width to the original margin value
             int layoutMargin = footer->property("twks_margin").toInt();
             widget->setFixedWidth(layoutMargin);
             widget->setContentsMargins(20, 0, 20, 0);
