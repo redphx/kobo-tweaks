@@ -17,7 +17,7 @@
 #endif
 
 #ifndef KOBO_TWEAKS_INSTALL_FILE
-	#define KOBO_TWEAKS_INSTALL_FILE DATA_DIR "/DELETE_TO_UNINSTALL"
+	#define KOBO_TWEAKS_INSTALL_FILE DATA_DIR "/DELETE_TO_UNINSTALL.txt"
 #endif
 
 enum class ReadingFooterPosition { Header, Footer };
