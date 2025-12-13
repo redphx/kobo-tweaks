@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <QString>
+#include <QDir>
 
 struct nh_info Tweaks = {
     .name = "Kobo Tweaks",
@@ -15,6 +16,9 @@ struct nh_info Tweaks = {
 };
 
 int tweaksInit() {
+    // Init folder structure
+    QDir("/mnt/onboard/.adds/tweaks/images");
+
     return 0;
 }
 
