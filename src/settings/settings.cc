@@ -5,7 +5,7 @@ TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings
 
 QString validateImage(const QString& path) {
     QPixmap pix;
-    QString fullPath = QString("%1/%2").arg(IMAGES_DIR).arg(path);
+    QString fullPath = QStringLiteral("%1/%2").arg(IMAGES_DIR).arg(path);
     if (!pix.load(fullPath) || pix.isNull()) {
         return QStringLiteral("");
     }
@@ -15,7 +15,8 @@ QString validateImage(const QString& path) {
 
 void TweaksSettings::loadReadingSettings() {
     // [Reading]
-    readingSettings.bookmarkImage = qSettings.value(READING_BOOKMARK_IMAGE, "").toString().trimmed();
+    readingSettings = TweaksReadingSettings {};
+    readingSettings.bookmarkImage = qSettings.value(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage).toString().trimmed();
     if (!readingSettings.bookmarkImage.isEmpty()) {
         readingSettings.bookmarkImage = validateImage(readingSettings.bookmarkImage);
 
@@ -25,19 +26,19 @@ void TweaksSettings::loadReadingSettings() {
         }
     }
 
-    readingSettings.headerFooterHeightScale = qBound(50, qSettings.value(READING_HEADER_FOOTER_HEIGHT_SCALE, 100).toInt(), 100);
+    readingSettings.headerFooterHeightScale = qBound(50, getIntValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale), 100);
 
     // [Reading.Widget]
-    readingSettings.widgetBatteryStyle = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE, BatteryStyleEnum::IconLevel);
+    readingSettings.widgetBatteryStyle = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE, readingSettings.widgetBatteryStyle);
     readingSettings.widgetBatteryStyleCharging = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE_CHARGING, readingSettings.widgetBatteryStyle);
-    readingSettings.widgetBatteryShowWhenBelow = qBound(10, qSettings.value(READING_WIDGET_BATTERY_SHOW_WHEN_BELOW, 100).toInt(), 100);
+    readingSettings.widgetBatteryShowWhenBelow = qBound(10, getIntValue(READING_WIDGET_BATTERY_SHOW_WHEN_BELOW, readingSettings.widgetBatteryShowWhenBelow), 100);
 
-    readingSettings.widgetClock24hFormat = qSettings.value(READING_WIDGET_CLOCK_24H_FORMAT, true).toBool();
+    readingSettings.widgetClock24hFormat = qSettings.value(READING_WIDGET_CLOCK_24H_FORMAT, readingSettings.widgetClock24hFormat).toBool();
 
     // It was designed this way to make it's possible
     // to have multiple widgets in the same slot in the future
     readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT);
-    readingSettings.widgetHeaderRight = WidgetTypeEnum::Invalid;  // Don't allow putting widget in the top-right corner
+    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT);
     readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT);
     readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT);
 
@@ -61,7 +62,7 @@ void TweaksSettings::loadReadingSettings() {
     };
 
     checkWidget(readingSettings.widgetHeaderLeft);
-    // checkWidget(readingSettings.widgetHeaderRight);
+    checkWidget(readingSettings.widgetHeaderRight);
     checkWidget(readingSettings.widgetFooterLeft);
     checkWidget(readingSettings.widgetFooterRight);
 }
@@ -76,6 +77,7 @@ void TweaksSettings::sync() {
     qSettings.setValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale);
 
     qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetHeaderLeft));
+    qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetHeaderRight));
     qSettings.setValue(READING_WIDGET_FOOTER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetFooterLeft));
     qSettings.setValue(READING_WIDGET_FOOTER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetFooterRight));
 
@@ -102,4 +104,15 @@ QString TweaksSettings::getReadingBookmarkImage(bool isDarkMode) {
 
 const TweaksReadingSettings& TweaksSettings::getReadingSettings() const {
     return readingSettings;
+}
+
+int TweaksSettings::getIntValue(const QString& key, int defaultValue) {
+    // Return the default value when the key is missing or the value is not a number
+    bool ok;
+    int value = qSettings.value(key, defaultValue).toInt(&ok);
+    if (!ok) {
+        value = defaultValue;
+    }
+
+    return value;
 }
