@@ -68,6 +68,7 @@ void TweaksSettings::loadReadingSettings() {
 }
 
 void TweaksSettings::load() {
+    qSettings.sync();
     loadReadingSettings();
 }
 
