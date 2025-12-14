@@ -38,7 +38,7 @@ void TweaksSettings::loadReadingSettings() {
     // It was designed this way to make it's possible
     // to have multiple widgets in the same slot in the future
     readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT);
-    readingSettings.widgetHeaderRight = WidgetTypeEnum::Invalid;  // Don't allow putting widget in the top-right corner
+    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT);
     readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT);
     readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT);
 
@@ -62,7 +62,7 @@ void TweaksSettings::loadReadingSettings() {
     };
 
     checkWidget(readingSettings.widgetHeaderLeft);
-    // checkWidget(readingSettings.widgetHeaderRight);
+    checkWidget(readingSettings.widgetHeaderRight);
     checkWidget(readingSettings.widgetFooterLeft);
     checkWidget(readingSettings.widgetFooterRight);
 }
@@ -77,6 +77,7 @@ void TweaksSettings::sync() {
     qSettings.setValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale);
 
     qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetHeaderLeft));
+    qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetHeaderRight));
     qSettings.setValue(READING_WIDGET_FOOTER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetFooterLeft));
     qSettings.setValue(READING_WIDGET_FOOTER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetFooterRight));
 

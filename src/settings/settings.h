@@ -120,6 +120,7 @@ class TweaksSettings {
     const char* READING_HEADER_FOOTER_HEIGHT_SCALE = "Reading/HeaderFooterHeightScale";
 
     const char* READING_WIDGET_HEADER_LEFT  = "Reading.Widget/HeaderLeft";
+    const char* READING_WIDGET_HEADER_RIGHT  = "Reading.Widget/HeaderRight";
     const char* READING_WIDGET_FOOTER_LEFT  = "Reading.Widget/FooterLeft";
     const char* READING_WIDGET_FOOTER_RIGHT = "Reading.Widget/FooterRight";
 
