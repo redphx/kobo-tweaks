@@ -5,7 +5,7 @@ namespace ReadingViewHook {
     static bool isDarkMode = false;
 
     PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
-        if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
+        if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) { //libnickel 4.30 * _ZN11ReadingView11pageChangedEi
             nh_log("failed to connect _ZN11ReadingView11pageChangedEi");
         }
     }
@@ -16,7 +16,7 @@ namespace ReadingViewHook {
     }
 
     DarkModeAdapter::DarkModeAdapter(GestureReceivingContainer *parent, ReadingView *view) : QObject(parent) {
-        if (!QObject::connect(view, SIGNAL(darkModeChangedSignal()), this, SLOT(notifyDarkModeChanged()), Qt::UniqueConnection)) {
+        if (!QObject::connect(view, SIGNAL(darkModeChangedSignal()), this, SLOT(notifyDarkModeChanged()), Qt::UniqueConnection)) { //libnickel 4.30 * _ZN11ReadingView21darkModeChangedSignalEv
             nh_log("failed to connect _ZN11ReadingView21darkModeChangedSignalEv");
         }
     }
