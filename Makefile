@@ -7,6 +7,6 @@ override MOCS     += src/tweaks.h src/patches.h src/utils.h src/settings/setting
 override QRCS     += src/resources.qrc
 override CFLAGS   += -Wall -Wextra -Werror
 override CXXFLAGS += -Wall -Wextra -Werror -Wno-missing-field-initializers
-override KOBOROOT += doc/DELETE_TO_UNINSTALL.txt:/mnt/onboard/.adds/tweaks/DELETE_TO_UNINSTALL.txt
+override KOBOROOT += assets/DELETE_TO_UNINSTALL.txt:/mnt/onboard/.adds/tweaks/DELETE_TO_UNINSTALL.txt
 
 include NickelHook/NickelHook.mk
