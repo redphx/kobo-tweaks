@@ -77,12 +77,14 @@ struct nh_dlsym TweaksDlsym[] = {
     {
         .name    = "_ZNK17HardwareInterface15getBatteryLevelEv",
         .out     = nh_symoutptr(HardwareInterface_getBatteryLevel),
-        .desc    = "HardwareInterface::getBatteryLevel()"
+        .desc    = "HardwareInterface::getBatteryLevel()",
+        .optional = true,
     },
     {
         .name    = "_ZN17HardwareInterface13chargingStateEv",
         .out     = nh_symoutptr(HardwareInterface_chargingState),
-        .desc    = "HardwareInterface::chargingState()"
+        .desc    = "HardwareInterface::chargingState()",
+        .optional = true,
     },
     {
         .name = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_",

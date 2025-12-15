@@ -54,6 +54,13 @@ public:
         getBatteryLevelFn = getDerivedHWInterfaceMethod<GetBatteryLevelFn>(HardwareInterface_getBatteryLevel);
         chargingStateFn = getDerivedHWInterfaceMethod<ChargingStateFn>(HardwareInterface_chargingState);
 
+        if (!getBatteryLevelFn) {
+            nh_log("%s", "Unable to get derived HardwareInterface::getBatteryLevel() method");
+        }
+        if (!chargingStateFn) {
+            nh_log("%s", "Unable to get derived HardwareInterface::chargingState() method");
+        }
+
         iconLabel = new QLabel();
         iconLabel->setContentsMargins(0, 0, 0, 0);
         iconLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -96,6 +103,9 @@ private:
         struct VPtr {
             uintptr_t** v;
         };
+        if (!HWInterfaceFunc) {
+            return nullptr;
+        }
         // The list of method pointers starts from the third entry
         // in the vtable (this is what the class vptr variable points to)
         uintptr_t** hwiVtr = HardwareInterface_vtable + 2;
