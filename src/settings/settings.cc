@@ -5,7 +5,7 @@ TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings
 
 QString validateImage(const QString& path) {
     QPixmap pix;
-    QString fullPath = QStringLiteral("%1/%2").arg(IMAGES_DIR).arg(path);
+    const QString fullPath = QStringLiteral("%1/%2").arg(IMAGES_DIR).arg(path);
     if (!pix.load(fullPath) || pix.isNull()) {
         return QStringLiteral("");
     }
