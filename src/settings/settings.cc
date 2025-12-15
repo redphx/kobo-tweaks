@@ -1,7 +1,16 @@
 #include "settings.h"
 #include "../utils.h"
 
-TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {}
+TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {
+    // Check if the settings file is empty
+    if (qSettings.allKeys().isEmpty()) {
+        // Set default positions for Clock & Battery widgets
+        qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
+        qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
+
+        qSettings.sync();
+    }
+}
 
 QString validateImage(const QString& path) {
     QPixmap pix;
