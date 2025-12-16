@@ -38,9 +38,6 @@ extern void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QStr
 extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
 
 extern HardwareInterface* (*HardwareFactory_sharedInstance)();
-extern int (*MTK_getBatteryLevel)(HardwareInterface* self);
-extern uint (*MTK_chargingState)(HardwareInterface* self);
-extern int (*iMX508_getBatteryLevel)(HardwareInterface* self);
-extern uint (*iMX508_chargingState)(HardwareInterface* self);
-extern int (*AllWinner_getBatteryLevel)(HardwareInterface* self);
-extern uint (*AllWinner_chargingState)(HardwareInterface* self);
+extern uintptr_t** HardwareInterface_vtable;
+extern int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self);
+extern uint (*HardwareInterface_chargingState)(HardwareInterface* self);

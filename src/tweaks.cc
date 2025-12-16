@@ -70,44 +70,22 @@ struct nh_dlsym TweaksDlsym[] = {
         .out  = nh_symoutptr(HardwareFactory_sharedInstance),
     },
     {
-        .name     = "_ZNK3MTK15getBatteryLevelEv",
-        .out      = nh_symoutptr(MTK_getBatteryLevel),
-        .desc     = "MTK getBatteryLevel()",
+        .name    = "_ZTV17HardwareInterface",
+        .out     = nh_symoutptr(HardwareInterface_vtable),
+        .desc    = "HardwareInterface::vtable"
+    },
+    {
+        .name    = "_ZNK17HardwareInterface15getBatteryLevelEv",
+        .out     = nh_symoutptr(HardwareInterface_getBatteryLevel),
+        .desc    = "HardwareInterface::getBatteryLevel()",
         .optional = true,
     },
     {
-        .name     = "_ZN3MTK13chargingStateEv",
-        .out      = nh_symoutptr(MTK_chargingState),
-        .desc     = "MTK chargingState()",
+        .name    = "_ZN17HardwareInterface13chargingStateEv",
+        .out     = nh_symoutptr(HardwareInterface_chargingState),
+        .desc    = "HardwareInterface::chargingState()",
         .optional = true,
     },
-
-    {
-        .name     = "_ZNK6iMX50815getBatteryLevelEv",
-        .out      = nh_symoutptr(iMX508_getBatteryLevel),
-        .desc     = "iMX508 getBatteryLevel()",
-        .optional = true,
-    },
-    {
-        .name     = "_ZN6iMX50813chargingStateEv",
-        .out      = nh_symoutptr(iMX508_chargingState),
-        .desc     = "iMX508 chargingState()",
-        .optional = true,
-    },
-
-    {
-        .name     = "_ZNK9AllWinner15getBatteryLevelEv",
-        .out      = nh_symoutptr(AllWinner_getBatteryLevel),
-        .desc     = "AllWinner getBatteryLevel()",
-        .optional = true,
-    },
-    {
-        .name     = "_ZN9AllWinner13chargingStateEv",
-        .out      = nh_symoutptr(AllWinner_chargingState),
-        .desc     = "AllWinner chargingState()",
-        .optional = true,
-    },
-
     {
         .name = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_",
         .out = nh_symoutptr(ConfirmationDialogFactory_showOKDialog)
