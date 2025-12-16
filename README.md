@@ -1,24 +1,56 @@
 # Kobo Tweaks
 
-A beginner-friendly addon for Kobo eReaders.
+A beginner-friendly addon for customizing Kobo eReaders.
 
 ## Features
-- Customize various UI elements and features of Kobo eReaders (similar to [kobopatch](https://github.com/pgaskin/kobopatch))
+- Customize various UI elements and features of Kobo eReaders (similar to [KoboPatch](https://github.com/pgaskin/kobopatch))
+  - Reduces header and footer's heights
 - Add Battery and Clock widgets while reading a book (similar to [NickelClock](https://github.com/shermp/NickelClock))
+- Customize bookmark image
 - More to come...
+
+#### Difference from KoboPatch:
+  - Beginner-friendly, "patches" can be customized without reinstalling firmware (just edit and reboot)
+  - No need to wait for patch updates when a new firmware is released (most of the time)
+  - Downside: not all patches can be implemented, and it requires more work to add a new tweak
+
+#### Difference from NickekClock:  
+  - Uses its own widgets for clock & battery instead of Kobo's built-in ones (reduce the likelihood of encountering unwanted bugs)
+  - Clock & battery only update after a page turn
+  - Supports Dark mode
+  - Downside: conflict with NickelClock. You'll have to uninstall it first.
 
 ## Installation
 
 > [!IMPORTANT]
 > This addon conflicts with NickelClock, please [uninstall](https://github.com/shermp/NickelClock?tab=readme-ov-file#uninstall-nickelclock) it first
 
+Kobo Tweaks should be compatible with any Kobo eReader running a recent 4.x firmware.
+
 Follow these steps to install Kobo Tweaks:  
   1. Connect your Kobo eReader to your computer
   2. Download the latest [KoboRoot.tgz](https://github.com/redphx/kobo-tweaks/releases/latest) file and place it inside the hidden `.kobo` folder on your Kobo eReader
   > If you're using macOS and don't see the `.kobo` folder in Finder, press the combination `Cmd + Shift + .`
-  3. Eject the device safely
+
+  <pre>
+.kobo/
+├─ KoboRoot.tgz
+</pre>
+  3. Eject the device safely to avoid data corruption
 
 After it installs and reboots, open a book and you'll see new Clock and Battery widgets on the header. To customize Kobo Tweaks, check the **Customization** section below.
+
+There are a few new files and folders in your Kobo eRreader:
+<pre>
+.adds/
+├─ tweaks/
+│  ├─ images/
+│  ├─ DELETE_TO_UNINSTALL.txt
+│  ├─ settings.ini
+</pre>
+
+### Uninstallation
+To uninstall Kobo Tweaks, delete the `DELETE_TO_UNINSTALL.txt` file and reboot the device. The file also contains the currently installed Kobo Tweaks version. Please include that information when reporting a bug.
 
 ## Customization
 
@@ -41,7 +73,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 > [!NOTE]
 > This info needs to be verified
 
-| Device/Dimension | 57x54 | 64x61 | 102x97 | 116x110 | 133x126 |
+| Device/Dimensions | 57x54 | 64x61 | 102x97 | 116x110 | 133x126 |
 |-|:-:|:-:|:-:|:-:|:-:|
 | Mini<br>Touch 2.0 | x |
 | Aura<br>Aura Edition 2<br>Glo Nia | | x |
@@ -55,11 +87,18 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
 | Setting | Description | Values |
 |-|-|-|
-| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines where the widget is shown and which widget it is | `Battery`, `Clock`<br>or leave it blank to show nothing |
+| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines where the widget is shown and which widget it has | `Battery`, `Clock`<br>or leave it blank to show nothing |
 | `BatteryStyle`<br>`BatteryStyleCharging` | Specifies the battery style for normal and charging states | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
 | `BatteryShowWhenBelow` | Shows the battery widget only when the battery level is less than or equal to this value | Unit: %<br>Range: 10-100<br>Default: 100 (always visible) |
 | `Clock24hFormat` | Enables or disables 24-hour time format | `true`, `false`, `on`, `off` |
 
+- All widgets support Dark mode
 - The Battery widget updates only when you turn a page or unlock the device.
-
 - The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
+- ⚠️ If you place a widget in the `HeaderRight` position, you may see a visual glitch when opening a book if the first page is already bookmarked. Turn the page forward and back to fix it.
+
+# Acknowledgements
+
+- Thanks to [**@pgaskin**](https://github.com/pgaskin) and [**@shermp**](https://github.com/shermp) for reviewing and improving the code
+- Thanks to the [shermp/NickelClock](https://github.com/shermp/NickelClock) project for giving me the idea of how to add widgets to the Reading view.
+- And thank you for using!
