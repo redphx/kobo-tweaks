@@ -18,6 +18,8 @@ struct nh_info Tweaks = {
 int tweaksInit() {
     // Init folder structure
     QDir("/mnt/onboard/.adds/tweaks/images");
+    QDir imagesDir(IMAGES_DIR);
+    imagesDir.mkpath(".");
 
     return 0;
 }
