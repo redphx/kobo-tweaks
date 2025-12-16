@@ -58,7 +58,7 @@ public:
         // nh_log("updateTime");
         const QTime time = QTime::currentTime();
 
-        const QString timeStr = time.toString(is24hFormat ? QStringLiteral("HH:mm") : QStringLiteral("hh:mm AP"));
+        const QString timeStr = time.toString(is24hFormat ? QStringLiteral("HH:mm") : QStringLiteral("h:mm AP"));
         label->setText(timeStr);
 
         // schedule next update at next 2 full minutes
