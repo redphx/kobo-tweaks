@@ -29,22 +29,37 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
 | Setting | Description | Values |
 |-|-|-|
-| `BookmarkImage` | Image file name, including extension, located in the `.adds/tweaks/images` and used for the bookmark image.<br>If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active.| String |
+| `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`.<br>If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active.| String |
 | `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | Unit: %<br>Range: 50-100<br>Default: 100|
 
 #### Bookmark image
-...
 
-### [Reading.Widget]
+- There is a bookmark template at [`resources/bongo_cat.svg`](https://github.com/redphx/kobo-tweaks/blob/main/resources/bongo_cat.svg)
+- Bookmark image must be in PNG format with a transparent background.
+- There are no restrictions on the dimension, but it's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
+
+> [!NOTE]
+> This info needs to be verified
+
+| Device/Dimension | 57x54 | 64x61 | 102x97 | 116x110 | 133x126 |
+|-|:-:|:-:|:-:|:-:|:-:|
+| Mini<br>Touch 2.0 | x |
+| Aura<br>Aura Edition 2<br>Glo Nia | | x |
+| Aura H2O<br>Aura HD<br>Clara 2E<br>Clara BW<br>Clara Colour<br>Clara HD<br>Glo HD | | | x |
+| Libra 2<br>Libra Colour<br>Libra H2O | | | | x |
+| Aura One<br>Elipsa<br>Elipsa 2E<br>Forma<br>Sage | | | | | x |
+
+
+## [Reading.Widget]
 > Applies after reopening the book
 
 | Setting | Description | Values |
 |-|-|-|
-| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines where the widget is shown and which widget it is | `Battery`, `Clock` or leave it blank |
+| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines where the widget is shown and which widget it is | `Battery`, `Clock`<br>or leave it blank to show nothing |
 | `BatteryStyle`<br>`BatteryStyleCharging` | Specifies the battery style for normal and charging states | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
 | `BatteryShowWhenBelow` | Shows the battery widget only when the battery level is less than or equal to this value | Unit: %<br>Range: 10-100<br>Default: 100 (always visible) |
 | `Clock24hFormat` | Enables or disables 24-hour time format | `true`, `false`, `on`, `off` |
 
 - The Battery widget updates only when you turn a page or unlock the device.
 
-- The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last page turn.
+- The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
