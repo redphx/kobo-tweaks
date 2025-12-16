@@ -1,8 +1,11 @@
 #pragma once
-
 #include <QWidget>
 
 #include <NickelHook.h>
+
+#ifndef ADDON_VERSION
+    #define ADDON_VERSION "0.1-beta"
+#endif
 
 #ifndef DATA_DIR
     #define DATA_DIR "/mnt/onboard/.adds/tweaks"

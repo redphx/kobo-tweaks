@@ -7,6 +7,9 @@
 #include <QWidget>
 #include <QString>
 #include <QDir>
+#include <QIODevice>
+#include <QTextStream>
+
 
 struct nh_info Tweaks = {
     .name = "Kobo Tweaks",
@@ -17,9 +20,19 @@ struct nh_info Tweaks = {
 
 int tweaksInit() {
     // Init folder structure
-    QDir("/mnt/onboard/.adds/tweaks/images");
     QDir imagesDir(IMAGES_DIR);
     imagesDir.mkpath(".");
+
+    // Override DELETE_TO_UNINSTALL.txt file
+    QFile installFile(KOBO_TWEAKS_INSTALL_FILE);
+    if (installFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+        QTextStream out(&installFile);
+        out << QStringLiteral("Delete this file then reboot the device to uninstall kobo-tweaks\n")
+            << QStringLiteral("------\n")
+            << QStringLiteral("Installed version: %1\n").arg(ADDON_VERSION)
+            << QStringLiteral("Project page: github.com/redphx/kobo-tweaks\n");
+        installFile.close();
+    }
 
     return 0;
 }
