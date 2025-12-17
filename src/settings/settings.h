@@ -102,6 +102,7 @@ struct TweaksReadingSettings {
     QString bookmarkImage = "";
     QString bookmarkImageDark = "";
     int headerFooterHeightScale = 100;
+    int headerFooterMargins = 50;
 
     WidgetTypeEnum widgetHeaderLeft = WidgetTypeEnum::Invalid;
     WidgetTypeEnum widgetHeaderRight = WidgetTypeEnum::Invalid;
@@ -118,6 +119,7 @@ struct TweaksReadingSettings {
 class TweaksSettings {
     const char* READING_BOOKMARK_IMAGE = "Reading/BookmarkImage";
     const char* READING_HEADER_FOOTER_HEIGHT_SCALE = "Reading/HeaderFooterHeightScale";
+    const char* READING_HEADER_FOOTER_MARGINS = "Reading/HeaderFooterMargins";
 
     const char* READING_WIDGET_HEADER_LEFT  = "Reading.Widget/HeaderLeft";
     const char* READING_WIDGET_HEADER_RIGHT = "Reading.Widget/HeaderRight";
