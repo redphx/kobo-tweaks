@@ -10,18 +10,10 @@ body:
         Please fill out the following information to help us understand your request.
 
   - type: input
-    id: device_model
+    id: device_info
     attributes:
-      label: "Device model"
-      placeholder: "e.g., Clara BW"
-    validations:
-      required: false
-
-  - type: input
-    id: device_firmware
-    attributes:
-      label: "Firmware version"
-      placeholder: "e.g., 4.44.23552"
+      label: "Device model and version"
+      placeholder: "e.g., Clara BW, 4.44.23552"
     validations:
       required: false
 
