@@ -29,7 +29,7 @@ int tweaksInit() {
     QFile installFile(KOBO_TWEAKS_INSTALL_FILE);
     if (installFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
         QTextStream out(&installFile);
-        out << QStringLiteral("Delete this file then reboot the device to uninstall kobo-tweaks\n")
+        out << QStringLiteral("Delete this file then restart the device to uninstall Kobo Tweaks\n")
             << QStringLiteral("------\n")
             << QStringLiteral("Installed version: %1\n").arg(ADDON_VERSION)
             << QStringLiteral("Project page: github.com/redphx/kobo-tweaks\n");
@@ -142,7 +142,7 @@ void hook_ReadingView_constructor(ReadingView* self) {
         // Need to wait for a bit before showing
         // otherwise the dialog won't show or it will have broken UI
         QTimer::singleShot(2000, self, [self] {
-            ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please reboot the device to complete the process."));
+            ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please restart the device to complete the process."));
         });
     }
 }
