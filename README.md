@@ -90,13 +90,15 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
 | Setting | Description | Values |
 |-|-|-|
-| `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`.<br>If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active.| String |
-| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | Unit: %<br>Range: 50-100<br>Default: 100|
+| `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`| String |
+| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | Unit: %<br>Range: 50-100<br>Default: 100 |
+| `HeaderFooterMargins` | Sets the left and right margins for both header and footer | Range: 0-100<br>Default: 50 |
 
 #### Bookmark image
 
 - There is a bookmark template at [`resources/bongo_cat.svg`](https://github.com/redphx/kobo-tweaks/blob/main/resources/bongo_cat.svg)
-- Bookmark image must be in PNG format with a transparent background.
+- Bookmark image must be in PNG format with a transparent background
+- If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active. For example, if `BookmarkImage` is set to `bongo_cat.png`, then `bongo_cat_dark.png` will be used in Dark mode, if it exists.
 - There are no restrictions on the dimension, but it's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
 
 > [!NOTE]
