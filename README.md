@@ -118,7 +118,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
 | Setting | Description | Values |
 |-|-|-|
-| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines where the widget is shown and which widget it has | `Battery`, `Clock`<br>or leave it blank to show nothing |
+| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines the widget position and type | `Battery`, `Clock`<br>or leave it blank to show nothing |
 | `BatteryStyle`<br>`BatteryStyleCharging` | Specifies the battery style for normal and charging states | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
 | `BatteryShowWhenBelow` | Shows the battery widget only when the battery level is less than or equal to this value | <b>Unit:</b> %<br><b>Range:</b> 10-100<br><b>Default:</b> 100 (always visible) |
 | `Clock24hFormat` | Enables or disables 24-hour time format | `true`, `false`, `on`, `off` |
