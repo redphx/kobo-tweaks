@@ -18,7 +18,7 @@ A beginner-friendly addon for customizing Kobo eReaders.
   - Uses its own widgets for clock & battery instead of Kobo's built-in ones (reduce the likelihood of encountering unwanted bugs)
   - Clock & battery only update after a page turn
   - Supports Dark mode
-  - Downside: conflict with NickelClock. You'll have to uninstall it first.
+  - Downside: conflict with NickelClock
 
 <table>
   <tbody>
@@ -35,7 +35,7 @@ HeaderFooterHeightScale=60
 HeaderFooterMargins=50
 &nbsp;
 [Reading.Widget]
-BatteryShowWhenBelow=20
+BatteryShowWhenBelow=100
 BatteryStyle=Icon
 BatteryStyleCharging=LevelIcon
 Clock24hFormat=true
@@ -51,9 +51,6 @@ HeaderRight=
 
 ## Installation
 
-> [!IMPORTANT]
-> This addon conflicts with NickelClock, please [uninstall](https://github.com/shermp/NickelClock?tab=readme-ov-file#uninstall-nickelclock) it first
-
 Kobo Tweaks should be compatible with any Kobo eReader running a recent 4.x firmware.
 
 Follow these steps to install Kobo Tweaks:  
@@ -68,6 +65,9 @@ Follow these steps to install Kobo Tweaks:
   3. Eject the device safely to avoid data corruption
 
 After it installs and reboots, open a book and you'll see new Clock and Battery widgets on the header. To customize Kobo Tweaks, check the **Customization** section below.
+
+> [!IMPORTANT]
+> <table><tr><td><img height="300" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td><td>Since Kobo Tweaks cannot be used with NickelClock, it automatically detects and uninstalls NickelClock. If you see this dialog while reading a book, restart the device once again before continuing.</td></tr></table>
 
 There are a few new files and folders in your Kobo eRreader:
 <pre>
