@@ -119,8 +119,13 @@ namespace ReadingViewHook {
 
             // Set widget's width to the original margin value
             int layoutMargin = footer->property("twks_margin").toInt();
-            widget->setFixedWidth(layoutMargin);
-            widget->setContentsMargins(20, 0, 20, 0);
+            widget->setMinimumWidth(qMax(0, layoutMargin - readingSettings.headerFooterMargins));
+            if (isLeft) {
+                widget->setContentsMargins(readingSettings.headerFooterMargins, 0, 20, 0);
+            } else {
+                widget->setContentsMargins(20, 0, readingSettings.headerFooterMargins, 0);
+            }
+
             // Keep space when widget is hidden
             QSizePolicy sp = widget->sizePolicy();
             sp.setRetainSizeWhenHidden(true);

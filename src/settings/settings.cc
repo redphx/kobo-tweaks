@@ -36,6 +36,7 @@ void TweaksSettings::loadReadingSettings() {
     }
 
     readingSettings.headerFooterHeightScale = qBound(50, getIntValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale), 100);
+    readingSettings.headerFooterMargins = qBound(0, getIntValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins), 100);
 
     // [Reading.Widget]
     readingSettings.widgetBatteryStyle = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE, readingSettings.widgetBatteryStyle);
@@ -84,6 +85,7 @@ void TweaksSettings::load() {
 void TweaksSettings::sync() {
     qSettings.setValue(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage);
     qSettings.setValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale);
+    qSettings.setValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins);
 
     qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetHeaderLeft));
     qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetHeaderRight));
