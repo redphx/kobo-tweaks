@@ -20,6 +20,35 @@ A beginner-friendly addon for customizing Kobo eReaders.
   - Supports Dark mode
   - Downside: conflict with NickelClock. You'll have to uninstall it first.
 
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <img height="600" alt="image" src="https://github.com/user-attachments/assets/99f571d7-607b-486b-9136-3f2b5cbf887e" />
+      </td>
+      <td>
+        Settings used<br><br>
+        <pre>
+[Reading]
+BookmarkImage=bongo_cat.png
+HeaderFooterHeightScale=60
+HeaderFooterMargins=50
+&nbsp;
+[Reading.Widget]
+BatteryShowWhenBelow=20
+BatteryStyle=Icon
+BatteryStyleCharging=LevelIcon
+Clock24hFormat=true
+FooterLeft=
+FooterRight=Battery
+HeaderLeft=Clock
+HeaderRight=
+        </pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 ## Installation
 
 > [!IMPORTANT]
