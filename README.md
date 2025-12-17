@@ -2,7 +2,7 @@
 
 A beginner-friendly addon for customizing Kobo eReaders.
 
-## Features
+## 🔥 1. Features
 - Customize various UI elements and features of Kobo eReaders (similar to [KoboPatch](https://github.com/pgaskin/kobopatch))
   - Reduces header and footer's heights
 - Add Battery and Clock widgets while reading a book (similar to [NickelClock](https://github.com/shermp/NickelClock))
@@ -49,7 +49,7 @@ HeaderRight=
   </tbody>
 </table>
 
-## Installation
+## 🛠️ 2. Installation
 
 Kobo Tweaks should be compatible with any Kobo eReader running a recent 4.x firmware.
 
@@ -81,7 +81,7 @@ There are a few new files and folders in your Kobo eRreader:
 ### Uninstallation
 To uninstall Kobo Tweaks, delete the `DELETE_TO_UNINSTALL.txt` file and reboot the device. The file also contains the currently installed Kobo Tweaks version. Please include that information when reporting a bug.
 
-## Customization
+## 💃 3. Customization
 
 Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
@@ -91,8 +91,8 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 | Setting | Description | Values |
 |-|-|-|
 | `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`| String |
-| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | Unit: %<br>Range: 50-100<br>Default: 100 |
-| `HeaderFooterMargins` | Sets the left and right margins for both header and footer | Range: 0-100<br>Default: 50 |
+| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
+| `HeaderFooterMargins` | Sets the left and right margins for both header and footer | <b>Range:</b> 0-100<br><b>Default:</b> 50 |
 
 #### Bookmark image
 
@@ -113,14 +113,14 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 | Aura One<br>Elipsa, Elipsa 2E<br>Forma<br>Sage | | | | | x |
 
 
-## [Reading.Widget]
+### [Reading.Widget]
 > Applies after reopening the book
 
 | Setting | Description | Values |
 |-|-|-|
 | `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines where the widget is shown and which widget it has | `Battery`, `Clock`<br>or leave it blank to show nothing |
 | `BatteryStyle`<br>`BatteryStyleCharging` | Specifies the battery style for normal and charging states | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
-| `BatteryShowWhenBelow` | Shows the battery widget only when the battery level is less than or equal to this value | Unit: %<br>Range: 10-100<br>Default: 100 (always visible) |
+| `BatteryShowWhenBelow` | Shows the battery widget only when the battery level is less than or equal to this value | <b>Unit:</b> %<br><b>Range:</b> 10-100<br><b>Default:</b> 100 (always visible) |
 | `Clock24hFormat` | Enables or disables 24-hour time format | `true`, `false`, `on`, `off` |
 
 - All widgets support Dark mode
@@ -128,7 +128,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 - The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
 - ⚠️ If you place a widget in the `HeaderRight` position, you may see a visual glitch when opening a book if the first page is already bookmarked. Turn the page forward and back to fix it.
 
-# Acknowledgements
+## 🤝 4. Acknowledgements
 
 - Thanks to [**@pgaskin**](https://github.com/pgaskin) and [**@shermp**](https://github.com/shermp) for reviewing and improving the code
 - Thanks to the [shermp/NickelClock](https://github.com/shermp/NickelClock) project for giving me the idea of how to add widgets to the Reading view.
