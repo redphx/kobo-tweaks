@@ -105,10 +105,10 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 | Device/Dimensions | 57x54 | 64x61 | 102x97 | 116x110 | 133x126 |
 |-|:-:|:-:|:-:|:-:|:-:|
 | Mini<br>Touch 2.0 | x |
-| Aura<br>Aura Edition 2<br>Glo Nia | | x |
-| Aura H2O<br>Aura HD<br>Clara 2E<br>Clara BW<br>Clara Colour<br>Clara HD<br>Glo HD | | | x |
-| Libra 2<br>Libra Colour<br>Libra H2O | | | | x |
-| Aura One<br>Elipsa<br>Elipsa 2E<br>Forma<br>Sage | | | | | x |
+| Aura, Aura Edition 2<br>Glo Nia | | x |
+| Aura H2O, Aura HD<br>Clara 2E, Clara BW, Clara Colour, Clara HD<br>Glo HD | | | x |
+| Libra 2, Libra Colour, Libra H2O | | | | x |
+| Aura One<br>Elipsa, Elipsa 2E<br>Forma<br>Sage | | | | | x |
 
 
 ## [Reading.Widget]
