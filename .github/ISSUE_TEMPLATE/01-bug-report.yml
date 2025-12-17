@@ -11,18 +11,18 @@ body:
         > - Use `Discussions` if you want to ask for questions
 
   - type: input
-    id: device_model
+    id: device_info
     attributes:
-      label: "Device model"
-      placeholder: "e.g., Clara BW"
+      label: "Device model and version"
+      placeholder: "e.g., Clara BW, 4.44.23552"
     validations:
       required: true
 
   - type: input
-    id: device_firmware
+    id: addon_version
     attributes:
-      label: "Firmware version"
-      placeholder: "e.g., 4.44.23552"
+      label: "Kobo Tweaks version"
+      placeholder: "You can get this info in .adds/tweaks/DELETE_TO_UNINSTALL.txt"
     validations:
       required: true
 
