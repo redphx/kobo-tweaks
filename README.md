@@ -96,7 +96,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
 #### Bookmark image
 
-- There is a bookmark template at [`resources/bongo_cat.svg`](https://github.com/redphx/kobo-tweaks/blob/main/resources/bongo_cat.svg)
+- There are bookmark templates and images in [`resources/bookmarks/`](https://github.com/redphx/kobo-tweaks/blob/main/resources/bookmarks/)
 - Bookmark image must be in PNG format with a transparent background
 - If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active. For example, if `BookmarkImage` is set to `bongo_cat.png`, then `bongo_cat_dark.png` will be used in Dark mode, if it exists.
 - There are no restrictions on the dimension, but it's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
