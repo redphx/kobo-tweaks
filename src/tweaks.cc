@@ -16,8 +16,10 @@ struct nh_info Tweaks = {
     .desc = "Tweaks",
     .uninstall_flag = KOBO_TWEAKS_DELETE_FILE,
     .uninstall_xflag = KOBO_TWEAKS_INSTALL_FILE,
+    .failsafe_delay = 10,
 };
 
+static bool hasNickelClock = false;
 int tweaksInit() {
     // Init folder structure
     QDir imagesDir(IMAGES_DIR);
@@ -32,6 +34,17 @@ int tweaksInit() {
             << QStringLiteral("Installed version: %1\n").arg(ADDON_VERSION)
             << QStringLiteral("Project page: github.com/redphx/kobo-tweaks\n");
         installFile.close();
+    }
+
+    // Check NickelClock
+    QFile nickelClock(QStringLiteral("/usr/local/Kobo/imageformats/libnickelclock.so"));
+    QFile nickelClockFailsafe(QStringLiteral("/usr/local/Kobo/imageformats/libnickelclock.so.failsafe"));
+
+    hasNickelClock = nickelClock.exists() || nickelClockFailsafe.exists();
+    if (hasNickelClock) {
+        // Uninstall NickelClock
+        nickelClock.remove();
+        nickelClockFailsafe.remove();
     }
 
     return 0;
@@ -90,20 +103,22 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc    = "HardwareInterface::vtable"
     },
     {
-        .name    = "_ZNK17HardwareInterface15getBatteryLevelEv",
-        .out     = nh_symoutptr(HardwareInterface_getBatteryLevel),
-        .desc    = "HardwareInterface::getBatteryLevel()",
+        .name     = "_ZNK17HardwareInterface15getBatteryLevelEv",
+        .out      = nh_symoutptr(HardwareInterface_getBatteryLevel),
+        .desc     = "HardwareInterface::getBatteryLevel()",
         .optional = true,
     },
     {
-        .name    = "_ZN17HardwareInterface13chargingStateEv",
-        .out     = nh_symoutptr(HardwareInterface_chargingState),
-        .desc    = "HardwareInterface::chargingState()",
+        .name     = "_ZN17HardwareInterface13chargingStateEv",
+        .out      = nh_symoutptr(HardwareInterface_chargingState),
+        .desc     = "HardwareInterface::chargingState()",
         .optional = true,
     },
     {
-        .name = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_",
-        .out = nh_symoutptr(ConfirmationDialogFactory_showOKDialog)
+        .name     = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_",
+        .out      = nh_symoutptr(ConfirmationDialogFactory_showOKDialog),
+        .desc     = "ConfirmationDialogFactory::showOKDialog()",
+        .optional = true,
     },
 
     {0},
@@ -121,6 +136,15 @@ NickelHook(
 extern "C" __attribute__((visibility("default")))
 void hook_ReadingView_constructor(ReadingView* self) {
     ReadingViewHook::constructor(self);
+
+    if (hasNickelClock && ConfirmationDialogFactory_showOKDialog) {
+        // Show a dialog prompting the user to reboot their device
+        // Need to wait for a bit before showing
+        // otherwise the dialog won't show or it will have broken UI
+        QTimer::singleShot(2000, self, [self] {
+            ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please reboot the device to complete the process."));
+        });
+    }
 }
 
 extern "C" __attribute__((visibility("default")))
