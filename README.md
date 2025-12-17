@@ -18,7 +18,7 @@ A beginner-friendly addon for customizing Kobo eReaders.
   - Uses its own widgets for clock & battery instead of Kobo's built-in ones (reduce the likelihood of encountering unwanted bugs)
   - Clock & battery only update after a page turn
   - Supports Dark mode
-  - Downside: conflict with NickelClock
+  - Downside: it conflicts with NickelClock. You can [uninstall NickelClock](https://github.com/shermp/NickelClock#uninstall-nickelclock) manually, or let Kobo Tweaks handle the uninstallation automatically.
 
 <table>
   <tbody>
