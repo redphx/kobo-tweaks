@@ -1,1 +1,1 @@
-Delete this file then reboot the device to uninstall kobo-tweaks
+Delete this file then restart the device to uninstall Kobo Tweaks
