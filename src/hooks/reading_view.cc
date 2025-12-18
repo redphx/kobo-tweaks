@@ -97,6 +97,8 @@ namespace ReadingViewHook {
             widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 
             QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(footer->layout());
+            layout->setSpacing(20);
+
             if (isLeft) {
                 // Insert left
                 layout->insertWidget(0, widget, 0, Qt::AlignLeft);
@@ -108,6 +110,7 @@ namespace ReadingViewHook {
 
                 if (hasLeft) {
                     // Lef Mid Right
+                    layout->setStretch(0, 0);
                     layout->setStretch(1, 1);
                     layout->setStretch(layout->count(), 0);
                 } else {
@@ -119,19 +122,17 @@ namespace ReadingViewHook {
 
             // Set widget's width to the original margin value
             int layoutMargin = footer->property("twks_margin").toInt();
-            int spacing = 20;
-            widget->setMinimumWidth(qMax(0, layoutMargin - spacing));
-            if (isLeft) {
-                widget->setContentsMargins(0, 0, spacing, 0);
-                hasLeft = true;
-            } else {
-                widget->setContentsMargins(spacing, 0, 0, 0);
-            }
+            widget->setMinimumWidth(qMax(0, layoutMargin - readingSettings.headerFooterMargins));
+            widget->setContentsMargins(0, 0, 0, 0);
 
             // Keep space when widget is hidden
             QSizePolicy sp = widget->sizePolicy();
             sp.setRetainSizeWhenHidden(true);
             widget->setSizePolicy(sp);
+
+            if (isLeft) {
+                hasLeft = true;
+            }
         }
     }
 
@@ -201,8 +202,24 @@ namespace ReadingViewHook {
             rightType = readingSettings.widgetFooterRight;
         }
 
-        int leftMargin = leftType == WidgetTypeEnum::Invalid ? margin : readingSettings.headerFooterMargins;
-        int rightMargin = rightType == WidgetTypeEnum::Invalid ? margin : readingSettings.headerFooterMargins;
+        int leftMargin = margin;
+        int rightMargin = margin;
+        int spacing = 20;
+
+        if (leftType != WidgetTypeEnum::Invalid && rightType == WidgetTypeEnum::Invalid) {
+            // Only left -> increase right margin
+            leftMargin = readingSettings.headerFooterMargins;
+            rightMargin += spacing;
+        } else if (leftType == WidgetTypeEnum::Invalid && rightType != WidgetTypeEnum::Invalid) {
+            // Only right -> reduce right margin
+            leftMargin += spacing;
+            rightMargin = readingSettings.headerFooterMargins;
+        } else if (leftType != WidgetTypeEnum::Invalid && rightType != WidgetTypeEnum::Invalid) {
+            // Has both
+            leftMargin = readingSettings.headerFooterMargins;
+            rightMargin = readingSettings.headerFooterMargins;
+        }
+
         layout->setContentsMargins(leftMargin, 0, rightMargin, 0);
     }
 
