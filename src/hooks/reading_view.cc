@@ -119,21 +119,19 @@ namespace ReadingViewHook {
 
             // Set widget's width to the original margin value
             int layoutMargin = footer->property("twks_margin").toInt();
-            widget->setMinimumWidth(qMax(0, layoutMargin - readingSettings.headerFooterMargins));
+            int spacing = 20;
+            widget->setMinimumWidth(qMax(0, layoutMargin - spacing));
             if (isLeft) {
-                widget->setContentsMargins(readingSettings.headerFooterMargins, 0, 20, 0);
+                widget->setContentsMargins(0, 0, spacing, 0);
+                hasLeft = true;
             } else {
-                widget->setContentsMargins(20, 0, readingSettings.headerFooterMargins, 0);
+                widget->setContentsMargins(spacing, 0, 0, 0);
             }
 
             // Keep space when widget is hidden
             QSizePolicy sp = widget->sizePolicy();
             sp.setRetainSizeWhenHidden(true);
             widget->setSizePolicy(sp);
-
-            if (isLeft) {
-                hasLeft = true;
-            }
         }
     }
 
@@ -203,8 +201,8 @@ namespace ReadingViewHook {
             rightType = readingSettings.widgetFooterRight;
         }
 
-        int leftMargin = leftType != WidgetTypeEnum::Invalid ? 0 : margin;
-        int rightMargin = rightType != WidgetTypeEnum::Invalid ? 0 : margin;
+        int leftMargin = leftType == WidgetTypeEnum::Invalid ? margin : readingSettings.headerFooterMargins;
+        int rightMargin = rightType == WidgetTypeEnum::Invalid ? margin : readingSettings.headerFooterMargins;
         layout->setContentsMargins(leftMargin, 0, rightMargin, 0);
     }
 
