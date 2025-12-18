@@ -3,8 +3,8 @@
 A beginner-friendly addon for customizing Kobo eReaders.
 
 ## 🔥 1. Features
-- Customize various UI elements and features of Kobo eReaders (similar to [KoboPatch](https://github.com/pgaskin/kobopatch))
-  - Reduces header and footer's heights
+- Customize various UI elements and features of Kobo eReaders (similar to [KoboPatch](https://github.com/pgaskin/kobopatch), can be used with patched firmware)
+  - Reduces header and footer's heights  
 - Add Battery and Clock widgets while reading a book (similar to [NickelClock](https://github.com/shermp/NickelClock))
 - Customize bookmark image
 - More to come...
@@ -18,7 +18,7 @@ A beginner-friendly addon for customizing Kobo eReaders.
   - Uses its own widgets for clock & battery instead of Kobo's built-in ones (reduce the likelihood of encountering unwanted bugs)
   - Clock & battery only update after a page turn
   - Supports Dark mode
-  - Downside: it conflicts with NickelClock. You can [uninstall NickelClock](https://github.com/shermp/NickelClock#uninstall-nickelclock) manually, or let Kobo Tweaks handle the uninstallation automatically.
+  - Downside: it conflicts with **NickelClock**. You can [uninstall NickelClock](https://github.com/shermp/NickelClock#uninstall-nickelclock) manually, or let **Kobo Tweaks** handle the uninstallation automatically.
 
 <table>
   <tbody>
@@ -27,9 +27,14 @@ A beginner-friendly addon for customizing Kobo eReaders.
         <img height="600" alt="image" src="https://github.com/user-attachments/assets/febc1ce1-f912-4d90-80dc-76d8a2da68fb" />
       </td>
       <td>
-        Settings used<br><br>
-        <pre>
-[Reading]
+        <b>Changes:</b><br><br>
+        <ul>
+          <li>Reduced header and footer's heights</li>
+          <li>Clock and Battery widgets</li>
+          <li>Custom bookmark image</li>
+        </ul>
+        <b>Settings used:</b><br><br>
+        <pre lang="INI">[Reading]
 BookmarkImage=bongo_cat.png
 HeaderFooterHeightScale=60
 HeaderFooterMargins=50
@@ -42,8 +47,7 @@ Clock24hFormat=true
 FooterLeft=
 FooterRight=Battery
 HeaderLeft=Clock
-HeaderRight=
-        </pre>
+HeaderRight=</pre>
       </td>
     </tr>
   </tbody>
@@ -51,23 +55,21 @@ HeaderRight=
 
 ## 🛠️ 2. Installation
 
-Kobo Tweaks should be compatible with any Kobo eReader running a recent 4.x firmware.
+**Kobo Tweaks** should be compatible with any Kobo eReader running a recent 4.x firmware.
 
-Follow these steps to install Kobo Tweaks:  
+Follow these steps to install **Kobo Tweaks**:  
   1. Connect your Kobo eReader to your computer
   2. Download the latest [KoboRoot.tgz](https://github.com/redphx/kobo-tweaks/releases/latest) file and place it inside the hidden `.kobo` folder on your Kobo eReader
-  > If you're using macOS and don't see the `.kobo` folder in Finder, press the combination `Cmd + Shift + .`
-
-  <pre>
-.kobo/
-├─ KoboRoot.tgz
-</pre>
+  <pre>.kobo/
+├─ KoboRoot.tgz</pre>
+  > - The file name must be `KoboRoot.tgz` (don't unzip it)
+  > - If you're using macOS and don't see the `.kobo` folder in Finder, press the combination `Cmd + Shift + .`
   3. Eject the device safely to avoid data corruption
 
-After it installs and reboots, open a book and you'll see new Clock and Battery widgets on the header. To customize Kobo Tweaks, check the **Customization** section below.
+After it installs and reboots, open a book and you'll see new Clock and Battery widgets on the header. To customize **Kobo Tweaks**, check the **Customization** section below.
 
 > [!IMPORTANT]
-> <table><tr><td><img height="300" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td><td>Since Kobo Tweaks cannot be used with NickelClock, it automatically detects and uninstalls NickelClock. If you see this dialog while reading a book, restart the device once again before continuing.</td></tr></table>
+> <table><tr><td><img height="300" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td><td>Since <b>Kobo Tweaks</b> cannot be used with <b>NickelClock</b>, it automatically detects and uninstalls <b>NickelClock</b> for you.<br><br>If this dialog appears when opening a book and the layout is broken, restart the device once again before continuing. If it doesn't work, try to <a href="https://github.com/shermp/NickelClock#uninstall-nickelclock">uninstall NickelClock</a> manually.</td></tr></table>
 
 There are a few new files and folders in your Kobo eRreader:
 <pre>
@@ -78,12 +80,12 @@ There are a few new files and folders in your Kobo eRreader:
 │  ├─ settings.ini
 </pre>
 
-### Uninstallation
-To uninstall Kobo Tweaks, delete the `DELETE_TO_UNINSTALL.txt` file and reboot the device. The file also contains the currently installed Kobo Tweaks version. Please include that information when reporting a bug.
+### 🗑️ Uninstallation
+To uninstall **Kobo Tweaks**, delete the `DELETE_TO_UNINSTALL.txt` file and restart the device. The file also contains the currently installed **Kobo Tweaks** version. Please include that information when reporting a bug.
 
 ## 💃 3. Customization
 
-Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
+Settings can be customized by editing the `.adds/tweaks/settings.ini` file on your Kobo eReader.
 
 ### [Reading]
 > Applies after reopening the book
@@ -91,14 +93,15 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 | Setting | Description | Values |
 |-|-|-|
 | `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`<br>🐞 **Known bug:** it only works when reading Kepub books at the moment (see https://github.com/redphx/kobo-tweaks/issues/20)| String |
-| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
+| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of `66` means the header and footer are rendered at `66 percent` of their original height. | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
 | `HeaderFooterMargins` | Sets the left and right margins for both header and footer | <b>Range:</b> 0-100<br><b>Default:</b> 50 |
 
-#### Bookmark image
+#### 🐶👂 Bookmark image
 
 - There are bookmark templates and images in [`resources/bookmarks/`](https://github.com/redphx/kobo-tweaks/blob/main/resources/bookmarks/)
 - Bookmark image must be in PNG format with a transparent background
-- If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active. For example, if `BookmarkImage` is set to `bongo_cat.png`, then `bongo_cat_dark.png` will be used in Dark mode, if it exists.
+- If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active
+  > For example, if `BookmarkImage` is set to `bongo_cat.png`, then `bongo_cat_dark.png` will be used in Dark mode, if it exists
 - There are no restrictions on the dimension, but it's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
 
 > [!NOTE]
@@ -116,7 +119,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 ### [Reading.Widget]
 > Applies after reopening the book
 
-| Setting | Description | Values |
+| Setting | Description | Values (case-insensitive) |
 |-|-|-|
 | `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines the widget position and type | `Battery`, `Clock`<br>or leave it blank to show nothing |
 | `BatteryStyle`<br>`BatteryStyleCharging` | Specifies the battery style for normal and charging states | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
@@ -128,7 +131,11 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 - The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
 - ⚠️ If you place a widget in the `HeaderRight` position, you may see a visual glitch when opening a book if the first page is already bookmarked. Turn the page forward and back to fix it.
 
-## 🤝 4. Acknowledgements
+## 🧑‍💻 4. Development
+
+To build **Kobo Tweaks**: install Docker, then run the `build.sh` file
+
+## 🤝 5. Acknowledgements
 
 - Thanks to [**@pgaskin**](https://github.com/pgaskin) and [**@shermp**](https://github.com/shermp) for reviewing and improving the code
 - Thanks to the [shermp/NickelClock](https://github.com/shermp/NickelClock) project for giving me the idea of how to add widgets to the Reading view.
