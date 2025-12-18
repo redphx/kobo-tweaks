@@ -90,7 +90,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file.
 
 | Setting | Description | Values |
 |-|-|-|
-| `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`| String |
+| `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`<br>🐞 **Known bug:** it only works when reading Kepub books at the moment (see https://github.com/redphx/kobo-tweaks/issues/20)| String |
 | `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of 66 means the header and footer are rendered at 66 percent of their original height. | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
 | `HeaderFooterMargins` | Sets the left and right margins for both header and footer | <b>Range:</b> 0-100<br><b>Default:</b> 50 |
 
