@@ -24,7 +24,7 @@ A beginner-friendly addon for customizing Kobo eReaders.
   <tbody>
     <tr>
       <td>
-        <img height="600" alt="image" src="https://github.com/user-attachments/assets/99f571d7-607b-486b-9136-3f2b5cbf887e" />
+        <img height="600" alt="image" src="https://github.com/user-attachments/assets/febc1ce1-f912-4d90-80dc-76d8a2da68fb" />
       </td>
       <td>
         Settings used<br><br>
