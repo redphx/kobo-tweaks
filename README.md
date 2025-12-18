@@ -20,19 +20,23 @@ A beginner-friendly addon for customizing Kobo eReaders.
   - Supports Dark mode
   - Downside: it conflicts with **NickelClock**. You can [uninstall NickelClock](https://github.com/shermp/NickelClock#uninstall-nickelclock) manually, or let **Kobo Tweaks** handle the uninstallation automatically.
 
-<table>
+<table align="center">
   <tbody>
     <tr>
-      <td>
+      <td colspan="2">
         <img height="600" alt="image" src="https://github.com/user-attachments/assets/febc1ce1-f912-4d90-80dc-76d8a2da68fb" />
       </td>
-      <td>
+    </tr>
+    <tr>
+      <td valign="top">
         <b>Changes:</b><br><br>
         <ul>
           <li>Reduced header and footer's heights</li>
           <li>Clock and Battery widgets</li>
           <li>Custom bookmark image</li>
         </ul>
+      </td>
+      <td>
         <b>Settings used:</b><br><br>
         <pre lang="INI">[Reading]
 BookmarkImage=bongo_cat.png
@@ -69,7 +73,7 @@ Follow these steps to install **Kobo Tweaks**:
 After it installs and reboots, open a book and you'll see new Clock and Battery widgets on the header. To customize **Kobo Tweaks**, check the **Customization** section below.
 
 > [!IMPORTANT]
-> <table><tr><td><img height="300" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td><td>Since <b>Kobo Tweaks</b> cannot be used with <b>NickelClock</b>, it automatically detects and uninstalls <b>NickelClock</b> for you.<br><br>If this dialog appears when opening a book and the layout is broken, restart the device once again before continuing. If it doesn't work, try to <a href="https://github.com/shermp/NickelClock#uninstall-nickelclock">uninstall NickelClock</a> manually.</td></tr></table>
+> <table align="center"><tr><td align="center"><img height="200" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td></tr><tr><td>Since <b>Kobo Tweaks</b> cannot be used with <b>NickelClock</b>, it automatically detects and uninstalls <b>NickelClock</b> for you.<br><br>If this dialog appears when opening a book and the layout is broken, restart the device once again before continuing. If it doesn't work, try to <a href="https://github.com/shermp/NickelClock#uninstall-nickelclock">uninstall NickelClock</a> manually.</td></tr></table>
 
 There are a few new files and folders in your Kobo eRreader:
 <pre>
@@ -90,11 +94,11 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 ### [Reading]
 > Applies after reopening the book
 
-| Setting | Description | Values |
-|-|-|-|
-| `BookmarkImage` | Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`<br>🐞 **Known bug:** it only works when reading Kepub books at the moment (see https://github.com/redphx/kobo-tweaks/issues/20)| String |
-| `HeaderFooterHeightScale` | Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of `66` means the header and footer are rendered at `66 percent` of their original height. | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
-| `HeaderFooterMargins` | Sets the left and right margins for both header and footer | <b>Range:</b> 0-100<br><b>Default:</b> 50 |
+| Setting and description | Values |
+|-|-|
+| `BookmarkImage`<br>---<br><i>Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`<br>🐞 **Known bug:** it only works when reading Kepub books at the moment (see https://github.com/redphx/kobo-tweaks/issues/20)</i>| String |
+| `HeaderFooterHeightScale`<br>---<br><i>Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of `66` means the header and footer are rendered at `66 percent` of their original height.</i> | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
+| `HeaderFooterMargins`<br>---<br><i>Sets the left and right margins for both header and footer</i> | <b>Range:</b> 0-100<br><b>Default:</b> 50 |
 
 #### 🐶👂 Bookmark image
 
@@ -119,12 +123,12 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 ### [Reading.Widget]
 > Applies after reopening the book
 
-| Setting | Description | Values (case-insensitive) |
-|-|-|-|
-| `HeaderLeft`<br>`HeaderRight`<br>`FooterLeft`<br>`FooterRight` | Defines the widget position and type | `Battery`, `Clock`<br>or leave it blank to show nothing |
-| `BatteryStyle`<br>`BatteryStyleCharging` | Specifies the battery style for normal and charging states | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
-| `BatteryShowWhenBelow` | Shows the battery widget only when the battery level is less than or equal to this value | <b>Unit:</b> %<br><b>Range:</b> 10-100<br><b>Default:</b> 100 (always visible) |
-| `Clock24hFormat` | Enables or disables 24-hour time format | `true`, `false`, `on`, `off` |
+| Setting and description | Values (case-insensitive) |
+|-|-|
+| `HeaderLeft`, `HeaderRight`, `FooterLeft`, `FooterRight`<br>---<br><i>Defines the widget position and type</i> | `Battery`, `Clock`<br>or leave it blank to show nothing |
+| `BatteryStyle`, `BatteryStyleCharging`<br>---<br><i>Specifies the battery style for normal and charging states</i> | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
+| `BatteryShowWhenBelow`<br>---<br><i>Shows the battery widget only when the battery level is less than or equal to this value</i> | <b>Unit:</b> %<br><b>Range:</b> 10-100<br><b>Default:</b> 100 (always visible) |
+| `Clock24hFormat`<br>---<br><i>Enables or disables 24-hour time format</i> | `true`, `false`, `on`, `off` |
 
 - All widgets support Dark mode
 - The Battery widget updates only when you turn a page or unlock the device.
