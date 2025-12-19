@@ -76,13 +76,14 @@ After it installs and reboots, open a book and you'll see new Clock and Battery 
 > <table align="center"><tr><td align="center"><img height="200" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td></tr><tr><td>Since <b>Kobo Tweaks</b> cannot be used with <b>NickelClock</b>, it automatically detects and uninstalls <b>NickelClock</b> for you.<br><br>If this dialog appears when opening a book and the layout is broken, restart the device once again before continuing. If it doesn't work, try to <a href="https://github.com/shermp/NickelClock#uninstall-nickelclock">uninstall NickelClock</a> manually.</td></tr></table>
 
 There are a few new files and folders in your Kobo eRreader:
-<pre>
-.adds/
+<pre>.adds/
 ├─ tweaks/
 │  ├─ images/
 │  ├─ DELETE_TO_UNINSTALL.txt
-│  ├─ settings.ini
-</pre>
+│  ├─ settings.ini</pre>
+
+> [!IMPORTANT]
+> If these files appear in your library, see the **Troubleshooting section** for the fix.
 
 ### 🗑️ Uninstallation
 To uninstall **Kobo Tweaks**, delete the `DELETE_TO_UNINSTALL.txt` file and restart the device. The file also contains the currently installed **Kobo Tweaks** version. Please include that information when reporting a bug.
@@ -105,7 +106,12 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 - There are bookmark templates and images in [`resources/bookmarks/`](https://github.com/redphx/kobo-tweaks/blob/main/resources/bookmarks/)
 - Bookmark image must be in PNG format with a transparent background
 - If an additional image exists with the same base name and the `_dark` suffix, that image is used when Dark mode is active
-  > For example, if `BookmarkImage` is set to `bongo_cat.png`, then `bongo_cat_dark.png` will be used in Dark mode, if it exists
+  > For example, if `BookmarkImage=bongo_cat.png`, then `bongo_cat_dark.png` will be used in Dark mode, if it exists
+  <pre>.adds/
+  ├─ tweaks/
+  │  ├─ images/
+  │  │  ├─ bongo_cat.png
+  │  │  ├─ bongo_cat_dark.png</pre>
 - There are no restrictions on the dimension, but it's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
 
 > [!NOTE]
@@ -135,17 +141,32 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 - The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
 - ⚠️ If you place a widget in the `HeaderRight` position, you may see a visual glitch when opening a book if the first page is already bookmarked. Turn the page forward and back to fix it.
 
-## 🧑‍💻 4. Development
+## 👩‍🔧 4. Troubleshooting  
+
+### 1. Kobo Tweaks' files appear in my library  
+
+You need to edit Kobo's setting file to prevent it from scanning hidden folders.  
+
+1. Connect your Kobo eReader to your computer
+2. Open the `.kobo/Kobo/Kobo eReader.conf` file with a text editor
+3. In the `[FeatureSettings]` section, replace the line that starts with `ExcludeSyncFolders=` with the following (insert it if not found):
+  ```INI
+  ExcludeSyncFolders=(\\.(?!kobo|adobe).+|([^.][^/]*/)+\\..+)
+  ```
+4. Save and eject the device safely
+5. Restart the device
+
+## 🧑‍💻 5. Development
 
 To build **Kobo Tweaks**: install Docker, then run the `build.sh` file
 
-## 🤝 5. Acknowledgements
+## 🤝 6. Acknowledgements
 
 - Thanks to [**@pgaskin**](https://github.com/pgaskin) and [**@shermp**](https://github.com/shermp) for reviewing and improving the code
 - Thanks to the [shermp/NickelClock](https://github.com/shermp/NickelClock) project for giving me the idea of how to add widgets to the Reading view.
 - And thank you for using!
 
-## ✨ 6. Other Kobo addons from me
+## ✨ 7. Other Kobo addons from me
 
 [Nickel Screensaver](https://github.com/redphx/nickel-screensaver) is an addon that brings the transparent screensaver feature to Kobo eReaders, similar to the one on KOReader.
 
