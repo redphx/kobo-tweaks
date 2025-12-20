@@ -15,6 +15,17 @@ namespace ReadingViewHook {
         pageChanged();
     }
 
+    ReaderDoneLoadingAdapter::ReaderDoneLoadingAdapter(ReadingView *parent) : QObject(parent) {
+        if (!QObject::connect(parent, SIGNAL(readerDoneLoading()), this, SLOT(notifyReaderDoneLoading()), Qt::UniqueConnection)) {
+            nh_log("failed to connect _ZN11ReadingView17readerDoneLoadingEv");
+        }
+    }
+
+    void ReaderDoneLoadingAdapter::notifyReaderDoneLoading() {
+        // nh_log("readerDoneLoading");
+        readerDoneLoading();
+    }
+
     DarkModeAdapter::DarkModeAdapter(GestureReceivingContainer *parent, ReadingView *view) : QObject(parent) {
         if (!QObject::connect(view, SIGNAL(darkModeChangedSignal()), this, SLOT(notifyDarkModeChanged()), Qt::UniqueConnection)) {
             nh_log("failed to connect _ZN11ReadingView21darkModeChangedSignalEv");
