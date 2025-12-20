@@ -44,3 +44,7 @@ extern HardwareInterface* (*HardwareFactory_sharedInstance)();
 extern uintptr_t** HardwareInterface_vtable;
 extern int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self);
 extern uint (*HardwareInterface_chargingState)(HardwareInterface* self);
+
+// libadobe
+typedef void PluginState;
+extern void (*AdobeReader_constructor)(QWidget* self, QWidget* parent, PluginState* state, const QString& image);

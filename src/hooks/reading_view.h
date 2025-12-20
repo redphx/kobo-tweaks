@@ -43,4 +43,8 @@ namespace ReadingViewHook {
     namespace DogEarDelegate {
         QWidget* constructor(QWidget* self, QWidget* parent, const QString& image);
     }
+
+    namespace AdobeReader {
+        void constructor(QWidget* self, QWidget* parent, PluginState* state, const QString& image);
+    }
 }

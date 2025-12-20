@@ -233,4 +233,15 @@ namespace ReadingViewHook {
             return view;
         }
     }
+
+    namespace AdobeReader {
+        void constructor(QWidget* self, QWidget* parent, PluginState* state, const QString& orgImgPath) {
+            QString imgPath = settings.getReadingBookmarkImage(isDarkMode);
+            if (imgPath.isEmpty()) {
+                imgPath = orgImgPath;
+            }
+
+            AdobeReader_constructor(self, parent, state, imgPath);
+        }
+    }
 }

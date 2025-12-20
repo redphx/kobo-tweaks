@@ -11,3 +11,6 @@ HardwareInterface* (*HardwareFactory_sharedInstance)() = nullptr;
 uintptr_t** HardwareInterface_vtable = nullptr;
 int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self) = nullptr;
 uint (*HardwareInterface_chargingState)(HardwareInterface* self) = nullptr;
+
+// libadobe
+void (*AdobeReader_constructor)(QWidget* self, QWidget* parent, PluginState* state, const QString& image) = nullptr;
