@@ -16,7 +16,6 @@ struct nh_info Tweaks = {
     .desc = "Tweaks",
     .uninstall_flag = KOBO_TWEAKS_DELETE_FILE,
     .uninstall_xflag = KOBO_TWEAKS_INSTALL_FILE,
-    .failsafe_delay = 10,
 };
 
 static bool hasNickelClock = false;
