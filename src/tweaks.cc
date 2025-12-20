@@ -161,8 +161,8 @@ void hook_ReadingFooter_setFooterMargin(QWidget* self, int margin) {
 }
 
 extern "C" __attribute__((visibility("default")))
-QWidget* hook_DogEarDelegate_constructor(QWidget* self, QWidget* parent, const QString& image) {
-    return ReadingViewHook::DogEarDelegate::constructor(self, parent, image);
+void hook_DogEarDelegate_constructor(QWidget* self, QWidget* parent, const QString& image) {
+    ReadingViewHook::DogEarDelegate::constructor(self, parent, image);
 }
 
 extern "C" __attribute__((visibility("default")))

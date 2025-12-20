@@ -41,7 +41,7 @@ namespace ReadingViewHook {
     void setFooterMargin(QWidget* self, int margin);
 
     namespace DogEarDelegate {
-        QWidget* constructor(QWidget* self, QWidget* parent, const QString& image);
+        void constructor(QWidget* self, QWidget* parent, const QString& image);
     }
 
     namespace AdobeReader {
