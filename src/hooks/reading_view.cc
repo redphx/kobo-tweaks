@@ -50,14 +50,14 @@ namespace ReadingViewHook {
     }
 
 
-    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* footer, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
+    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
         bool hasLeft = false;
         auto readingSettings = settings.getReadingSettings();
 
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
-        footer->setStyleSheet(qss);
-        footer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
+        parent->setStyleSheet(qss);
+        parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
         for (auto p : {leftType, rightType}) {
             bool isLeft = p == leftType;
@@ -96,32 +96,32 @@ namespace ReadingViewHook {
 
             widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 
-            QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(footer->layout());
-            layout->setSpacing(20);
+            QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
+            parentLayout->setSpacing(20);
 
             if (isLeft) {
                 // Insert left
-                layout->insertWidget(0, widget, 0, Qt::AlignLeft);
-                layout->setStretch(0, 0);
-                layout->setStretch(1, 1);
+                parentLayout->insertWidget(0, widget, 0, Qt::AlignLeft);
+                parentLayout->setStretch(0, 0);
+                parentLayout->setStretch(1, 1);
             } else {
                 // Insert right
-                layout->insertWidget(layout->count(), widget, 0, Qt::AlignRight);
+                parentLayout->insertWidget(parentLayout->count(), widget, 0, Qt::AlignRight);
 
                 if (hasLeft) {
                     // Lef Mid Right
-                    layout->setStretch(0, 0);
-                    layout->setStretch(1, 1);
-                    layout->setStretch(layout->count(), 0);
+                    parentLayout->setStretch(0, 0);
+                    parentLayout->setStretch(1, 1);
+                    parentLayout->setStretch(parentLayout->count(), 0);
                 } else {
                     // Mid Right
-                    layout->setStretch(0, 1);
-                    layout->setStretch(layout->count(), 0);
+                    parentLayout->setStretch(0, 1);
+                    parentLayout->setStretch(parentLayout->count(), 0);
                 }
             }
 
             // Set widget's width to the original margin value
-            int layoutMargin = footer->property("twks_margin").toInt();
+            int layoutMargin = parent->property("twks_margin").toInt();
             widget->setMinimumWidth(qMax(0, layoutMargin - readingSettings.headerFooterMargins));
             widget->setContentsMargins(0, 0, 0, 0);
 
