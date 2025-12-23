@@ -22,6 +22,19 @@ namespace ReadingViewHook {
         void pageChanged();
     };
 
+    class ReaderDoneLoadingAdapter : public QObject {
+        Q_OBJECT
+
+    public:
+        explicit ReaderDoneLoadingAdapter(ReadingView *parent);
+
+    private slots:
+        void notifyReaderDoneLoading();
+
+    signals:
+        void readerDoneLoading();
+    };
+
     class DarkModeAdapter : public QObject {
         Q_OBJECT
 

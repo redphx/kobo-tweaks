@@ -16,7 +16,6 @@ struct nh_info Tweaks = {
     .desc = "Tweaks",
     .uninstall_flag = KOBO_TWEAKS_DELETE_FILE,
     .uninstall_xflag = KOBO_TWEAKS_INSTALL_FILE,
-    .failsafe_delay = 10,
 };
 
 static bool hasNickelClock = false;
@@ -139,9 +138,8 @@ void hook_ReadingView_constructor(ReadingView* self) {
 
     if (hasNickelClock && ConfirmationDialogFactory_showOKDialog) {
         // Show a dialog prompting the user to reboot their device
-        // Need to wait for a bit before showing
-        // otherwise the dialog won't show or it will have broken UI
-        QTimer::singleShot(2000, self, [self] {
+        auto readerDoneLoadingAdapter = new ReadingViewHook::ReaderDoneLoadingAdapter(self);
+        QObject::connect(readerDoneLoadingAdapter, &ReadingViewHook::ReaderDoneLoadingAdapter::readerDoneLoading, []() {
             ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please restart the device to complete the process."));
         });
     }
