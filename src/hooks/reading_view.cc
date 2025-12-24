@@ -59,6 +59,12 @@ namespace ReadingViewHook {
         parent->setStyleSheet(qss);
         parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
+        // TODO: make spacing configurable
+        int spacing = 20;
+        QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
+        parentLayout->setSpacing(spacing);
+        int parentContentsMargin = parent->property("twks_margin").toInt();
+
         for (auto p : {leftType, rightType}) {
             bool isLeft = p == leftType;
             QWidget* widget;
@@ -94,19 +100,32 @@ namespace ReadingViewHook {
                     continue;
             }
 
-            widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+            widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+            widget->setContentsMargins(0, 0, 0, 0);
 
-            QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
-            parentLayout->setSpacing(20);
+            // Setup Widgets container
+            QWidget* container = new QWidget;
+            // Set container's width to the original margin value
+            container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+            container->setMinimumWidth(qMax(0, parentContentsMargin - readingSettings.headerFooterMargins));
 
+            // Setup Widgets container's layout
+            QHBoxLayout* containerLayout = new QHBoxLayout(container);
+            containerLayout->setContentsMargins(0, 0, 0, 0);
+            containerLayout->setSpacing(spacing);
+            containerLayout->addWidget(widget, 0);
+
+            parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
+
+            // Insert widgets container into parent layout
             if (isLeft) {
                 // Insert left
-                parentLayout->insertWidget(0, widget, 0, Qt::AlignLeft);
+                parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
                 parentLayout->setStretch(0, 0);
                 parentLayout->setStretch(1, 1);
             } else {
                 // Insert right
-                parentLayout->insertWidget(parentLayout->count(), widget, 0, Qt::AlignRight);
+                parentLayout->insertWidget(parentLayout->count(), container, 0, Qt::AlignRight);
 
                 if (hasLeft) {
                     // Lef Mid Right
@@ -119,16 +138,6 @@ namespace ReadingViewHook {
                     parentLayout->setStretch(parentLayout->count(), 0);
                 }
             }
-
-            // Set widget's width to the original margin value
-            int layoutMargin = parent->property("twks_margin").toInt();
-            widget->setMinimumWidth(qMax(0, layoutMargin - readingSettings.headerFooterMargins));
-            widget->setContentsMargins(0, 0, 0, 0);
-
-            // Keep space when widget is hidden
-            QSizePolicy sp = widget->sizePolicy();
-            sp.setRetainSizeWhenHidden(true);
-            widget->setSizePolicy(sp);
 
             if (isLeft) {
                 hasLeft = true;
