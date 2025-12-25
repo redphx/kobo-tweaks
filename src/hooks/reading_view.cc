@@ -59,12 +59,12 @@ namespace ReadingViewHook {
         parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
         // TODO: make spacing configurable
-        int spacing = 20;
+        static int spacing = 20;
         QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
         parentLayout->setSpacing(spacing);
 
+        bool isLeft = true;
         for (auto p : {leftType, rightType}) {
-            bool isLeft = p == leftType;
             QWidget* widget = nullptr;
 
             switch (p) {
@@ -126,6 +126,8 @@ namespace ReadingViewHook {
                 container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
                 parentLayout->addWidget(container, 0, Qt::AlignRight);
             }
+
+            isLeft = false;
         }
 
         // Stretch center widget
