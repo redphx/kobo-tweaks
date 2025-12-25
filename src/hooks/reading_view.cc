@@ -51,7 +51,6 @@ namespace ReadingViewHook {
 
 
     static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
-        bool hasLeft = false;
         auto readingSettings = settings.getReadingSettings();
 
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
@@ -67,7 +66,7 @@ namespace ReadingViewHook {
 
         for (auto p : {leftType, rightType}) {
             bool isLeft = p == leftType;
-            QWidget* widget;
+            QWidget* widget = nullptr;
 
             switch (p) {
                 case WidgetTypeEnum::Clock:
@@ -97,52 +96,45 @@ namespace ReadingViewHook {
                     }
                     break;
                 default:
-                    continue;
+                    break;
             }
-
-            widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-            widget->setContentsMargins(0, 0, 0, 0);
 
             // Setup Widgets container
             QWidget* container = new QWidget;
             // Set container's width to the original margin value
             container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-            container->setMinimumWidth(qMax(0, parentContentsMargin - readingSettings.headerFooterMargins));
+            container->setMinimumWidth(qMax(0, parentContentsMargin));
+            if (isLeft) {
+                container->setContentsMargins(readingSettings.headerFooterMargins, 0, 0, 0);
+            } else {
+                container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
+            }
 
             // Setup Widgets container's layout
             QHBoxLayout* containerLayout = new QHBoxLayout(container);
             containerLayout->setContentsMargins(0, 0, 0, 0);
             containerLayout->setSpacing(spacing);
-            containerLayout->addWidget(widget, 0);
 
-            parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
+            if (widget) {
+                widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+                widget->setContentsMargins(0, 0, 0, 0);
+                containerLayout->addWidget(widget, 0);
+            }
 
             // Insert widgets container into parent layout
             if (isLeft) {
                 // Insert left
                 parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
-                parentLayout->setStretch(0, 0);
-                parentLayout->setStretch(1, 1);
             } else {
                 // Insert right
-                parentLayout->insertWidget(parentLayout->count(), container, 0, Qt::AlignRight);
-
-                if (hasLeft) {
-                    // Lef Mid Right
-                    parentLayout->setStretch(0, 0);
-                    parentLayout->setStretch(1, 1);
-                    parentLayout->setStretch(parentLayout->count(), 0);
-                } else {
-                    // Mid Right
-                    parentLayout->setStretch(0, 1);
-                    parentLayout->setStretch(parentLayout->count(), 0);
-                }
-            }
-
-            if (isLeft) {
-                hasLeft = true;
+                parentLayout->insertWidget(2, container, 0, Qt::AlignRight);
             }
         }
+
+        // Lef Mid Right
+        parentLayout->setStretch(0, 0);
+        parentLayout->setStretch(1, 1);
+        parentLayout->setStretch(2, 0);
     }
 
     void constructor(ReadingView* view) {
@@ -201,35 +193,7 @@ namespace ReadingViewHook {
         QString widgetName = self->objectName();
         QLayout* layout = self->layout();
 
-        WidgetTypeEnum leftType = WidgetTypeEnum::Invalid;
-        WidgetTypeEnum rightType = WidgetTypeEnum::Invalid;
-        if (widgetName == QStringLiteral("header")) {
-            leftType = readingSettings.widgetHeaderLeft;
-            rightType = readingSettings.widgetHeaderRight;
-        } else {
-            leftType = readingSettings.widgetFooterLeft;
-            rightType = readingSettings.widgetFooterRight;
-        }
-
-        int leftMargin = margin;
-        int rightMargin = margin;
-        int spacing = 20;
-
-        if (leftType != WidgetTypeEnum::Invalid && rightType == WidgetTypeEnum::Invalid) {
-            // Only left -> increase right margin
-            leftMargin = readingSettings.headerFooterMargins;
-            rightMargin += spacing;
-        } else if (leftType == WidgetTypeEnum::Invalid && rightType != WidgetTypeEnum::Invalid) {
-            // Only right -> reduce right margin
-            leftMargin += spacing;
-            rightMargin = readingSettings.headerFooterMargins;
-        } else if (leftType != WidgetTypeEnum::Invalid && rightType != WidgetTypeEnum::Invalid) {
-            // Has both
-            leftMargin = readingSettings.headerFooterMargins;
-            rightMargin = readingSettings.headerFooterMargins;
-        }
-
-        layout->setContentsMargins(leftMargin, 0, rightMargin, 0);
+        layout->setContentsMargins(0, 0, 0, 0);
     }
 
     namespace DogEarDelegate {
