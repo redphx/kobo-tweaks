@@ -3,6 +3,7 @@
 namespace ReadingViewHook {
     static TweaksSettings settings;
     static bool isDarkMode = false;
+    static int originalContentsMargins = 0;
 
     PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
         if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
@@ -52,7 +53,6 @@ namespace ReadingViewHook {
 
     static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
         auto readingSettings = settings.getReadingSettings();
-
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
         parent->setStyleSheet(qss);
@@ -62,7 +62,6 @@ namespace ReadingViewHook {
         int spacing = 20;
         QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
         parentLayout->setSpacing(spacing);
-        int parentContentsMargin = parent->property("twks_margin").toInt();
 
         for (auto p : {leftType, rightType}) {
             bool isLeft = p == leftType;
@@ -103,18 +102,14 @@ namespace ReadingViewHook {
             QWidget* container = new QWidget;
             // Set container's width to the original margin value
             container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-            container->setMinimumWidth(qMax(0, parentContentsMargin));
-            if (isLeft) {
-                container->setContentsMargins(readingSettings.headerFooterMargins, 0, 0, 0);
-            } else {
-                container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
-            }
+            container->setMinimumWidth(originalContentsMargins);
 
             // Setup Widgets container's layout
             QHBoxLayout* containerLayout = new QHBoxLayout(container);
             containerLayout->setContentsMargins(0, 0, 0, 0);
             containerLayout->setSpacing(spacing);
 
+            // Add widget to container
             if (widget) {
                 widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
                 widget->setContentsMargins(0, 0, 0, 0);
@@ -124,17 +119,17 @@ namespace ReadingViewHook {
             // Insert widgets container into parent layout
             if (isLeft) {
                 // Insert left
+                container->setContentsMargins(readingSettings.headerFooterMargins, 0, 0, 0);
                 parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
             } else {
                 // Insert right
-                parentLayout->insertWidget(2, container, 0, Qt::AlignRight);
+                container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
+                parentLayout->addWidget(container, 0, Qt::AlignRight);
             }
         }
 
-        // Lef Mid Right
-        parentLayout->setStretch(0, 0);
+        // Stretch center widget
         parentLayout->setStretch(1, 1);
-        parentLayout->setStretch(2, 0);
     }
 
     void constructor(ReadingView* view) {
@@ -185,14 +180,10 @@ namespace ReadingViewHook {
     }
 
     void setFooterMargin(QWidget* self, int margin) {
-        auto readingSettings = settings.getReadingSettings();
+        // Save the original margin
+        originalContentsMargins = margin;
 
-        // Store the original margin to "twks_margin"
-        self->setProperty("twks_margin", margin);
-
-        QString widgetName = self->objectName();
         QLayout* layout = self->layout();
-
         layout->setContentsMargins(0, 0, 0, 0);
     }
 
