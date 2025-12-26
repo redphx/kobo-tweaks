@@ -85,7 +85,15 @@ struct nh_hook TweaksHook[] = {
         .sym_new  = "hook_DogEarDelegate_constructor",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(DogEarDelegate_constructor),
-        .desc     = "ReadingView",
+        .desc     = "DogEar KEPUB",
+        .optional = true,
+    },
+    {
+        .sym      = "_ZN11AdobeReaderC2EP7QWidgetP11PluginStateRK7QString",
+        .sym_new  = "hook_AdobeReader_constructor",
+        .lib      = "libadobe.so",
+        .out      = nh_symoutptr(AdobeReader_constructor),
+        .desc     = "Adobe DogEar EPUB",
         .optional = true,
     },
     {0}
@@ -151,8 +159,8 @@ void hook_ReadingFooter_setFooterMargin(QWidget* self, int margin) {
 }
 
 extern "C" __attribute__((visibility("default")))
-QWidget* hook_DogEarDelegate_constructor(QWidget* self, QWidget* parent, const QString& image) {
-    return ReadingViewHook::DogEarDelegate::constructor(self, parent, image);
+void hook_DogEarDelegate_constructor(QWidget* self, QWidget* parent, const QString& image) {
+    ReadingViewHook::DogEarDelegate::constructor(self, parent, image);
 }
 
 extern "C" __attribute__((visibility("default")))
@@ -163,4 +171,10 @@ void hook_SearchAutoCompleteController_handleSpecialCommands(SearchAutoCompleteC
     }
 
     SearchAutoCompleteController_handleSpecialCommands(self, command);
+}
+
+// libadobe
+extern "C" __attribute__((visibility("default")))
+void hook_AdobeReader_constructor(QWidget* self, QWidget* parent, PluginState* state, const QString& image) {
+    ReadingViewHook::AdobeReader::constructor(self, parent, state, image);
 }

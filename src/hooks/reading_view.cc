@@ -201,13 +201,24 @@ namespace ReadingViewHook {
     }
 
     namespace DogEarDelegate {
-        QWidget* constructor(QWidget* self, QWidget* parent, const QString& orgImgPath) {
+        void constructor(QWidget* self, QWidget* parent, const QString& orgImgPath) {
             QString imgPath = settings.getReadingBookmarkImage(isDarkMode);
             if (imgPath.isEmpty()) {
                 imgPath = orgImgPath;
             }
-            auto view = DogEarDelegate_constructor(self, parent, imgPath);
-            return view;
+
+            DogEarDelegate_constructor(self, parent, imgPath);
+        }
+    }
+
+    namespace AdobeReader {
+        void constructor(QWidget* self, QWidget* parent, PluginState* state, const QString& orgImgPath) {
+            QString imgPath = settings.getReadingBookmarkImage(isDarkMode);
+            if (imgPath.isEmpty()) {
+                imgPath = orgImgPath;
+            }
+
+            AdobeReader_constructor(self, parent, state, imgPath);
         }
     }
 }
