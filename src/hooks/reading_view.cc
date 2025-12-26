@@ -3,6 +3,7 @@
 namespace ReadingViewHook {
     static TweaksSettings settings;
     static bool isDarkMode = false;
+    static int originalContentsMargins = 0;
 
     PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
         if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
@@ -61,18 +62,21 @@ namespace ReadingViewHook {
     }
 
 
-    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* footer, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
-        bool hasLeft = false;
+    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
         auto readingSettings = settings.getReadingSettings();
-
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
-        footer->setStyleSheet(qss);
-        footer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
+        parent->setStyleSheet(qss);
+        parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
+        // TODO: make spacing configurable
+        static int spacing = 20;
+        QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
+        parentLayout->setSpacing(spacing);
+
+        bool isLeft = true;
         for (auto p : {leftType, rightType}) {
-            bool isLeft = p == leftType;
-            QWidget* widget;
+            QWidget* widget = nullptr;
 
             switch (p) {
                 case WidgetTypeEnum::Clock:
@@ -102,49 +106,43 @@ namespace ReadingViewHook {
                     }
                     break;
                 default:
-                    continue;
+                    break;
             }
 
-            widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+            // Setup Widgets container
+            QWidget* container = new QWidget;
+            // Set container's width to the original margin value
+            container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+            container->setMinimumWidth(originalContentsMargins);
 
-            QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(footer->layout());
-            layout->setSpacing(20);
+            // Setup Widgets container's layout
+            QHBoxLayout* containerLayout = new QHBoxLayout(container);
+            containerLayout->setContentsMargins(0, 0, 0, 0);
+            containerLayout->setSpacing(spacing);
 
+            // Add widget to container
+            if (widget) {
+                widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+                widget->setContentsMargins(0, 0, 0, 0);
+                containerLayout->addWidget(widget, 0);
+            }
+
+            // Insert widgets container into parent layout
             if (isLeft) {
                 // Insert left
-                layout->insertWidget(0, widget, 0, Qt::AlignLeft);
-                layout->setStretch(0, 0);
-                layout->setStretch(1, 1);
+                container->setContentsMargins(readingSettings.headerFooterMargins, 0, 0, 0);
+                parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
             } else {
                 // Insert right
-                layout->insertWidget(layout->count(), widget, 0, Qt::AlignRight);
-
-                if (hasLeft) {
-                    // Lef Mid Right
-                    layout->setStretch(0, 0);
-                    layout->setStretch(1, 1);
-                    layout->setStretch(layout->count(), 0);
-                } else {
-                    // Mid Right
-                    layout->setStretch(0, 1);
-                    layout->setStretch(layout->count(), 0);
-                }
+                container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
+                parentLayout->addWidget(container, 0, Qt::AlignRight);
             }
 
-            // Set widget's width to the original margin value
-            int layoutMargin = footer->property("twks_margin").toInt();
-            widget->setMinimumWidth(qMax(0, layoutMargin - readingSettings.headerFooterMargins));
-            widget->setContentsMargins(0, 0, 0, 0);
-
-            // Keep space when widget is hidden
-            QSizePolicy sp = widget->sizePolicy();
-            sp.setRetainSizeWhenHidden(true);
-            widget->setSizePolicy(sp);
-
-            if (isLeft) {
-                hasLeft = true;
-            }
+            isLeft = false;
         }
+
+        // Stretch center widget
+        parentLayout->setStretch(1, 1);
     }
 
     void constructor(ReadingView* view) {
@@ -195,43 +193,11 @@ namespace ReadingViewHook {
     }
 
     void setFooterMargin(QWidget* self, int margin) {
-        auto readingSettings = settings.getReadingSettings();
+        // Save the original margin
+        originalContentsMargins = margin;
 
-        // Store the original margin to "twks_margin"
-        self->setProperty("twks_margin", margin);
-
-        QString widgetName = self->objectName();
         QLayout* layout = self->layout();
-
-        WidgetTypeEnum leftType = WidgetTypeEnum::Invalid;
-        WidgetTypeEnum rightType = WidgetTypeEnum::Invalid;
-        if (widgetName == QStringLiteral("header")) {
-            leftType = readingSettings.widgetHeaderLeft;
-            rightType = readingSettings.widgetHeaderRight;
-        } else {
-            leftType = readingSettings.widgetFooterLeft;
-            rightType = readingSettings.widgetFooterRight;
-        }
-
-        int leftMargin = margin;
-        int rightMargin = margin;
-        int spacing = 20;
-
-        if (leftType != WidgetTypeEnum::Invalid && rightType == WidgetTypeEnum::Invalid) {
-            // Only left -> increase right margin
-            leftMargin = readingSettings.headerFooterMargins;
-            rightMargin += spacing;
-        } else if (leftType == WidgetTypeEnum::Invalid && rightType != WidgetTypeEnum::Invalid) {
-            // Only right -> reduce right margin
-            leftMargin += spacing;
-            rightMargin = readingSettings.headerFooterMargins;
-        } else if (leftType != WidgetTypeEnum::Invalid && rightType != WidgetTypeEnum::Invalid) {
-            // Has both
-            leftMargin = readingSettings.headerFooterMargins;
-            rightMargin = readingSettings.headerFooterMargins;
-        }
-
-        layout->setContentsMargins(leftMargin, 0, rightMargin, 0);
+        layout->setContentsMargins(0, 0, 0, 0);
     }
 
     namespace DogEarDelegate {
