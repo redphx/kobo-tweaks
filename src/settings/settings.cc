@@ -25,7 +25,7 @@ QString validateImage(const QString& path) {
 void TweaksSettings::loadReadingSettings() {
     // [Reading]
     readingSettings = TweaksReadingSettings {};
-    readingSettings.bookmarkImage = qSettings.value(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage).toString().trimmed();
+    readingSettings.bookmarkImage = getStringValue(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage);
     if (!readingSettings.bookmarkImage.isEmpty()) {
         readingSettings.bookmarkImage = validateImage(readingSettings.bookmarkImage);
 
@@ -39,6 +39,9 @@ void TweaksSettings::loadReadingSettings() {
     readingSettings.headerFooterMargins = qBound(0, getIntValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins), 100);
 
     // [Reading.Widget]
+    readingSettings.widgetSeparator = getStringValue(READING_WIDGET_SEPARATOR, "");
+    readingSettings.widgetSpacing = qBound(0, getIntValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing), 20);
+
     readingSettings.widgetBatteryStyle = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE, readingSettings.widgetBatteryStyle);
     readingSettings.widgetBatteryStyleCharging = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE_CHARGING, readingSettings.widgetBatteryStyle);
     readingSettings.widgetBatteryShowWhenBelow = qBound(10, getIntValue(READING_WIDGET_BATTERY_SHOW_WHEN_BELOW, readingSettings.widgetBatteryShowWhenBelow), 100);
@@ -106,6 +109,9 @@ void TweaksSettings::sync() {
 
     qSettings.setValue(READING_WIDGET_CLOCK_24H_FORMAT, readingSettings.widgetClock24hFormat);
 
+    qSettings.setValue(READING_WIDGET_SEPARATOR, readingSettings.widgetSeparator);
+    qSettings.setValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing);
+
     qSettings.sync();
 }
 
@@ -134,4 +140,8 @@ int TweaksSettings::getIntValue(const QString& key, int defaultValue) {
     }
 
     return value;
+}
+
+QString TweaksSettings::getStringValue(const QString& key, const QString& defaultValue) {
+    return qSettings.value(key, defaultValue).toString().trimmed();
 }

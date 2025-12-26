@@ -69,10 +69,8 @@ namespace ReadingViewHook {
         parent->setStyleSheet(qss);
         parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
-        // TODO: make spacing configurable
-        static int spacing = 20;
         QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
-        parentLayout->setSpacing(spacing);
+        parentLayout->setSpacing(readingSettings.widgetSpacing);
 
         bool isLeft = true;
         for (auto widgetTypes : {leftWidgets, rightWidgets}) {
@@ -85,7 +83,7 @@ namespace ReadingViewHook {
             // Setup Widgets container's layout
             QHBoxLayout* containerLayout = new QHBoxLayout(container);
             containerLayout->setContentsMargins(0, 0, 0, 0);
-            containerLayout->setSpacing(spacing);
+            containerLayout->setSpacing(readingSettings.widgetSpacing);
 
             for (auto widgetType : widgetTypes) {
                 QWidget* widget = nullptr;
@@ -115,6 +113,18 @@ namespace ReadingViewHook {
                             QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, battery, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
                             QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, battery, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
                             widget = battery;
+                        }
+                        break;
+                    case WidgetTypeEnum::Separator:
+                        {
+                            if (!readingSettings.widgetSeparator.isEmpty()) {
+                                QLabel* separator = new QLabel();
+                                separator->setObjectName(QStringLiteral("twks_label"));
+                                separator->setContentsMargins(0, 0, 0, 0);
+                                separator->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+                                separator->setText(readingSettings.widgetSeparator);
+                                widget = separator;
+                            }
                         }
                         break;
                     default:
@@ -184,7 +194,7 @@ namespace ReadingViewHook {
         });
 
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
-        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_clock #label") << QStringLiteral("#twks_battery #label"));
+        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label"));
 
         if (readingSettings.headerFooterHeightScale < 100) {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);

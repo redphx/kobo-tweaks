@@ -26,7 +26,7 @@ public:
         setObjectName(QStringLiteral("twks_clock"));
 
         label = new QLabel();
-        label->setObjectName(QStringLiteral("label"));
+        label->setObjectName(QStringLiteral("twks_label"));
         label->setContentsMargins(0, 0, 0, 0);
         label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 

@@ -67,7 +67,7 @@ public:
         // iconLabel->setStyleSheet("border: 1px solid black;");
 
         levelLabel = new QLabel();
-        levelLabel->setObjectName(QStringLiteral("label"));
+        levelLabel->setObjectName(QStringLiteral("twks_label"));
         levelLabel->setContentsMargins(0, 0, 0, 0);
         levelLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         // levelLabel->setStyleSheet("border: 1px solid black;");

@@ -73,10 +73,11 @@ public:
         return map.value(e, QString());
     }
 
-    static QStringList toString(QVector<EnumType> list) {
+    static QStringList toString(const QVector<EnumType>& list) {
         const auto &map = Derived::reverseMap();
 
         QStringList out;
+        out.reserve(list.size());
         for (auto e : list) {
             const auto it = map.find(e);
             if (it != map.end() && !it.value().isEmpty()) {
@@ -93,7 +94,7 @@ public:
 
 
 // WidgetTypeSetting
-enum class WidgetTypeEnum { Invalid, Battery, Clock };
+enum class WidgetTypeEnum { Invalid, Battery, Clock, Separator };
 inline uint qHash(WidgetTypeEnum e, uint seed = 0) { return qHashEnum(e, seed); }
 class WidgetTypeSetting : public SettingEnumValue<WidgetTypeSetting, WidgetTypeEnum> {
 public:
@@ -103,15 +104,17 @@ public:
         static const QHash<QString, EnumType> map = {
             {QStringLiteral("battery"), EnumType::Battery},
             {QStringLiteral("clock"),   EnumType::Clock},
+            {QStringLiteral("-"),       EnumType::Separator},
         };
         return map;
     }
 
     static const QHash<EnumType, QString>& reverseMap() {
         static const QHash<EnumType, QString> map = {
-            {EnumType::Battery, QStringLiteral("Battery")},
-            {EnumType::Clock,   QStringLiteral("Clock")},
-            {EnumType::Invalid, ""},
+            {EnumType::Battery,   QStringLiteral("Battery")},
+            {EnumType::Clock,     QStringLiteral("Clock")},
+            {EnumType::Separator, QStringLiteral("-")},
+            {EnumType::Invalid,   ""},
         };
         return map;
     }
@@ -162,6 +165,9 @@ struct TweaksReadingSettings {
     QVector<WidgetTypeEnum> widgetFooterLeft  = {};
     QVector<WidgetTypeEnum> widgetFooterRight = {};
 
+    int widgetSpacing = 10;
+    QString widgetSeparator = "";
+
     BatteryStyleEnum widgetBatteryStyle = BatteryStyleEnum::IconLevel;
     BatteryStyleEnum widgetBatteryStyleCharging = BatteryStyleEnum::IconLevel;
     int widgetBatteryShowWhenBelow = 100;
@@ -178,6 +184,9 @@ class TweaksSettings {
     const char* READING_WIDGET_HEADER_RIGHT = "Reading.Widget/HeaderRight";
     const char* READING_WIDGET_FOOTER_LEFT  = "Reading.Widget/FooterLeft";
     const char* READING_WIDGET_FOOTER_RIGHT = "Reading.Widget/FooterRight";
+
+    const char* READING_WIDGET_SEPARATOR = "Reading.Widget/Separator";
+    const char* READING_WIDGET_SPACING   = "Reading.Widget/Spacing";
 
     const char* READING_WIDGET_BATTERY_STYLE           = "Reading.Widget/BatteryStyle";
     const char* READING_WIDGET_BATTERY_STYLE_CHARGING  = "Reading.Widget/BatteryStyleCharging";
@@ -199,4 +208,5 @@ class TweaksSettings {
 
         void loadReadingSettings();
         int getIntValue(const QString& key, int defaultValue);
+        QString getStringValue(const QString& key, const QString& defaultValue);
 };
