@@ -47,26 +47,34 @@ void TweaksSettings::loadReadingSettings() {
 
     // It was designed this way to make it's possible
     // to have multiple widgets in the same slot in the future
-    readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT);
-    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT);
-    readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT);
-    readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT);
+    readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT, QVector<WidgetTypeEnum>{});
 
-    // Only allow Battery/Clock appear once
+    // Only allow each widget appear once
     bool hasBattery = false;
     bool hasClock = false;
-    auto checkWidget = [&](WidgetTypeEnum& w) {
-        if (w == WidgetTypeEnum::Battery) {
-            if (hasBattery) {
-                w = WidgetTypeEnum::Invalid;
-            } else {
-                hasBattery = true;
-            }
-        } else if (w == WidgetTypeEnum::Clock) {
-            if (hasClock) {
-                w = WidgetTypeEnum::Invalid;
-            } else {
-                hasClock = true;
+    auto checkWidget = [&](QVector<WidgetTypeEnum> list) {
+        for (int i = list.size() - 1; i >= 0; --i) {
+            auto w = list[i];
+
+            switch (w) {
+                case WidgetTypeEnum::Battery:
+                    if (hasBattery) {
+                        list.removeAt(i);
+                    } else {
+                        hasBattery = true;
+                    }
+                    break;
+                case WidgetTypeEnum::Clock:
+                    if (hasClock) {
+                        list.removeAt(i);
+                    } else {
+                        hasClock = true;
+                    }
+                default:
+                    break;
             }
         }
     };

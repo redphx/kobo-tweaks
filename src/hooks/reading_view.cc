@@ -62,7 +62,7 @@ namespace ReadingViewHook {
     }
 
 
-    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
+    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
@@ -75,40 +75,7 @@ namespace ReadingViewHook {
         parentLayout->setSpacing(spacing);
 
         bool isLeft = true;
-        for (auto p : {leftType, rightType}) {
-            QWidget* widget = nullptr;
-
-            switch (p) {
-                case WidgetTypeEnum::Clock:
-                    {
-                        TwClockWidgetConfig config {};
-                        config.isLeft = isLeft;
-                        config.is24hFormat = readingSettings.widgetClock24hFormat;
-
-                        auto clock = new TwClockWidget(config);
-                        QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, clock, &TwClockWidget::updateTime, Qt::UniqueConnection);
-                        widget = clock;
-                    }
-                    break;
-                case WidgetTypeEnum::Battery:
-                    {
-                        TwBatteryWidgetConfig config {};
-                        config.isDarkMode = darkModeAdapter->getDarkMode();
-                        config.isLeft = isLeft;
-                        config.defaultStyle = readingSettings.widgetBatteryStyle;
-                        config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
-                        config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
-
-                        auto battery = new TwBatteryWidget(config, hardwareInterface);
-                        QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, battery, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
-                        QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, battery, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
-                        widget = battery;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
+        for (auto widgetTypes : {leftWidgets, rightWidgets}) {
             // Setup Widgets container
             QWidget* container = new QWidget;
             // Set container's width to the original margin value
@@ -120,11 +87,46 @@ namespace ReadingViewHook {
             containerLayout->setContentsMargins(0, 0, 0, 0);
             containerLayout->setSpacing(spacing);
 
-            // Add widget to container
-            if (widget) {
-                widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-                widget->setContentsMargins(0, 0, 0, 0);
-                containerLayout->addWidget(widget, 0);
+            for (auto widgetType : widgetTypes) {
+                QWidget* widget = nullptr;
+
+                switch (widgetType) {
+                    case WidgetTypeEnum::Clock:
+                        {
+                            TwClockWidgetConfig config {};
+                            config.isLeft = isLeft;
+                            config.is24hFormat = readingSettings.widgetClock24hFormat;
+
+                            auto clock = new TwClockWidget(config);
+                            QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, clock, &TwClockWidget::updateTime, Qt::UniqueConnection);
+                            widget = clock;
+                        }
+                        break;
+                    case WidgetTypeEnum::Battery:
+                        {
+                            TwBatteryWidgetConfig config {};
+                            config.isDarkMode = darkModeAdapter->getDarkMode();
+                            config.isLeft = isLeft;
+                            config.defaultStyle = readingSettings.widgetBatteryStyle;
+                            config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
+                            config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
+
+                            auto battery = new TwBatteryWidget(config, hardwareInterface);
+                            QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, battery, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
+                            QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, battery, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
+                            widget = battery;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                // Add widget to container
+                if (widget) {
+                    widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+                    widget->setContentsMargins(0, 0, 0, 0);
+                    containerLayout->addWidget(widget, 0);
+                }
             }
 
             // Insert widgets container into parent layout

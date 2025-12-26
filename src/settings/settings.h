@@ -4,11 +4,21 @@
 
 #include <QSettings>
 #include <QHash>
+#include <QVector>
 
 
 template <typename EnumType>
 inline uint qHashEnum(EnumType e, uint seed = 0) {
     return ::qHash(static_cast<int>(e), seed);
+}
+
+template <typename EnumType>
+inline uint qHash(const QVector<EnumType>& v, uint seed = 0) {
+    uint h = seed;
+    for (EnumType e : v) {
+        h = qHashEnum(e, h);
+    }
+    return h;
 }
 
 template<typename Derived, typename EnumType>
@@ -19,8 +29,14 @@ public:
         return fromString(value, defaultValue);
     }
 
+    // QVector
+    static QVector<EnumType> fromSetting(const QSettings& settings, const char* key, QVector<EnumType> defaultValue={}) {
+        QStringList list = settings.value(key, "").toStringList();
+        return fromString(list, defaultValue);
+    }
+
     static EnumType fromString(const QString &str, EnumType defaultValue=EnumType::Invalid) {
-        EnumType value = Derived::valueMap().value(str.toLower(), EnumType::Invalid);
+        EnumType value = Derived::valueMap().value(str.toLower().trimmed(), EnumType::Invalid);
         if (value == EnumType::Invalid) {
             return defaultValue;
         }
@@ -28,9 +44,46 @@ public:
         return value;
     }
 
+    // QVector
+    static QVector<EnumType> fromString(const QStringList &list, QVector<EnumType> defaultValue={}) {
+        QVector<EnumType> values;
+
+        for (const QString& str : list) {
+            EnumType value = fromString(str, EnumType::Invalid);
+            if (value == EnumType::Invalid) {  // Ignore Invalid value
+                continue;
+            }
+
+            if (values.contains(value)) {  // Don't allow duplicated values
+                continue;
+            }
+
+            values.append(value);
+        }
+
+        if (values.isEmpty()) {
+            return defaultValue;
+        }
+
+        return values;
+    }
+
     static QString toString(EnumType e) {
         const auto &map = Derived::reverseMap();
         return map.value(e, QString());
+    }
+
+    static QStringList toString(QVector<EnumType> list) {
+        const auto &map = Derived::reverseMap();
+
+        QStringList out;
+        for (auto e : list) {
+            const auto it = map.find(e);
+            if (it != map.end() && !it.value().isEmpty()) {
+                out.append(it.value());
+            }
+        }
+        return out;
     }
 
     static const QHash<QString, EnumType>& valueMap();
@@ -104,10 +157,10 @@ struct TweaksReadingSettings {
     int headerFooterHeightScale = 100;
     int headerFooterMargins = 50;
 
-    WidgetTypeEnum widgetHeaderLeft = WidgetTypeEnum::Invalid;
-    WidgetTypeEnum widgetHeaderRight = WidgetTypeEnum::Invalid;
-    WidgetTypeEnum widgetFooterLeft = WidgetTypeEnum::Invalid;
-    WidgetTypeEnum widgetFooterRight = WidgetTypeEnum::Invalid;
+    QVector<WidgetTypeEnum> widgetHeaderLeft  = {};
+    QVector<WidgetTypeEnum> widgetHeaderRight = {};
+    QVector<WidgetTypeEnum> widgetFooterLeft  = {};
+    QVector<WidgetTypeEnum> widgetFooterRight = {};
 
     BatteryStyleEnum widgetBatteryStyle = BatteryStyleEnum::IconLevel;
     BatteryStyleEnum widgetBatteryStyleCharging = BatteryStyleEnum::IconLevel;
