@@ -31,7 +31,7 @@ public:
 
     // QVector
     static QVector<EnumType> fromSetting(const QSettings& settings, const char* key, QVector<EnumType> defaultValue={}) {
-        QStringList list = settings.value(key, "").toStringList();
+        QStringList list = settings.value(key, QStringList()).toStringList();
         return fromString(list, defaultValue);
     }
 
@@ -73,7 +73,12 @@ public:
         return map.value(e, QString());
     }
 
-    static QStringList toString(const QVector<EnumType>& list) {
+    static QVariant toString(const QVector<EnumType>& list) {
+        // Prevent an empty list from being saved as "@Invalid()"
+        if (list.isEmpty()) {
+            return "";
+        }
+
         const auto &map = Derived::reverseMap();
 
         QStringList out;
