@@ -50,6 +50,19 @@ namespace ReadingViewHook {
         void darkModeChanged(bool dark);
     };
 
+    class RenderVolumeAdapter : public QObject {
+        Q_OBJECT
+
+    public:
+        explicit RenderVolumeAdapter(ReadingView* view);
+
+    private slots:
+        void notifyRenderVolume(const Volume& volume);
+
+    signals:
+        void renderVolume(const Volume& volume);
+    };
+
     void constructor(ReadingView* self);
     void setFooterMargin(QWidget* self, int margin);
 

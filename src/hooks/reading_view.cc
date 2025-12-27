@@ -4,6 +4,7 @@ namespace ReadingViewHook {
     static TweaksSettings settings;
     static bool isDarkMode = false;
     static int originalContentsMargins = 0;
+    static const Volume* currentVolume = nullptr;
 
     PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
         if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
@@ -61,6 +62,15 @@ namespace ReadingViewHook {
         darkModeChanged(dark);
     }
 
+    RenderVolumeAdapter::RenderVolumeAdapter(ReadingView *parent) : QObject(parent) {
+        if (!QObject::connect(parent, SIGNAL(renderVolume(const Volume&)), this, SLOT(notifyRenderVolume(const Volume&)), Qt::UniqueConnection)) {
+            nh_log("failed to connect _ZN11ReadingView12renderVolumeERK6Volume");
+        }
+    }
+
+    void RenderVolumeAdapter::notifyRenderVolume(const Volume& volume) {
+        renderVolume(volume);
+    }
 
     static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
@@ -185,10 +195,16 @@ namespace ReadingViewHook {
         auto pageChangedAdapter = new PageChangedAdapter(view);
         auto darkModeAdapter = new DarkModeAdapter(gestureContainer, view);
 
-        auto readingSettings = settings.getReadingSettings();
+        auto renderVolumeAdapter = new RenderVolumeAdapter(view);
+        QObject::connect(renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, [](const Volume& volume) {
+            currentVolume = &volume;
+            QString title;
+            Content_getTitle(&title, currentVolume);
+            nh_log("connect renderVolume");
+            nh_log(title.toUtf8().constData());
+        });
 
         isDarkMode = darkModeAdapter->getDarkMode();
-
         QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, [](bool dark) {
             isDarkMode = dark;
         });
@@ -196,6 +212,7 @@ namespace ReadingViewHook {
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
         QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label"));
 
+        auto readingSettings = settings.getReadingSettings();
         if (readingSettings.headerFooterHeightScale < 100) {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }

@@ -30,6 +30,7 @@ typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
+class Volume;
 
 using GetBatteryLevelFn = int(*)(HardwareInterface*);
 using ChargingStateFn = uint(*)(HardwareInterface*);
@@ -39,6 +40,7 @@ extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
 extern void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString const& body);
 extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
+extern void (*Content_getTitle)(QString* result, const Volume* self);
 
 extern HardwareInterface* (*HardwareFactory_sharedInstance)();
 extern uintptr_t** HardwareInterface_vtable;
