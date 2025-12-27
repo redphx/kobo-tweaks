@@ -102,7 +102,6 @@ namespace ReadingViewHook {
                     case WidgetTypeEnum::Clock:
                         {
                             TwClockWidgetConfig config {};
-                            config.isLeft = isLeft;
                             config.is24hFormat = readingSettings.widgetClock24hFormat;
 
                             auto clock = new TwClockWidget(config);

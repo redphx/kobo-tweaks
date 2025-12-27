@@ -9,43 +9,20 @@
 #include <QHBoxLayout>
 
 struct TwClockWidgetConfig {
-    bool isLeft = false;
     bool is24hFormat = false;
 };
 
-class TwClockWidget : public QWidget {
+class TwClockWidget : public QLabel {
     Q_OBJECT
 
-    bool isLeft = true;
     bool is24hFormat = true;
     QTimer* timer = nullptr;
-    QLabel* label = nullptr;
 
 public:
-    TwClockWidget(TwClockWidgetConfig config, QWidget* parent = nullptr) : QWidget(parent), isLeft(config.isLeft), is24hFormat(config.is24hFormat)  {
-        setObjectName(QStringLiteral("twks_clock"));
-
-        label = new QLabel();
-        label->setObjectName(QStringLiteral("twks_label"));
-        label->setContentsMargins(0, 0, 0, 0);
-        label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-        QHBoxLayout* layout = new QHBoxLayout(this);
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(6);
-        setLayout(layout);
-
-        // Align right -> stretch first
-        if (!isLeft) {
-            layout->addStretch(1);
-        }
-
-        layout->addWidget(label);
-
-        // Align left -> stretch last
-        if (isLeft) {
-            layout->addStretch(1);
-        }
+    TwClockWidget(TwClockWidgetConfig config, QWidget* parent = nullptr) : QLabel(parent), is24hFormat(config.is24hFormat)  {
+        setObjectName(QStringLiteral("twks_label"));
+        setContentsMargins(0, 0, 0, 0);
+        setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
         // Setup timer
         timer = new QTimer(this);
@@ -59,7 +36,7 @@ public:
         const QTime time = QTime::currentTime();
 
         const QString timeStr = time.toString(is24hFormat ? QStringLiteral("HH:mm") : QStringLiteral("h:mm AP"));
-        label->setText(timeStr);
+        setText(timeStr);
 
         // schedule next update at next 2 full minutes
         const int msecToNextUpdate = (120 - QTime::currentTime().second()) * 1000 - QTime::currentTime().msec();
