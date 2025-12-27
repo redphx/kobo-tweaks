@@ -1,16 +1,7 @@
 #include "settings.h"
 #include "../utils.h"
 
-TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {
-    // Check if the settings file is empty
-    if (qSettings.allKeys().isEmpty()) {
-        // Set default positions for Clock & Battery widgets
-        qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
-        qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
-
-        qSettings.sync();
-    }
-}
+TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {}
 
 QString validateImage(const QString& path) {
     QPixmap pix;
@@ -22,10 +13,30 @@ QString validateImage(const QString& path) {
     return path;
 }
 
+void TweaksSettings::setMissingKeys() {
+    bool changed = false;
+    auto checkValue = [&](const QString& key, QVariant defaultValue) {
+        if (!qSettings.contains(key)) {
+            qSettings.setValue(key, defaultValue);
+            changed = true;
+        }
+    };
+
+    // Set default positions for Clock & Battery widgets
+    checkValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
+    checkValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
+    // Set default widget separator
+    checkValue(READING_WIDGET_SEPARATOR, QStringLiteral("|"));
+
+    if (changed) {
+        qSettings.sync();
+    }
+}
+
 void TweaksSettings::loadReadingSettings() {
     // [Reading]
     readingSettings = TweaksReadingSettings {};
-    readingSettings.bookmarkImage = qSettings.value(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage).toString().trimmed();
+    readingSettings.bookmarkImage = getStringValue(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage);
     if (!readingSettings.bookmarkImage.isEmpty()) {
         readingSettings.bookmarkImage = validateImage(readingSettings.bookmarkImage);
 
@@ -39,6 +50,9 @@ void TweaksSettings::loadReadingSettings() {
     readingSettings.headerFooterMargins = qBound(0, getIntValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins), 100);
 
     // [Reading.Widget]
+    readingSettings.widgetSeparator = getStringValue(READING_WIDGET_SEPARATOR, "");
+    readingSettings.widgetSpacing = qBound(0, getIntValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing), 20);
+
     readingSettings.widgetBatteryStyle = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE, readingSettings.widgetBatteryStyle);
     readingSettings.widgetBatteryStyleCharging = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE_CHARGING, readingSettings.widgetBatteryStyle);
     readingSettings.widgetBatteryShowWhenBelow = qBound(10, getIntValue(READING_WIDGET_BATTERY_SHOW_WHEN_BELOW, readingSettings.widgetBatteryShowWhenBelow), 100);
@@ -47,26 +61,41 @@ void TweaksSettings::loadReadingSettings() {
 
     // It was designed this way to make it's possible
     // to have multiple widgets in the same slot in the future
-    readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT);
-    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT);
-    readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT);
-    readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT);
+    readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT, QVector<WidgetTypeEnum>{});
 
-    // Only allow Battery/Clock appear once
+    // Only allow each widget appear once
     bool hasBattery = false;
     bool hasClock = false;
-    auto checkWidget = [&](WidgetTypeEnum& w) {
-        if (w == WidgetTypeEnum::Battery) {
-            if (hasBattery) {
-                w = WidgetTypeEnum::Invalid;
-            } else {
-                hasBattery = true;
-            }
-        } else if (w == WidgetTypeEnum::Clock) {
-            if (hasClock) {
-                w = WidgetTypeEnum::Invalid;
-            } else {
-                hasClock = true;
+    bool hasBookTitle = false;
+    auto checkWidget = [&](QVector<WidgetTypeEnum> list) {
+        for (int i = list.size() - 1; i >= 0; --i) {
+            auto w = list[i];
+
+            switch (w) {
+                case WidgetTypeEnum::Battery:
+                    if (hasBattery) {
+                        list.removeAt(i);
+                    } else {
+                        hasBattery = true;
+                    }
+                    break;
+                case WidgetTypeEnum::Clock:
+                    if (hasClock) {
+                        list.removeAt(i);
+                    } else {
+                        hasClock = true;
+                    }
+                case WidgetTypeEnum::BookTitle:
+                    if (hasBookTitle) {
+                        list.removeAt(i);
+                    } else {
+                        hasBookTitle = true;
+                    }
+                default:
+                    break;
             }
         }
     };
@@ -79,6 +108,8 @@ void TweaksSettings::loadReadingSettings() {
 
 void TweaksSettings::load() {
     qSettings.sync();
+    setMissingKeys();
+
     loadReadingSettings();
 }
 
@@ -97,6 +128,9 @@ void TweaksSettings::sync() {
     qSettings.setValue(READING_WIDGET_BATTERY_SHOW_WHEN_BELOW, readingSettings.widgetBatteryShowWhenBelow);
 
     qSettings.setValue(READING_WIDGET_CLOCK_24H_FORMAT, readingSettings.widgetClock24hFormat);
+
+    qSettings.setValue(READING_WIDGET_SEPARATOR, readingSettings.widgetSeparator);
+    qSettings.setValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing);
 
     qSettings.sync();
 }
@@ -126,4 +160,8 @@ int TweaksSettings::getIntValue(const QString& key, int defaultValue) {
     }
 
     return value;
+}
+
+QString TweaksSettings::getStringValue(const QString& key, const QString& defaultValue) {
+    return qSettings.value(key, defaultValue).toString().trimmed();
 }

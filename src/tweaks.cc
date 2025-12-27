@@ -119,6 +119,12 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc     = "ConfirmationDialogFactory::showOKDialog()",
         .optional = true,
     },
+    {
+        .name     = "_ZNK7Content8getTitleEv",
+        .out      = nh_symoutptr(Content_getTitle),
+        .desc     = "Content::getTitle()",
+        .optional = true,
+    },
 
     {0},
 };

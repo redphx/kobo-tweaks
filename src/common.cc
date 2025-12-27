@@ -6,6 +6,7 @@ void (*ReadingView_pageChanged)(ReadingView* self, int pageIndex) = nullptr;
 void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command) = nullptr;
 void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString const& body) = nullptr;
 QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image) = nullptr;
+void (*Content_getTitle)(QString* result, const Volume* self) = nullptr;
 
 HardwareInterface* (*HardwareFactory_sharedInstance)() = nullptr;
 uintptr_t** HardwareInterface_vtable = nullptr;

@@ -1,9 +1,16 @@
 #include "reading_view.h"
 
 namespace ReadingViewHook {
+    struct WidgetAdapters {
+        PageChangedAdapter* pageChangedAdapter;
+        DarkModeAdapter* darkModeAdapter;
+        RenderVolumeAdapter* renderVolumeAdapter;
+    };
+
     static TweaksSettings settings;
     static bool isDarkMode = false;
     static int originalContentsMargins = 0;
+    static const Volume* currentVolume = nullptr;
 
     PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
         if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
@@ -61,54 +68,28 @@ namespace ReadingViewHook {
         darkModeChanged(dark);
     }
 
+    RenderVolumeAdapter::RenderVolumeAdapter(ReadingView *parent) : QObject(parent) {
+        if (!QObject::connect(parent, SIGNAL(renderVolume(const Volume&)), this, SLOT(notifyRenderVolume(const Volume&)), Qt::UniqueConnection)) {
+            nh_log("failed to connect _ZN11ReadingView12renderVolumeERK6Volume");
+        }
+    }
 
-    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, WidgetTypeEnum leftType, WidgetTypeEnum rightType) {
+    void RenderVolumeAdapter::notifyRenderVolume(const Volume& volume) {
+        renderVolume(volume);
+    }
+
+    static void insertWidgets(WidgetAdapters adapters, ReadingFooter* parent, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
         parent->setStyleSheet(qss);
         parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
-        // TODO: make spacing configurable
-        static int spacing = 20;
         QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
-        parentLayout->setSpacing(spacing);
+        parentLayout->setSpacing(readingSettings.widgetSpacing);
 
         bool isLeft = true;
-        for (auto p : {leftType, rightType}) {
-            QWidget* widget = nullptr;
-
-            switch (p) {
-                case WidgetTypeEnum::Clock:
-                    {
-                        TwClockWidgetConfig config {};
-                        config.isLeft = isLeft;
-                        config.is24hFormat = readingSettings.widgetClock24hFormat;
-
-                        auto clock = new TwClockWidget(config);
-                        QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, clock, &TwClockWidget::updateTime, Qt::UniqueConnection);
-                        widget = clock;
-                    }
-                    break;
-                case WidgetTypeEnum::Battery:
-                    {
-                        TwBatteryWidgetConfig config {};
-                        config.isDarkMode = darkModeAdapter->getDarkMode();
-                        config.isLeft = isLeft;
-                        config.defaultStyle = readingSettings.widgetBatteryStyle;
-                        config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
-                        config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
-
-                        auto battery = new TwBatteryWidget(config, hardwareInterface);
-                        QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, battery, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
-                        QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, battery, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
-                        widget = battery;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
+        for (auto widgetTypes : {leftWidgets, rightWidgets}) {
             // Setup Widgets container
             QWidget* container = new QWidget;
             // Set container's width to the original margin value
@@ -118,13 +99,66 @@ namespace ReadingViewHook {
             // Setup Widgets container's layout
             QHBoxLayout* containerLayout = new QHBoxLayout(container);
             containerLayout->setContentsMargins(0, 0, 0, 0);
-            containerLayout->setSpacing(spacing);
+            containerLayout->setSpacing(readingSettings.widgetSpacing);
 
-            // Add widget to container
-            if (widget) {
-                widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-                widget->setContentsMargins(0, 0, 0, 0);
-                containerLayout->addWidget(widget, 0);
+            for (auto widgetType : widgetTypes) {
+                QWidget* widget = nullptr;
+
+                switch (widgetType) {
+                    case WidgetTypeEnum::Clock:
+                        {
+                            TwClockWidgetConfig config {};
+                            config.is24hFormat = readingSettings.widgetClock24hFormat;
+
+                            auto clockWidget = new TwClockWidget(config);
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, clockWidget, &TwClockWidget::updateTime, Qt::UniqueConnection);
+                            widget = clockWidget;
+                        }
+                        break;
+                    case WidgetTypeEnum::Battery:
+                        {
+                            TwBatteryWidgetConfig config {};
+                            config.isDarkMode = adapters.darkModeAdapter->getDarkMode();
+                            config.isLeft = isLeft;
+                            config.defaultStyle = readingSettings.widgetBatteryStyle;
+                            config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
+                            config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
+
+                            auto batteryWidget = new TwBatteryWidget(config, hardwareInterface);
+                            QObject::connect(adapters.darkModeAdapter, &DarkModeAdapter::darkModeChanged, batteryWidget, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, batteryWidget, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
+                            widget = batteryWidget;
+                        }
+                        break;
+                    case WidgetTypeEnum::BookTitle:
+                        {
+                            auto bookTitleWidget = new TwBookTitleWidget();
+                            QObject::connect(adapters.renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, bookTitleWidget, &TwBookTitleWidget::setTitle, Qt::UniqueConnection);
+                            widget = bookTitleWidget;
+                        }
+                        break;
+                    case WidgetTypeEnum::Separator:
+                        {
+                            if (!readingSettings.widgetSeparator.isEmpty()) {
+                                QLabel* separator = new QLabel();
+                                separator->setObjectName(QStringLiteral("twks_label"));
+                                separator->setContentsMargins(0, 0, 0, 0);
+                                separator->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+                                separator->setText(readingSettings.widgetSeparator);
+                                widget = separator;
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                // Add widget to container
+                if (widget) {
+                    widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+                    widget->setContentsMargins(0, 0, 0, 0);
+                    containerLayout->addWidget(widget, 0);
+                }
             }
 
             // Insert widgets container into parent layout
@@ -173,23 +207,31 @@ namespace ReadingViewHook {
         auto pageChangedAdapter = new PageChangedAdapter(view);
         auto darkModeAdapter = new DarkModeAdapter(gestureContainer, view);
 
-        auto readingSettings = settings.getReadingSettings();
+        auto renderVolumeAdapter = new RenderVolumeAdapter(view);
+        QObject::connect(renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, [](const Volume& volume) {
+            currentVolume = &volume;
+        });
 
         isDarkMode = darkModeAdapter->getDarkMode();
-
         QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, [](bool dark) {
             isDarkMode = dark;
         });
 
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
-        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_clock #label") << QStringLiteral("#twks_battery #label"));
+        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label"));
 
+        auto readingSettings = settings.getReadingSettings();
         if (readingSettings.headerFooterHeightScale < 100) {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
 
-        insertWidgets(pageChangedAdapter, darkModeAdapter, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
-        insertWidgets(pageChangedAdapter, darkModeAdapter, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
+        WidgetAdapters adapters {};
+        adapters.pageChangedAdapter = pageChangedAdapter;
+        adapters.darkModeAdapter = darkModeAdapter;
+        adapters.renderVolumeAdapter = renderVolumeAdapter;
+
+        insertWidgets(adapters, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
+        insertWidgets(adapters, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
     }
 
     void setFooterMargin(QWidget* self, int margin) {
