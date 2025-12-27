@@ -69,6 +69,7 @@ void TweaksSettings::loadReadingSettings() {
     // Only allow each widget appear once
     bool hasBattery = false;
     bool hasClock = false;
+    bool hasBookTitle = false;
     auto checkWidget = [&](QVector<WidgetTypeEnum> list) {
         for (int i = list.size() - 1; i >= 0; --i) {
             auto w = list[i];
@@ -86,6 +87,12 @@ void TweaksSettings::loadReadingSettings() {
                         list.removeAt(i);
                     } else {
                         hasClock = true;
+                    }
+                case WidgetTypeEnum::BookTitle:
+                    if (hasBookTitle) {
+                        list.removeAt(i);
+                    } else {
+                        hasBookTitle = true;
                     }
                 default:
                     break;

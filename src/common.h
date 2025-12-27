@@ -30,7 +30,11 @@ typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
-class Volume;
+
+class Volume {
+public:
+    virtual ~Volume() {}
+};
 
 using GetBatteryLevelFn = int(*)(HardwareInterface*);
 using ChargingStateFn = uint(*)(HardwareInterface*);

@@ -6,6 +6,7 @@
 #include "../patches.h"
 #include "../widgets/clock_widget.h"
 #include "../widgets/battery_widget.h"
+#include "../widgets/book_title_widget.h"
 
 
 namespace ReadingViewHook {

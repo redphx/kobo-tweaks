@@ -99,7 +99,7 @@ public:
 
 
 // WidgetTypeSetting
-enum class WidgetTypeEnum { Invalid, Battery, Clock, Separator };
+enum class WidgetTypeEnum { Invalid, Battery, BookTitle, Clock, Separator };
 inline uint qHash(WidgetTypeEnum e, uint seed = 0) { return qHashEnum(e, seed); }
 class WidgetTypeSetting : public SettingEnumValue<WidgetTypeSetting, WidgetTypeEnum> {
 public:
@@ -107,9 +107,10 @@ public:
 
     static const QHash<QString, EnumType>& valueMap() {
         static const QHash<QString, EnumType> map = {
-            {QStringLiteral("battery"), EnumType::Battery},
-            {QStringLiteral("clock"),   EnumType::Clock},
-            {QStringLiteral("-"),       EnumType::Separator},
+            {QStringLiteral("battery"),   EnumType::Battery},
+            {QStringLiteral("booktitle"), EnumType::BookTitle},
+            {QStringLiteral("clock"),     EnumType::Clock},
+            {QStringLiteral("-"),         EnumType::Separator},
         };
         return map;
     }
@@ -117,6 +118,7 @@ public:
     static const QHash<EnumType, QString>& reverseMap() {
         static const QHash<EnumType, QString> map = {
             {EnumType::Battery,   QStringLiteral("Battery")},
+            {EnumType::BookTitle, QStringLiteral("BookTitle")},
             {EnumType::Clock,     QStringLiteral("Clock")},
             {EnumType::Separator, QStringLiteral("-")},
             {EnumType::Invalid,   ""},

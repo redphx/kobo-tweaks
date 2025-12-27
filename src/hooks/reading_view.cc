@@ -1,6 +1,12 @@
 #include "reading_view.h"
 
 namespace ReadingViewHook {
+    struct WidgetAdapters {
+        PageChangedAdapter* pageChangedAdapter;
+        DarkModeAdapter* darkModeAdapter;
+        RenderVolumeAdapter* renderVolumeAdapter;
+    };
+
     static TweaksSettings settings;
     static bool isDarkMode = false;
     static int originalContentsMargins = 0;
@@ -72,7 +78,7 @@ namespace ReadingViewHook {
         renderVolume(volume);
     }
 
-    static void insertWidgets(PageChangedAdapter *pageChangedAdapter, DarkModeAdapter *darkModeAdapter, ReadingFooter* parent, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
+    static void insertWidgets(WidgetAdapters adapters, ReadingFooter* parent, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
@@ -104,24 +110,31 @@ namespace ReadingViewHook {
                             TwClockWidgetConfig config {};
                             config.is24hFormat = readingSettings.widgetClock24hFormat;
 
-                            auto clock = new TwClockWidget(config);
-                            QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, clock, &TwClockWidget::updateTime, Qt::UniqueConnection);
-                            widget = clock;
+                            auto clockWidget = new TwClockWidget(config);
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, clockWidget, &TwClockWidget::updateTime, Qt::UniqueConnection);
+                            widget = clockWidget;
                         }
                         break;
                     case WidgetTypeEnum::Battery:
                         {
                             TwBatteryWidgetConfig config {};
-                            config.isDarkMode = darkModeAdapter->getDarkMode();
+                            config.isDarkMode = adapters.darkModeAdapter->getDarkMode();
                             config.isLeft = isLeft;
                             config.defaultStyle = readingSettings.widgetBatteryStyle;
                             config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
                             config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
 
-                            auto battery = new TwBatteryWidget(config, hardwareInterface);
-                            QObject::connect(darkModeAdapter, &DarkModeAdapter::darkModeChanged, battery, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
-                            QObject::connect(pageChangedAdapter, &PageChangedAdapter::pageChanged, battery, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
-                            widget = battery;
+                            auto batteryWidget = new TwBatteryWidget(config, hardwareInterface);
+                            QObject::connect(adapters.darkModeAdapter, &DarkModeAdapter::darkModeChanged, batteryWidget, &TwBatteryWidget::setDarkMode, Qt::UniqueConnection);
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, batteryWidget, &TwBatteryWidget::updateLevel, Qt::UniqueConnection);
+                            widget = batteryWidget;
+                        }
+                        break;
+                    case WidgetTypeEnum::BookTitle:
+                        {
+                            auto bookTitleWidget = new TwBookTitleWidget();
+                            QObject::connect(adapters.renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, bookTitleWidget, &TwBookTitleWidget::setTitle, Qt::UniqueConnection);
+                            widget = bookTitleWidget;
                         }
                         break;
                     case WidgetTypeEnum::Separator:
@@ -197,10 +210,6 @@ namespace ReadingViewHook {
         auto renderVolumeAdapter = new RenderVolumeAdapter(view);
         QObject::connect(renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, [](const Volume& volume) {
             currentVolume = &volume;
-            QString title;
-            Content_getTitle(&title, currentVolume);
-            nh_log("connect renderVolume");
-            nh_log(title.toUtf8().constData());
         });
 
         isDarkMode = darkModeAdapter->getDarkMode();
@@ -216,8 +225,13 @@ namespace ReadingViewHook {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
 
-        insertWidgets(pageChangedAdapter, darkModeAdapter, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
-        insertWidgets(pageChangedAdapter, darkModeAdapter, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
+        WidgetAdapters adapters {};
+        adapters.pageChangedAdapter = pageChangedAdapter;
+        adapters.darkModeAdapter = darkModeAdapter;
+        adapters.renderVolumeAdapter = renderVolumeAdapter;
+
+        insertWidgets(adapters, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
+        insertWidgets(adapters, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
     }
 
     void setFooterMargin(QWidget* self, int margin) {
