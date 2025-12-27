@@ -1,16 +1,7 @@
 #include "settings.h"
 #include "../utils.h"
 
-TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {
-    // Check if the settings file is empty
-    if (qSettings.allKeys().isEmpty()) {
-        // Set default positions for Clock & Battery widgets
-        qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
-        qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
-
-        qSettings.sync();
-    }
-}
+TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {}
 
 QString validateImage(const QString& path) {
     QPixmap pix;
@@ -20,6 +11,26 @@ QString validateImage(const QString& path) {
     }
 
     return path;
+}
+
+void TweaksSettings::setMissingKeys() {
+    bool changed = false;
+    auto checkValue = [&](const QString& key, QVariant defaultValue) {
+        if (!qSettings.contains(key)) {
+            qSettings.setValue(key, defaultValue);
+            changed = true;
+        }
+    };
+
+    // Set default positions for Clock & Battery widgets
+    checkValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
+    checkValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
+    // Set default widget separator
+    checkValue(READING_WIDGET_SEPARATOR, QStringLiteral("|"));
+
+    if (changed) {
+        qSettings.sync();
+    }
 }
 
 void TweaksSettings::loadReadingSettings() {
@@ -90,6 +101,8 @@ void TweaksSettings::loadReadingSettings() {
 
 void TweaksSettings::load() {
     qSettings.sync();
+    setMissingKeys();
+
     loadReadingSettings();
 }
 
