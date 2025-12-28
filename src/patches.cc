@@ -7,7 +7,7 @@
 
 namespace Patch {
     namespace ReadingView {
-        QString scaleHeaderFooterHeight(const QString &qss, int scale) {
+        QString scaleHeaderFooterHeight(const QString& qss, int scale) {
             // Based on: Reduce new header/footer height - jackie_w
 
             const QVariant fn = QVariant::fromValue<QssPropertyFunc>([&](const QString& property, const QString& value) {
@@ -37,6 +37,19 @@ namespace Patch {
             result = Qss::updateProperties(result, QStringLiteral("ReadingFooter[qApp_deviceIsDaylight=true]"), properties);
             // LibraH2O/Libra2 (Storm)
             result = Qss::updateProperties(result, QStringLiteral("ReadingFooter[qApp_deviceIsStorm=true]"), properties);
+
+            return result;
+        }
+
+        QString reduceSpacerHeight(const QString& qss) {
+            QString result(qss);
+
+            result += QStringLiteral("\n")
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsTrilogy=true] { min-height: 12px; max-height: 12px; }\n")
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsPhoenix=true] { min-height: 16px; max-height: 16px; }\n")
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsDragon=true] { min-height: 22px; max-height: 22px; }\n")
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsDaylight=true] { min-height: 28px; max-height: 28px; }\n")
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsStorm=true] { min-height: 25px; max-height: 25px; }\n");
 
             return result;
         }

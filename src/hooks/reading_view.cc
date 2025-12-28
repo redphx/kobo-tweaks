@@ -78,15 +78,18 @@ namespace ReadingViewHook {
         renderVolume(volume);
     }
 
-    static void insertWidgets(WidgetAdapters adapters, ReadingFooter* parent, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
+    static void insertWidgets(WidgetAdapters adapters, ReadingFooter* where, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
+        QWidget* parent = new QWidget;
         parent->setStyleSheet(qss);
+        parent->setContentsMargins(0, 0, 0, 0);
         parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
 
-        QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(parent->layout());
+        QHBoxLayout* parentLayout = new QHBoxLayout(parent);
         parentLayout->setSpacing(readingSettings.widgetSpacing);
+        parentLayout->setContentsMargins(0, 0, 0, 0);
 
         bool isLeft = true;
         for (auto widgetTypes : {leftWidgets, rightWidgets}) {
@@ -177,6 +180,12 @@ namespace ReadingViewHook {
 
         // Stretch center widget
         parentLayout->setStretch(1, 1);
+
+        QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(where->parentWidget()->layout());
+        if (rootLayout) {
+            int index = rootLayout->indexOf(where);
+            rootLayout->insertWidget(index + 1, parent);
+        }
     }
 
     void constructor(ReadingView* view) {
@@ -217,6 +226,9 @@ namespace ReadingViewHook {
             isDarkMode = dark;
         });
 
+        QString rootQss = view->styleSheet();
+        view->setStyleSheet(Patch::ReadingView::reduceSpacerHeight(rootQss));
+
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
         QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label"));
 
@@ -239,7 +251,7 @@ namespace ReadingViewHook {
         originalContentsMargins = margin;
 
         QLayout* layout = self->layout();
-        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setContentsMargins(margin, 0, margin, 0);
     }
 
     namespace DogEarDelegate {
