@@ -61,7 +61,7 @@ struct nh_hook TweaksHook[] = {
         .sym_new  = "hook_ReadingView_constructor",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(ReadingView_constructor),
-        .desc     = "ReadingView",
+        .desc     = "ReadingView::constructor()",
         .optional = true,
     },
     {
@@ -69,7 +69,23 @@ struct nh_hook TweaksHook[] = {
         .sym_new  = "hook_ReadingFooter_setFooterMargin",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(ReadingFooter_setFooterMargin),
-        .desc     = "ReadingView",
+        .desc     = "ReadingView::setFooterMargin()",
+        .optional = true,
+    },
+    {
+        .sym      = "_ZN15ReadingSettings19getBookProgressTypeEv",
+        .sym_new  = "hook_ReadingSettings_getBookProgressType",
+        .lib      = "libnickel.so.1.0.0",
+        .out      = nh_symoutptr(ReadingSettings_getBookProgressType),
+        .desc     = "ReadingSettings::getBookProgressType()",
+        .optional = true,
+    },
+    {
+        .sym      = "_ZN15ReadingSettings22getChapterProgressTypeEv",
+        .sym_new  = "hook_ReadingSettings_getChapterProgressType",
+        .lib      = "libnickel.so.1.0.0",
+        .out      = nh_symoutptr(ReadingSettings_getChapterProgressType),
+        .desc     = "ReadingSettings::getChapterProgressType()",
         .optional = true,
     },
     {
@@ -200,4 +216,16 @@ void hook_SearchAutoCompleteController_handleSpecialCommands(SearchAutoCompleteC
     }
 
     SearchAutoCompleteController_handleSpecialCommands(self, command);
+}
+
+extern "C" __attribute__((visibility("default")))
+int hook_ReadingSettings_getBookProgressType(ReadingSettings*) {
+    // always hide footer
+    return 0;
+}
+
+extern "C" __attribute__((visibility("default")))
+int hook_ReadingSettings_getChapterProgressType(ReadingSettings*) {
+    // always hide header
+    return 0;
 }

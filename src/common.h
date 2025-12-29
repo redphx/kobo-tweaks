@@ -30,6 +30,7 @@ typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
+typedef void ReadingSettings;
 
 class Content { public: virtual ~Content() {} };
 class Volume : public Content { public: virtual ~Volume() {} };
@@ -45,6 +46,9 @@ extern int (*ReadingView_chapterTotalPages)(ReadingView* self);
 extern int (*ReadingView_fullBookCurrentPage)(ReadingView* self);
 extern int (*ReadingView_fullBookTotalPages)(ReadingView* self);
 extern void (*Content_getTitle)(QString* result, const Content* self);
+
+extern int (*ReadingSettings_getBookProgressType)(ReadingSettings* self);
+extern int (*ReadingSettings_getChapterProgressType)(ReadingSettings* self);
 
 extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
