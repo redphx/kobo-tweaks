@@ -67,53 +67,24 @@ void TweaksSettings::loadReadingSettings() {
     readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT, QVector<WidgetTypeEnum>{});
 
     // Only allow each widget appear once
-    bool hasBattery = false;
-    bool hasClock = false;
-    bool hasBookTitle = false;
-    bool hasChapterTitle = false;
-    auto checkWidget = [&](QVector<WidgetTypeEnum> list) {
-        for (int i = list.size() - 1; i >= 0; --i) {
-            auto w = list[i];
+    uint32_t seenMask = 0;
+    for (auto* zone : {&readingSettings.widgetHeaderLeft, &readingSettings.widgetHeaderRight, &readingSettings.widgetFooterLeft, &readingSettings.widgetFooterRight}) {
+        auto it = std::remove_if(zone->begin(), zone->end(), [&](WidgetTypeEnum w) {
+            // Map enum values to bit positions (0-31)
+            uint32_t bit = 1 << static_cast<int>(w);
 
-            switch (w) {
-                case WidgetTypeEnum::Battery:
-                    if (hasBattery) {
-                        list.removeAt(i);
-                    } else {
-                        hasBattery = true;
-                    }
-                    break;
-                case WidgetTypeEnum::Clock:
-                    if (hasClock) {
-                        list.removeAt(i);
-                    } else {
-                        hasClock = true;
-                    }
-                    break;
-                case WidgetTypeEnum::BookTitle:
-                    if (hasBookTitle) {
-                        list.removeAt(i);
-                    } else {
-                        hasBookTitle = true;
-                    }
-                    break;
-                case WidgetTypeEnum::ChapterTitle:
-                    if (hasChapterTitle) {
-                        list.removeAt(i);
-                    } else {
-                        hasChapterTitle = true;
-                    }
-                    break;
-                default:
-                    break;
+            // If bit is already set, return true to remove the duplicate
+            if (seenMask & bit) {
+                return true;
             }
-        }
-    };
 
-    checkWidget(readingSettings.widgetHeaderLeft);
-    checkWidget(readingSettings.widgetHeaderRight);
-    checkWidget(readingSettings.widgetFooterLeft);
-    checkWidget(readingSettings.widgetFooterRight);
+            // Otherwise, mark as seen and keep it
+            seenMask |= bit;
+            return false;
+        });
+
+        zone->erase(it, zone->end());
+    }
 }
 
 void TweaksSettings::load() {
