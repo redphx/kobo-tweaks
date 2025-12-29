@@ -22,7 +22,7 @@ public:
     TwClockWidget(TwClockWidgetConfig config, QWidget* parent = nullptr) : QLabel(parent), is24hFormat(config.is24hFormat)  {
         setObjectName(QStringLiteral("twks_label"));
         setContentsMargins(0, 0, 0, 0);
-        setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         // Setup timer
         timer = new QTimer(this);

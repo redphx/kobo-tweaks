@@ -97,16 +97,22 @@ namespace ReadingViewHook {
             // Setup Widgets container
             QWidget* container = new QWidget;
             // Set container's width to the original margin value
-            container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
             container->setMinimumWidth(originalContentsMargins);
+            container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+            // container->setStyleSheet("border: 1px solid black;");
 
             // Setup Widgets container's layout
             QHBoxLayout* containerLayout = new QHBoxLayout(container);
             containerLayout->setContentsMargins(0, 0, 0, 0);
             containerLayout->setSpacing(readingSettings.widgetSpacing);
 
+            if (!isLeft) {
+                containerLayout->addStretch(1);
+            }
+
             for (auto widgetType : widgetTypes) {
                 QWidget* widget = nullptr;
+                bool stretch = false;
 
                 switch (widgetType) {
                     case WidgetTypeEnum::Clock:
@@ -139,6 +145,7 @@ namespace ReadingViewHook {
                             auto bookTitleWidget = new TwBookTitleWidget();
                             QObject::connect(adapters.renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, bookTitleWidget, &TwBookTitleWidget::setTitle, Qt::UniqueConnection);
                             widget = bookTitleWidget;
+                            stretch = true;
                         }
                         break;
                     case WidgetTypeEnum::ChapterTitle:
@@ -151,6 +158,7 @@ namespace ReadingViewHook {
                                 chapterTitleWidget->setTitle(title);
                             });
                             widget = chapterTitleWidget;
+                            stretch = true;
                         }
                         break;
                     case WidgetTypeEnum::Separator:
@@ -171,9 +179,7 @@ namespace ReadingViewHook {
 
                 // Add widget to container
                 if (widget) {
-                    widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-                    widget->setContentsMargins(0, 0, 0, 0);
-                    containerLayout->addWidget(widget, 0);
+                    containerLayout->addWidget(widget, stretch ? 1 : 0);
                 }
             }
 
@@ -181,18 +187,19 @@ namespace ReadingViewHook {
             if (isLeft) {
                 // Insert left
                 container->setContentsMargins(readingSettings.headerFooterMargins, 0, 0, 0);
-                parentLayout->insertWidget(0, container, 0, Qt::AlignLeft);
+                parentLayout->addWidget(container, 0, Qt::AlignLeft);
+                // parentLayout->addStretch(1);
             } else {
                 // Insert right
                 container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
                 parentLayout->addWidget(container, 0, Qt::AlignRight);
             }
 
-            isLeft = false;
+            if (isLeft) {
+                // containerLayout->addStretch(1);
+                isLeft = false;
+            }
         }
-
-        // Stretch center widget
-        parentLayout->setStretch(1, 1);
 
         QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(where->parentWidget()->layout());
         if (rootLayout) {

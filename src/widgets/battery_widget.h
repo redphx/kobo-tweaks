@@ -50,6 +50,8 @@ public:
         : QWidget(parent), isLeft(config.isLeft), currentDarkMode(config.isDarkMode), defaultStyle(config.defaultStyle), chargingStyle(config.chargingStyle), showWhenBelow(config.showWhenBelow), hw(h)
     {
         setObjectName(QStringLiteral("twks_battery"));
+        setContentsMargins(0, 0, 0, 0);
+        setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         getBatteryLevelFn = getDerivedHWInterfaceMethod<GetBatteryLevelFn>(HardwareInterface_getBatteryLevel);
         chargingStateFn = getDerivedHWInterfaceMethod<ChargingStateFn>(HardwareInterface_chargingState);
@@ -109,7 +111,7 @@ private:
         // The list of method pointers starts from the third entry
         // in the vtable (this is what the class vptr variable points to)
         uintptr_t** hwiVtr = HardwareInterface_vtable + 2;
-        
+
         // Search the HardwareInterface vtable for the offset to the method 
         // we want to call on the derived object. 
         // Iterate at least 8 times, because the vtable has a null pointer
