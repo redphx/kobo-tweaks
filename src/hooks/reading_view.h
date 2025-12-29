@@ -7,9 +7,11 @@
 #include "../widgets/clock_widget.h"
 #include "../widgets/battery_widget.h"
 #include "../widgets/book_title_widget.h"
+#include "../widgets/chapter_title_widget.h"
 
 
 namespace ReadingViewHook {
+    // PageChanged signal
     class PageChangedAdapter : public QObject {
         Q_OBJECT
 
@@ -23,6 +25,7 @@ namespace ReadingViewHook {
         void pageChanged();
     };
 
+    // ReaderDoneLoading signal
     class ReaderDoneLoadingAdapter : public QObject {
         Q_OBJECT
 
@@ -36,6 +39,7 @@ namespace ReadingViewHook {
         void readerDoneLoading();
     };
 
+    // DarkMode signal
     class DarkModeAdapter : public QObject {
         Q_OBJECT
 
@@ -51,6 +55,7 @@ namespace ReadingViewHook {
         void darkModeChanged(bool dark);
     };
 
+    // RenderVolume signal
     class RenderVolumeAdapter : public QObject {
         Q_OBJECT
 

@@ -11,12 +11,12 @@ class TwBookTitleWidget : public TwElidedLabel {
 public:
     TwBookTitleWidget(QWidget* parent = nullptr) : TwElidedLabel(parent) {}
 
-    void setTitle(const Volume& volume) {
+    void setTitle(const Content& content) {
         if (!Content_getTitle) {
             return;
         }
 
-        Content_getTitle(&fullText, &volume);
+        Content_getTitle(&fullText, &content);
         updateElidedText();
     }
 };

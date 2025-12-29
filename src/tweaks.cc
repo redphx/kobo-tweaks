@@ -93,6 +93,31 @@ struct nh_hook TweaksHook[] = {
 
 struct nh_dlsym TweaksDlsym[] = {
     {
+        .name     = "_ZN11ReadingView12chapterIndexEv",
+        .out      = nh_symoutptr(ReadingView_chapterIndex),
+        .desc     = "ReadingView::chapterIndex",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN11ReadingView26shortcoverWithChapterIndexEi",
+        .out      = nh_symoutptr(ReadingView_shortcoverWithChapterIndex),
+        .desc     = "ReadingView::shortcoverWithChapterIndex",
+        .optional = true,
+    },
+    {
+        .name     = "_ZNK7Content8getTitleEv",
+        .out      = nh_symoutptr(Content_getTitle),
+        .desc     = "Content::getTitle()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN11ReadingView22mergedTOCAndSpineIndexEv",
+        .out      = nh_symoutptr(ReadingView_mergedTOCAndSpineIndex),
+        .desc     = "ReadingView::mergedTOCAndSpineIndex()",
+        .optional = true,
+    },
+
+    {
         .name = "_ZN15HardwareFactory14sharedInstanceEv",
         .out  = nh_symoutptr(HardwareFactory_sharedInstance),
     },
@@ -117,12 +142,6 @@ struct nh_dlsym TweaksDlsym[] = {
         .name     = "_ZN25ConfirmationDialogFactory12showOKDialogERK7QStringS2_",
         .out      = nh_symoutptr(ConfirmationDialogFactory_showOKDialog),
         .desc     = "ConfirmationDialogFactory::showOKDialog()",
-        .optional = true,
-    },
-    {
-        .name     = "_ZNK7Content8getTitleEv",
-        .out      = nh_symoutptr(Content_getTitle),
-        .desc     = "Content::getTitle()",
         .optional = true,
     },
 

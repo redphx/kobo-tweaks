@@ -70,6 +70,7 @@ void TweaksSettings::loadReadingSettings() {
     bool hasBattery = false;
     bool hasClock = false;
     bool hasBookTitle = false;
+    bool hasChapterTitle = false;
     auto checkWidget = [&](QVector<WidgetTypeEnum> list) {
         for (int i = list.size() - 1; i >= 0; --i) {
             auto w = list[i];
@@ -88,12 +89,21 @@ void TweaksSettings::loadReadingSettings() {
                     } else {
                         hasClock = true;
                     }
+                    break;
                 case WidgetTypeEnum::BookTitle:
                     if (hasBookTitle) {
                         list.removeAt(i);
                     } else {
                         hasBookTitle = true;
                     }
+                    break;
+                case WidgetTypeEnum::ChapterTitle:
+                    if (hasChapterTitle) {
+                        list.removeAt(i);
+                    } else {
+                        hasChapterTitle = true;
+                    }
+                    break;
                 default:
                     break;
             }

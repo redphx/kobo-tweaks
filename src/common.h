@@ -31,20 +31,23 @@ typedef QWidget ReadingFooter;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
 
-class Volume {
-public:
-    virtual ~Volume() {}
-};
+class Content { public: virtual ~Content() {} };
+class Volume : public Content { public: virtual ~Volume() {} };
+class Shortcover : public Content { public: virtual ~Shortcover() {} };
 
 using GetBatteryLevelFn = int(*)(HardwareInterface*);
 using ChargingStateFn = uint(*)(HardwareInterface*);
 
 extern void (*ReadingView_constructor)(ReadingView* self);
+extern int (*ReadingView_chapterIndex)(ReadingView* self);
+extern int (*ReadingView_mergedTOCAndSpineIndex)(ReadingView* self);
+extern void (*ReadingView_shortcoverWithChapterIndex)(Shortcover* result, ReadingView* self, uint chapterIndex);
+extern void (*Content_getTitle)(QString* result, const Content* self);
+
 extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
 extern void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString const& body);
 extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
-extern void (*Content_getTitle)(QString* result, const Volume* self);
 
 extern HardwareInterface* (*HardwareFactory_sharedInstance)();
 extern uintptr_t** HardwareInterface_vtable;

@@ -5,6 +5,7 @@ namespace ReadingViewHook {
         PageChangedAdapter* pageChangedAdapter;
         DarkModeAdapter* darkModeAdapter;
         RenderVolumeAdapter* renderVolumeAdapter;
+        ReaderDoneLoadingAdapter* readerDoneLoadingAdapter;
     };
 
     static TweaksSettings settings;
@@ -78,7 +79,7 @@ namespace ReadingViewHook {
         renderVolume(volume);
     }
 
-    static void insertWidgets(WidgetAdapters adapters, ReadingFooter* where, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
+    static void insertWidgets(ReadingView* readingView, WidgetAdapters adapters, ReadingFooter* where, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
         HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
 
@@ -138,6 +139,23 @@ namespace ReadingViewHook {
                             auto bookTitleWidget = new TwBookTitleWidget();
                             QObject::connect(adapters.renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, bookTitleWidget, &TwBookTitleWidget::setTitle, Qt::UniqueConnection);
                             widget = bookTitleWidget;
+                        }
+                        break;
+                    case WidgetTypeEnum::ChapterTitle:
+                        {
+                            auto chapterTitleWidget = new TwChapterTitleWidget();
+                            QObject::connect(adapters.readerDoneLoadingAdapter, &ReadingViewHook::ReaderDoneLoadingAdapter::readerDoneLoading, [readingView]() {
+                                int chapterIndex = ReadingView_chapterIndex(readingView);
+                                nh_log(QString("chapterIndex %1").arg(chapterIndex).toUtf8().constData());
+
+                                Shortcover shortcover;
+                                ReadingView_shortcoverWithChapterIndex(&shortcover, readingView, chapterIndex);
+
+                                QString title;
+                                Content_getTitle(&title, &shortcover);
+                                nh_log(QString("chapterTitle %1").arg(title).toUtf8().constData());
+                            });
+                            widget = chapterTitleWidget;
                         }
                         break;
                     case WidgetTypeEnum::Separator:
@@ -237,13 +255,16 @@ namespace ReadingViewHook {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
 
+        auto readerDoneLoadingAdapter = new ReadingViewHook::ReaderDoneLoadingAdapter(view);
+
         WidgetAdapters adapters {};
         adapters.pageChangedAdapter = pageChangedAdapter;
         adapters.darkModeAdapter = darkModeAdapter;
         adapters.renderVolumeAdapter = renderVolumeAdapter;
+        adapters.readerDoneLoadingAdapter = readerDoneLoadingAdapter;
 
-        insertWidgets(adapters, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
-        insertWidgets(adapters, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
+        insertWidgets(view, adapters, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
+        insertWidgets(view, adapters, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
     }
 
     void setFooterMargin(QWidget* self, int margin) {
