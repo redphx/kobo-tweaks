@@ -17,6 +17,9 @@ public:
         }
 
         Content_getTitle(&fullText, &content);
+
+        // TODO: remove this line when we're able to get the non-uppercase chapter title
+        fullText = fullText.toUpper();
         updateElidedText();
     }
 };

@@ -39,14 +39,12 @@ using GetBatteryLevelFn = int(*)(HardwareInterface*);
 using ChargingStateFn = uint(*)(HardwareInterface*);
 
 extern void (*ReadingView_constructor)(ReadingView* self);
-extern int (*ReadingView_chapterIndex)(ReadingView* self);
-extern int (*ReadingView_mergedTOCAndSpineIndex)(ReadingView* self);
-extern void (*ReadingView_shortcoverWithChapterIndex)(Shortcover* result, ReadingView* self, uint chapterIndex);
+extern void (*ReadingView_getChapterTitle)(QString* result, ReadingView* self);
 extern void (*Content_getTitle)(QString* result, const Content* self);
 
 extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
-extern void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString const& body);
+extern void (*ConfirmationDialogFactory_showOKDialog)(const QString& title, const QString& body);
 extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
 
 extern HardwareInterface* (*HardwareFactory_sharedInstance)();

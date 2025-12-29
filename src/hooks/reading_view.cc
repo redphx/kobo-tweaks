@@ -144,16 +144,11 @@ namespace ReadingViewHook {
                     case WidgetTypeEnum::ChapterTitle:
                         {
                             auto chapterTitleWidget = new TwChapterTitleWidget();
-                            QObject::connect(adapters.readerDoneLoadingAdapter, &ReadingViewHook::ReaderDoneLoadingAdapter::readerDoneLoading, [readingView]() {
-                                int chapterIndex = ReadingView_chapterIndex(readingView);
-                                nh_log(QString("chapterIndex %1").arg(chapterIndex).toUtf8().constData());
-
-                                Shortcover shortcover;
-                                ReadingView_shortcoverWithChapterIndex(&shortcover, readingView, chapterIndex);
-
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, [readingView, chapterTitleWidget]() {
+                                // TODO: find another way to get chapter title, as this method always returns an uppercase string
                                 QString title;
-                                Content_getTitle(&title, &shortcover);
-                                nh_log(QString("chapterTitle %1").arg(title).toUtf8().constData());
+                                ReadingView_getChapterTitle(&title, readingView);
+                                chapterTitleWidget->setTitle(title);
                             });
                             widget = chapterTitleWidget;
                         }

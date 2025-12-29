@@ -1,9 +1,7 @@
 #include "common.h"
 
 void (*ReadingView_constructor)(ReadingView* self) = nullptr;
-int (*ReadingView_chapterIndex)(ReadingView* self) = nullptr;
-int (*ReadingView_mergedTOCAndSpineIndex)(ReadingView* self) = nullptr;
-void (*ReadingView_shortcoverWithChapterIndex)(Shortcover* result, ReadingView* self, uint chapterIndex) = nullptr;
+void (*ReadingView_getChapterTitle)(QString* result, ReadingView* self) = nullptr;
 void (*Content_getTitle)(QString* result, const Content* self) = nullptr;
 
 void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin) = nullptr;
