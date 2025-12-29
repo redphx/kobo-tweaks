@@ -3,6 +3,7 @@
 #include "../common.h"
 #include "../utils.h"
 #include "../settings/settings.h"
+#include "../widgets/separator_label.h"
 
 #include <QtMath>
 #include <QWidget>
@@ -128,14 +129,46 @@ private:
         }
         return nullptr;
     }
+
+    void syncSeparatorVisibility() {
+        QWidget* widget = parentWidget();
+        if (!widget) {
+            return;
+        }
+
+        QLayout* layout = widget->layout();
+        if (!layout) {
+            return;
+        }
+
+        int index = layout->indexOf(this);
+        int targetIndex;
+        if (index == 0) {
+            // at the beginning -> find separator on the right side
+            targetIndex = index + 1;
+        } else {
+            // in the middle or at the end -> find separator on the left side
+            targetIndex = index - 1;
+        }
+
+        if (targetIndex >= 0 && targetIndex < layout->count()) {
+            QLayoutItem* item = layout->itemAt(targetIndex);
+            if (TwSeparatorLabel* w = qobject_cast<TwSeparatorLabel*>(item->widget())) {
+                w->setVisible(isVisible());
+            }
+        }
+    }
+
     void updateDisplay() {
         // Hide layout when level is above the threshold
         if (currentChargingState == ChargingState::Unplugged && currentBatteryLevel > showWhenBelow) {
             hide();
+            syncSeparatorVisibility();
             return;
         }
 
         show();
+        syncSeparatorVisibility();
 
         currentStyle = currentChargingState == ChargingState::Unplugged ? defaultStyle : chargingStyle;
         if (currentStyle != lastStyle) {

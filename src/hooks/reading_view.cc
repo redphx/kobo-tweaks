@@ -110,7 +110,15 @@ namespace ReadingViewHook {
                 containerLayout->addStretch(1);
             }
 
+            int idx = -1;
             for (auto widgetType : widgetTypes) {
+                ++idx;
+                if (idx > 0 && readingSettings.widgetSeparator != WidgetSeparatorEnum::Invalid) {
+                    // Add separator label
+                    TwSeparatorLabel* separator = new TwSeparatorLabel(readingSettings.widgetSeparator);
+                    containerLayout->addWidget(separator, 0);
+                }
+
                 QWidget* widget = nullptr;
                 bool stretch = false;
 
@@ -159,18 +167,6 @@ namespace ReadingViewHook {
                             });
                             widget = chapterTitleWidget;
                             stretch = true;
-                        }
-                        break;
-                    case WidgetTypeEnum::Separator:
-                        {
-                            if (!readingSettings.widgetSeparator.isEmpty()) {
-                                QLabel* separator = new QLabel();
-                                separator->setObjectName(QStringLiteral("twks_label"));
-                                separator->setContentsMargins(0, 0, 0, 0);
-                                separator->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-                                separator->setText(readingSettings.widgetSeparator);
-                                widget = separator;
-                            }
                         }
                         break;
                     default:
@@ -250,7 +246,7 @@ namespace ReadingViewHook {
         view->setStyleSheet(Patch::ReadingView::reduceSpacerHeight(rootQss));
 
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
-        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label"));
+        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label") << QStringLiteral("#twks_separator"));
 
         auto readingSettings = settings.getReadingSettings();
         if (readingSettings.headerFooterHeightScale < 100) {

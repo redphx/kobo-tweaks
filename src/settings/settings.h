@@ -99,7 +99,7 @@ public:
 
 
 // WidgetTypeSetting
-enum class WidgetTypeEnum { Invalid, Battery, BookTitle, ChapterTitle, Clock, Separator };
+enum class WidgetTypeEnum { Invalid, Battery, BookTitle, ChapterTitle, Clock };
 inline uint qHash(WidgetTypeEnum e, uint seed = 0) { return qHashEnum(e, seed); }
 class WidgetTypeSetting : public SettingEnumValue<WidgetTypeSetting, WidgetTypeEnum> {
 public:
@@ -111,7 +111,6 @@ public:
             {QStringLiteral("booktitle"),    EnumType::BookTitle},
             {QStringLiteral("chaptertitle"), EnumType::ChapterTitle},
             {QStringLiteral("clock"),        EnumType::Clock},
-            {QStringLiteral("-"),            EnumType::Separator},
         };
         return map;
     }
@@ -122,7 +121,6 @@ public:
             {EnumType::BookTitle,    QStringLiteral("BookTitle")},
             {EnumType::ChapterTitle, QStringLiteral("ChapterTitle")},
             {EnumType::Clock,        QStringLiteral("Clock")},
-            {EnumType::Separator,    QStringLiteral("-")},
             {EnumType::Invalid,      ""},
         };
         return map;
@@ -162,6 +160,35 @@ public:
     static EnumType defaultValue() { return EnumType::Invalid; }
 };
 
+// WidgetSeparatorSetting
+enum class WidgetSeparatorEnum { Invalid, Bullet, Dot, Pipe };
+inline uint qHash(WidgetSeparatorEnum e, uint seed = 0) { return qHashEnum(e, seed); }
+class WidgetSeparatorSetting : public SettingEnumValue<WidgetSeparatorSetting, WidgetSeparatorEnum> {
+public:
+    using EnumType = WidgetSeparatorEnum;
+
+    static const QHash<QString, EnumType>& valueMap() {
+        static const QHash<QString, EnumType> map = {
+            {QStringLiteral("bullet"), EnumType::Bullet},
+            {QStringLiteral("dot"),    EnumType::Dot},
+            {QStringLiteral("pipe"),   EnumType::Pipe},
+        };
+        return map;
+    }
+
+    static const QHash<EnumType, QString>& reverseMap() {
+        static const QHash<EnumType, QString> map = {
+            {EnumType::Bullet,  QStringLiteral("Bullet")},
+            {EnumType::Dot,     QStringLiteral("Dot")},
+            {EnumType::Pipe,    QStringLiteral("Pipe")},
+            {EnumType::Invalid, ""},
+        };
+        return map;
+    }
+
+    static EnumType defaultValue() { return EnumType::Invalid; }
+};
+
 
 struct TweaksReadingSettings {
     QString bookmarkImage = "";
@@ -175,7 +202,7 @@ struct TweaksReadingSettings {
     QVector<WidgetTypeEnum> widgetFooterRight = {};
 
     int widgetSpacing = 10;
-    QString widgetSeparator = "";
+    WidgetSeparatorEnum widgetSeparator = WidgetSeparatorEnum::Invalid;
 
     BatteryStyleEnum widgetBatteryStyle = BatteryStyleEnum::IconLevel;
     BatteryStyleEnum widgetBatteryStyleCharging = BatteryStyleEnum::IconLevel;

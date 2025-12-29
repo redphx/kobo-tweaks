@@ -26,7 +26,7 @@ void TweaksSettings::setMissingKeys() {
     checkValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
     checkValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
     // Set default widget separator
-    checkValue(READING_WIDGET_SEPARATOR, QStringLiteral("|"));
+    checkValue(READING_WIDGET_SEPARATOR, WidgetSeparatorSetting::toString(WidgetSeparatorEnum::Dot));
 
     if (changed) {
         qSettings.sync();
@@ -50,7 +50,7 @@ void TweaksSettings::loadReadingSettings() {
     readingSettings.headerFooterMargins = qBound(0, getIntValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins), 100);
 
     // [Reading.Widget]
-    readingSettings.widgetSeparator = getStringValue(READING_WIDGET_SEPARATOR, "");
+    readingSettings.widgetSeparator = WidgetSeparatorSetting::fromSetting(qSettings, READING_WIDGET_SEPARATOR, readingSettings.widgetSeparator);
     readingSettings.widgetSpacing = qBound(0, getIntValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing), 20);
 
     readingSettings.widgetBatteryStyle = BatteryStyleSetting::fromSetting(qSettings, READING_WIDGET_BATTERY_STYLE, readingSettings.widgetBatteryStyle);
@@ -110,7 +110,7 @@ void TweaksSettings::sync() {
 
     qSettings.setValue(READING_WIDGET_CLOCK_24H_FORMAT, readingSettings.widgetClock24hFormat);
 
-    qSettings.setValue(READING_WIDGET_SEPARATOR, readingSettings.widgetSeparator);
+    qSettings.setValue(READING_WIDGET_SEPARATOR, WidgetSeparatorSetting::toString(readingSettings.widgetSeparator));
     qSettings.setValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing);
 
     qSettings.sync();

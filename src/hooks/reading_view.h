@@ -8,6 +8,7 @@
 #include "../widgets/battery_widget.h"
 #include "../widgets/book_title_widget.h"
 #include "../widgets/chapter_title_widget.h"
+#include "../widgets/separator_label.h"
 
 
 namespace ReadingViewHook {
