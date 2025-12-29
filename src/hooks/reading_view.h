@@ -6,7 +6,9 @@
 #include "../patches.h"
 #include "../widgets/clock_widget.h"
 #include "../widgets/battery_widget.h"
+#include "../widgets/book_page_widget.h"
 #include "../widgets/book_title_widget.h"
+#include "../widgets/chapter_page_widget.h"
 #include "../widgets/chapter_title_widget.h"
 #include "../widgets/separator_label.h"
 

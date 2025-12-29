@@ -104,6 +104,30 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc     = "ReadingView::getChapterTitle()",
         .optional = true,
     },
+    {
+        .name     = "_ZN11ReadingView18chapterCurrentPageEv",
+        .out      = nh_symoutptr(ReadingView_chapterCurrentPage),
+        .desc     = "ReadingView::chapterCurrentPage()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN11ReadingView17chapterTotalPagesEv",
+        .out      = nh_symoutptr(ReadingView_chapterTotalPages),
+        .desc     = "ReadingView::chapterTotalPages()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN11ReadingView19fullBookCurrentPageEv",
+        .out      = nh_symoutptr(ReadingView_fullBookCurrentPage),
+        .desc     = "ReadingView::fullBookCurrentPage()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN11ReadingView18fullBookTotalPagesEv",
+        .out      = nh_symoutptr(ReadingView_fullBookTotalPages),
+        .desc     = "ReadingView::fullBookTotalPages()",
+        .optional = true,
+    },
 
     {
         .name = "_ZN15HardwareFactory14sharedInstanceEv",

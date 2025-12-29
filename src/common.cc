@@ -2,6 +2,10 @@
 
 void (*ReadingView_constructor)(ReadingView* self) = nullptr;
 void (*ReadingView_getChapterTitle)(QString* result, ReadingView* self) = nullptr;
+int (*ReadingView_chapterCurrentPage)(ReadingView* self) = nullptr;
+int (*ReadingView_chapterTotalPages)(ReadingView* self) = nullptr;
+int (*ReadingView_fullBookCurrentPage)(ReadingView* self) = nullptr;
+int (*ReadingView_fullBookTotalPages)(ReadingView* self) = nullptr;
 void (*Content_getTitle)(QString* result, const Content* self) = nullptr;
 
 void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin) = nullptr;

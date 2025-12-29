@@ -40,6 +40,10 @@ using ChargingStateFn = uint(*)(HardwareInterface*);
 
 extern void (*ReadingView_constructor)(ReadingView* self);
 extern void (*ReadingView_getChapterTitle)(QString* result, ReadingView* self);
+extern int (*ReadingView_chapterCurrentPage)(ReadingView* self);
+extern int (*ReadingView_chapterTotalPages)(ReadingView* self);
+extern int (*ReadingView_fullBookCurrentPage)(ReadingView* self);
+extern int (*ReadingView_fullBookTotalPages)(ReadingView* self);
 extern void (*Content_getTitle)(QString* result, const Content* self);
 
 extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);

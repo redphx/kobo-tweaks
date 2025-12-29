@@ -148,12 +148,38 @@ namespace ReadingViewHook {
                             widget = batteryWidget;
                         }
                         break;
+                    case WidgetTypeEnum::BookPage:
+                        {
+                            auto bookPageWidget = new TwBookPageWidget();
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, [readingView, bookPageWidget]() {
+                                if (ReadingView_fullBookCurrentPage && ReadingView_fullBookTotalPages) {
+                                    int currentPage = ReadingView_fullBookCurrentPage(readingView);
+                                    int totalPages = ReadingView_fullBookTotalPages(readingView);
+                                    bookPageWidget->setProgress(currentPage, totalPages);
+                                }
+                            });
+                            widget = bookPageWidget;
+                        }
+                        break;
                     case WidgetTypeEnum::BookTitle:
                         {
                             auto bookTitleWidget = new TwBookTitleWidget();
                             QObject::connect(adapters.renderVolumeAdapter, &RenderVolumeAdapter::renderVolume, bookTitleWidget, &TwBookTitleWidget::setTitle, Qt::UniqueConnection);
                             widget = bookTitleWidget;
                             stretch = true;
+                        }
+                        break;
+                    case WidgetTypeEnum::ChapterPage:
+                        {
+                            auto chapterPageWidget = new TwChapterPageWidget();
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, [readingView, chapterPageWidget]() {
+                                if (ReadingView_chapterCurrentPage && ReadingView_chapterTotalPages) {
+                                    int currentPage = ReadingView_chapterCurrentPage(readingView);
+                                    int totalPages = ReadingView_chapterTotalPages(readingView);
+                                    chapterPageWidget->setProgress(currentPage, totalPages);
+                                }
+                            });
+                            widget = chapterPageWidget;
                         }
                         break;
                     case WidgetTypeEnum::ChapterTitle:
