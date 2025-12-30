@@ -1,6 +1,6 @@
 #pragma once
 #include "../common.h"
-#include "elided_label.h"
+#include "base/elided_label.h"
 
 #include <QtGlobal>
 #include <QLabel>
