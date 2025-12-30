@@ -12,7 +12,6 @@ public:
     TwChapterTitleWidget(QWidget* parent = nullptr) : TwElidedLabel(parent) {}
 
     void setTitle(const QString& title) {
-        fullText = title;
-        updateElidedText();
+        setFullText(title);
     }
 };

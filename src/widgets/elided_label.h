@@ -10,14 +10,26 @@ public:
     TwElidedLabel(QWidget* parent = nullptr) : QLabel(parent) {
         setObjectName(QStringLiteral("twks_label"));
         setContentsMargins(0, 0, 0, 0);
-        setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         setMinimumWidth(1);
         // setStyleSheet("border: 1px solid black;");
     }
 
+    void setFullText(const QString& newText) {
+        if (fullText == newText) {
+            return;
+        }
+
+        lastWidth = -1;
+        fullText = newText;
+        // Tell the layout the ideal size (sizeHint) has changed
+        updateGeometry(); 
+        // Update the actual elision for the current width
+        update();
+    }
+
     QSize sizeHint() const override {
         QFontMetrics fm = fontMetrics();
-
         int textWidth = fm.width(fullText); 
         // Add margins/padding to the text width
         int totalWidth = textWidth + (width() - contentsRect().width());
@@ -30,16 +42,27 @@ protected:
     void resizeEvent(QResizeEvent *event) override {
         QLabel::resizeEvent(event);
         int width = contentsRect().width();
-        if (width != lastWidth) {
+        if (width > 0 && width != lastWidth) {
             lastWidth = width;
             updateElidedText();
         }
     }
 
     void updateElidedText() {
+        if (contentsRect().width() <= 0) {
+            return;
+        }
+
+        if (fullText.isEmpty()) {
+            QLabel::setText(fullText);
+            return;
+        }
+
         QString elidedText = fontMetrics().elidedText(fullText, Qt::ElideRight, contentsRect().width());
         if (elidedText != QLabel::text()) {
+            bool blocked = blockSignals(true);
             QLabel::setText(elidedText);
+            blockSignals(blocked);
         }
     }
 

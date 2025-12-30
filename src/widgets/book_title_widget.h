@@ -16,10 +16,11 @@ public:
             return;
         }
 
-        Content_getTitle(&fullText, &content);
+        QString title;
+        Content_getTitle(&title, &content);
 
         // TODO: remove this line when we're able to get the non-uppercase chapter title
-        fullText = fullText.toUpper();
-        updateElidedText();
+        title = title.toUpper();
+        setFullText(title);
     }
 };
