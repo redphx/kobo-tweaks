@@ -87,6 +87,7 @@ namespace ReadingViewHook {
         parent->setStyleSheet(qss);
         parent->setContentsMargins(0, 0, 0, 0);
         parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
+        parent->setObjectName(QStringLiteral("#twks_widget_zones_container"));
 
         QHBoxLayout* parentLayout = new QHBoxLayout(parent);
         parentLayout->setSpacing(readingSettings.widgetSpacing);
@@ -296,6 +297,8 @@ namespace ReadingViewHook {
         if (readingSettings.headerFooterHeightScale < 100) {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
+
+        patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("#twks_widget_zones_container"));
 
         auto readerDoneLoadingAdapter = new ReadingViewHook::ReaderDoneLoadingAdapter(view);
 
