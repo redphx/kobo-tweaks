@@ -182,6 +182,24 @@ namespace ReadingViewHook {
                             widget = chapterPageWidget;
                         }
                         break;
+                    case WidgetTypeEnum::ChapterProgress:
+                        {
+                            TwChapterProgressWidgetConfig config {};
+                            config.isDarkMode = adapters.darkModeAdapter->getDarkMode();
+
+                            auto chapterProgressWidget = new TwChapterProgressWidget(config);
+
+                            QObject::connect(adapters.darkModeAdapter, &DarkModeAdapter::darkModeChanged, chapterProgressWidget, &TwChapterProgressWidget::setDarkMode, Qt::UniqueConnection);
+                            QObject::connect(adapters.pageChangedAdapter, &PageChangedAdapter::pageChanged, [readingView, chapterProgressWidget]() {
+                                if (ReadingView_chapterCurrentPage && ReadingView_chapterTotalPages) {
+                                    int currentPage = ReadingView_chapterCurrentPage(readingView);
+                                    int totalPages = ReadingView_chapterTotalPages(readingView);
+                                    chapterProgressWidget->setProgress(currentPage, totalPages);
+                                }
+                            });
+                            widget = chapterProgressWidget;
+                        }
+                        break;
                     case WidgetTypeEnum::ChapterTitle:
                         {
                             auto chapterTitleWidget = new TwChapterTitleWidget();

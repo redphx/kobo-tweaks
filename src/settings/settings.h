@@ -99,7 +99,13 @@ public:
 
 
 // WidgetTypeSetting
-enum class WidgetTypeEnum { Invalid, Battery, BookPage, BookTitle, ChapterPage, ChapterTitle, Clock };
+enum class WidgetTypeEnum {
+    Invalid,
+    Battery,
+    BookPage, BookTitle,
+    ChapterPage, ChapterProgress, ChapterTitle,
+    Clock
+};
 inline uint qHash(WidgetTypeEnum e, uint seed = 0) { return qHashEnum(e, seed); }
 class WidgetTypeSetting : public SettingEnumValue<WidgetTypeSetting, WidgetTypeEnum> {
 public:
@@ -107,25 +113,27 @@ public:
 
     static const QHash<QString, EnumType>& valueMap() {
         static const QHash<QString, EnumType> map = {
-            {QStringLiteral("battery"),      EnumType::Battery},
-            {QStringLiteral("bookpage"),     EnumType::BookPage},
-            {QStringLiteral("booktitle"),    EnumType::BookTitle},
-            {QStringLiteral("chapterpage"),  EnumType::ChapterPage},
-            {QStringLiteral("chaptertitle"), EnumType::ChapterTitle},
-            {QStringLiteral("clock"),        EnumType::Clock},
+            {QStringLiteral("battery"),         EnumType::Battery},
+            {QStringLiteral("bookpage"),        EnumType::BookPage},
+            {QStringLiteral("booktitle"),       EnumType::BookTitle},
+            {QStringLiteral("chapterpage"),     EnumType::ChapterPage},
+            {QStringLiteral("chapterprogress"), EnumType::ChapterProgress},
+            {QStringLiteral("chaptertitle"),    EnumType::ChapterTitle},
+            {QStringLiteral("clock"),           EnumType::Clock},
         };
         return map;
     }
 
     static const QHash<EnumType, QString>& reverseMap() {
         static const QHash<EnumType, QString> map = {
-            {EnumType::Battery,      QStringLiteral("Battery")},
-            {EnumType::BookPage,     QStringLiteral("BookPage")},
-            {EnumType::BookTitle,    QStringLiteral("BookTitle")},
-            {EnumType::ChapterPage,  QStringLiteral("ChapterPage")},
-            {EnumType::ChapterTitle, QStringLiteral("ChapterTitle")},
-            {EnumType::Clock,        QStringLiteral("Clock")},
-            {EnumType::Invalid,      ""},
+            {EnumType::Battery,         QStringLiteral("Battery")},
+            {EnumType::BookPage,        QStringLiteral("BookPage")},
+            {EnumType::BookTitle,       QStringLiteral("BookTitle")},
+            {EnumType::ChapterPage,     QStringLiteral("ChapterPage")},
+            {EnumType::ChapterProgress, QStringLiteral("ChapterProgress")},
+            {EnumType::ChapterTitle,    QStringLiteral("ChapterTitle")},
+            {EnumType::Clock,           QStringLiteral("Clock")},
+            {EnumType::Invalid,         ""},
         };
         return map;
     }

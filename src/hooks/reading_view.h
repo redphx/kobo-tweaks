@@ -9,6 +9,7 @@
 #include "../widgets/book_page_widget.h"
 #include "../widgets/book_title_widget.h"
 #include "../widgets/chapter_page_widget.h"
+#include "../widgets/chapter_progress_widget.h"
 #include "../widgets/chapter_title_widget.h"
 #include "../widgets/separator_label.h"
 
