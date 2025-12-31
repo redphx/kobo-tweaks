@@ -258,4 +258,6 @@ class TweaksSettings {
         void loadReadingSettings();
         int getIntValue(const QString& key, int defaultValue);
         QString getStringValue(const QString& key, const QString& defaultValue);
+
+        void validateWidgets();
 };

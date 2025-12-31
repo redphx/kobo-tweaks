@@ -65,26 +65,7 @@ void TweaksSettings::loadReadingSettings() {
     readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT, QVector<WidgetTypeEnum>{});
     readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT, QVector<WidgetTypeEnum>{});
     readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT, QVector<WidgetTypeEnum>{});
-
-    // Only allow each widget appear once
-    uint32_t seenMask = 0;
-    for (auto* zone : {&readingSettings.widgetHeaderLeft, &readingSettings.widgetHeaderRight, &readingSettings.widgetFooterLeft, &readingSettings.widgetFooterRight}) {
-        auto it = std::remove_if(zone->begin(), zone->end(), [&](WidgetTypeEnum w) {
-            // Map enum values to bit positions (0-31)
-            uint32_t bit = 1 << static_cast<int>(w);
-
-            // If bit is already set, return true to remove the duplicate
-            if (seenMask & bit) {
-                return true;
-            }
-
-            // Otherwise, mark as seen and keep it
-            seenMask |= bit;
-            return false;
-        });
-
-        zone->erase(it, zone->end());
-    }
+    validateWidgets();
 }
 
 void TweaksSettings::load() {
@@ -145,4 +126,43 @@ int TweaksSettings::getIntValue(const QString& key, int defaultValue) {
 
 QString TweaksSettings::getStringValue(const QString& key, const QString& defaultValue) {
     return qSettings.value(key, defaultValue).toString().trimmed();
+}
+
+void TweaksSettings::validateWidgets() {
+    // Don't allow BookTitle and ChapterTitle to be placed in HeaderRight and FooterRight
+    for (auto p : { WidgetTypeEnum::BookTitle, WidgetTypeEnum::ChapterTitle }) {
+        readingSettings.widgetHeaderRight.removeOne(p);
+        readingSettings.widgetFooterRight.removeOne(p);
+    }
+
+    // Don't allow BookTitle and ChapterTitle to be placed in the same header or footer
+    auto checkTitles = [](QVector<WidgetTypeEnum>& v) {
+        if (v.contains(WidgetTypeEnum::BookTitle)) {
+            v.removeOne(WidgetTypeEnum::ChapterTitle);
+        } else if (v.contains(WidgetTypeEnum::ChapterTitle)) {
+            v.removeOne(WidgetTypeEnum::BookTitle); 
+        }
+    };
+    checkTitles(readingSettings.widgetHeaderLeft);
+    checkTitles(readingSettings.widgetFooterLeft);
+
+    // Only allow each widget appear once
+    uint32_t seenMask = 0;
+    for (auto* zone : {&readingSettings.widgetHeaderLeft, &readingSettings.widgetHeaderRight, &readingSettings.widgetFooterLeft, &readingSettings.widgetFooterRight}) {
+        auto it = std::remove_if(zone->begin(), zone->end(), [&](WidgetTypeEnum w) {
+            // Map enum values to bit positions (0-31)
+            uint32_t bit = 1 << static_cast<int>(w);
+
+            // If bit is already set, return true to remove the duplicate
+            if (seenMask & bit) {
+                return true;
+            }
+
+            // Otherwise, mark as seen and keep it
+            seenMask |= bit;
+            return false;
+        });
+
+        zone->erase(it, zone->end());
+    }
 }
