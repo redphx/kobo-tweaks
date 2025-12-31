@@ -22,6 +22,8 @@ override MOCS += \
 	src/utils.h \
 	src/settings/settings.h \
 	src/widgets/base/elided_label.h \
+	src/widgets/base/widget_zone.h \
+	src/widgets/base/widget_zones_container.h \
 	src/widgets/battery_widget.h \
 	src/widgets/book_page_widget.h \
 	src/widgets/book_title_widget.h \

@@ -13,6 +13,8 @@ namespace ReadingViewHook {
     static int originalContentsMargins = 0;
     static const Volume* currentVolume = nullptr;
 
+    bool addedWidgets = false;
+
     PageChangedAdapter::PageChangedAdapter(ReadingView *parent) : QObject(parent) {
         if (!QObject::connect(parent, SIGNAL(pageChanged(int)), this, SLOT(notifyPageChanged()), Qt::UniqueConnection)) {
             nh_log("failed to connect _ZN11ReadingView11pageChangedEi");
@@ -79,19 +81,9 @@ namespace ReadingViewHook {
         renderVolume(volume);
     }
 
-    static void insertWidgets(ReadingView* readingView, WidgetAdapters adapters, ReadingFooter* where, QString qss, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
+    static void insertWidgets(ReadingView* readingView, WidgetAdapters adapters, TwWidgetZonesContainer* zonesContainer, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum> rightWidgets) {
         auto readingSettings = settings.getReadingSettings();
-        HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
-
-        QWidget* parent = new QWidget;
-        parent->setStyleSheet(qss);
-        parent->setContentsMargins(0, 0, 0, 0);
-        parent->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred); // stretch
-        parent->setObjectName(QStringLiteral("#twks_widget_zones_container"));
-
-        QHBoxLayout* parentLayout = new QHBoxLayout(parent);
-        parentLayout->setSpacing(readingSettings.widgetSpacing);
-        parentLayout->setContentsMargins(0, 0, 0, 0);
+        QHBoxLayout* parentLayout = qobject_cast<QHBoxLayout*>(zonesContainer->layout());
 
         bool isLeft = true;
         for (auto widgetTypes : {leftWidgets, rightWidgets}) {
@@ -136,6 +128,8 @@ namespace ReadingViewHook {
                         break;
                     case WidgetTypeEnum::Battery:
                         {
+                            HardwareInterface* hardwareInterface = HardwareFactory_sharedInstance();
+
                             TwBatteryWidgetConfig config {};
                             config.isDarkMode = adapters.darkModeAdapter->getDarkMode();
                             config.isLeft = isLeft;
@@ -241,12 +235,6 @@ namespace ReadingViewHook {
                 isLeft = false;
             }
         }
-
-        QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(where->parentWidget()->layout());
-        if (rootLayout) {
-            int index = rootLayout->indexOf(where);
-            rootLayout->insertWidget(index + 1, parent);
-        }
     }
 
     void constructor(ReadingView* view) {
@@ -298,7 +286,7 @@ namespace ReadingViewHook {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
 
-        patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("#twks_widget_zones_container"));
+        patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("TwWidgetZonesContainer"));
 
         auto readerDoneLoadingAdapter = new ReadingViewHook::ReaderDoneLoadingAdapter(view);
 
@@ -308,8 +296,23 @@ namespace ReadingViewHook {
         adapters.renderVolumeAdapter = renderVolumeAdapter;
         adapters.readerDoneLoadingAdapter = readerDoneLoadingAdapter;
 
-        insertWidgets(view, adapters, header, patchedQss, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
-        insertWidgets(view, adapters, footer, patchedQss, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
+        TwWidgetZonesContainer* headerContainer = new TwWidgetZonesContainer(patchedQss, readingSettings.widgetSpacing);
+        TwWidgetZonesContainer* footerContainer = new TwWidgetZonesContainer(patchedQss, readingSettings.widgetSpacing);
+
+        QVBoxLayout* gestureLayout = qobject_cast<QVBoxLayout*>(gestureContainer->layout());
+        gestureLayout->insertWidget(gestureLayout->indexOf(header) + 1, headerContainer);
+        gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
+
+        addedWidgets = false;
+        QObject::connect(readerDoneLoadingAdapter, &ReadingViewHook::ReaderDoneLoadingAdapter::readerDoneLoading, [view, adapters, headerContainer, footerContainer, readingSettings] {
+            if (addedWidgets) {
+                return;
+            }
+
+            addedWidgets = true;
+            insertWidgets(view, adapters, headerContainer, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderRight);
+            insertWidgets(view, adapters, footerContainer, readingSettings.widgetFooterLeft, readingSettings.widgetFooterRight);
+        });
     }
 
     void setFooterMargin(QWidget* self, int margin) {

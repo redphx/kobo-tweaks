@@ -4,6 +4,8 @@
 
 #include "../common.h"
 #include "../patches.h"
+#include "../widgets/base/widget_zone.h"
+#include "../widgets/base/widget_zones_container.h"
 #include "../widgets/clock_widget.h"
 #include "../widgets/battery_widget.h"
 #include "../widgets/book_page_widget.h"
