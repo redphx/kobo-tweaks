@@ -1,6 +1,8 @@
 #include "settings.h"
 #include "../utils.h"
 
+#include <QVector>
+
 TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {}
 
 QString validateImage(const QString& path) {
@@ -61,10 +63,13 @@ void TweaksSettings::loadReadingSettings() {
 
     // It was designed this way to make it's possible
     // to have multiple widgets in the same slot in the future
-    readingSettings.widgetHeaderLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT, QVector<WidgetTypeEnum>{});
-    readingSettings.widgetHeaderRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT, QVector<WidgetTypeEnum>{});
-    readingSettings.widgetFooterLeft  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT, QVector<WidgetTypeEnum>{});
-    readingSettings.widgetFooterRight = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetHeaderLeft   = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_LEFT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetHeaderCenter = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_CENTER, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetHeaderRight  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_HEADER_RIGHT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterLeft   = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_LEFT, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterCenter = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_CENTER, QVector<WidgetTypeEnum>{});
+    readingSettings.widgetFooterRight  = WidgetTypeSetting::fromSetting(qSettings, READING_WIDGET_FOOTER_RIGHT, QVector<WidgetTypeEnum>{});
+
     validateWidgets();
 }
 
@@ -81,8 +86,11 @@ void TweaksSettings::sync() {
     qSettings.setValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins);
 
     qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetHeaderLeft));
+    qSettings.setValue(READING_WIDGET_HEADER_CENTER, WidgetTypeSetting::toString(readingSettings.widgetHeaderCenter));
     qSettings.setValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetHeaderRight));
+
     qSettings.setValue(READING_WIDGET_FOOTER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetFooterLeft));
+    qSettings.setValue(READING_WIDGET_FOOTER_CENTER, WidgetTypeSetting::toString(readingSettings.widgetFooterCenter));
     qSettings.setValue(READING_WIDGET_FOOTER_RIGHT, WidgetTypeSetting::toString(readingSettings.widgetFooterRight));
 
     qSettings.setValue(READING_WIDGET_BATTERY_STYLE, BatteryStyleSetting::toString(readingSettings.widgetBatteryStyle));
@@ -135,17 +143,6 @@ void TweaksSettings::validateWidgets() {
         readingSettings.widgetFooterRight.removeOne(p);
     }
 
-    // Don't allow BookTitle and ChapterTitle to be placed in the same header or footer
-    auto checkTitles = [](QVector<WidgetTypeEnum>& v) {
-        if (v.contains(WidgetTypeEnum::BookTitle)) {
-            v.removeOne(WidgetTypeEnum::ChapterTitle);
-        } else if (v.contains(WidgetTypeEnum::ChapterTitle)) {
-            v.removeOne(WidgetTypeEnum::BookTitle); 
-        }
-    };
-    checkTitles(readingSettings.widgetHeaderLeft);
-    checkTitles(readingSettings.widgetFooterLeft);
-
     // Only allow each widget appear once
     uint32_t seenMask = 0;
     for (auto* zone : {&readingSettings.widgetHeaderLeft, &readingSettings.widgetHeaderRight, &readingSettings.widgetFooterLeft, &readingSettings.widgetFooterRight}) {
@@ -165,4 +162,14 @@ void TweaksSettings::validateWidgets() {
 
         zone->erase(it, zone->end());
     }
+
+    // Don't allow BookTitle and ChapterTitle to be placed in the same header or footer
+    auto checkTitles = [](QVector<WidgetTypeEnum>& left, QVector<WidgetTypeEnum>& center) {
+        if (left.contains(WidgetTypeEnum::BookTitle) || center.contains(WidgetTypeEnum::BookTitle)) {
+            left.removeOne(WidgetTypeEnum::ChapterTitle);
+            center.removeOne(WidgetTypeEnum::ChapterTitle);
+        }
+    };
+    checkTitles(readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter);
+    checkTitles(readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter);
 }

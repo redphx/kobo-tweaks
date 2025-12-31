@@ -208,10 +208,12 @@ struct TweaksReadingSettings {
     int headerFooterHeightScale = 100;
     int headerFooterMargins = 50;
 
-    QVector<WidgetTypeEnum> widgetHeaderLeft  = {};
-    QVector<WidgetTypeEnum> widgetHeaderRight = {};
-    QVector<WidgetTypeEnum> widgetFooterLeft  = {};
-    QVector<WidgetTypeEnum> widgetFooterRight = {};
+    QVector<WidgetTypeEnum> widgetHeaderLeft   = {};
+    QVector<WidgetTypeEnum> widgetHeaderCenter = {};
+    QVector<WidgetTypeEnum> widgetHeaderRight  = {};
+    QVector<WidgetTypeEnum> widgetFooterLeft   = {};
+    QVector<WidgetTypeEnum> widgetFooterCenter = {};
+    QVector<WidgetTypeEnum> widgetFooterRight  = {};
 
     int widgetSpacing = 10;
     WidgetSeparatorEnum widgetSeparator = WidgetSeparatorEnum::Invalid;
@@ -228,10 +230,12 @@ class TweaksSettings {
     const char* READING_HEADER_FOOTER_HEIGHT_SCALE = "Reading/HeaderFooterHeightScale";
     const char* READING_HEADER_FOOTER_MARGINS = "Reading/HeaderFooterMargins";
 
-    const char* READING_WIDGET_HEADER_LEFT  = "Reading.Widget/HeaderLeft";
-    const char* READING_WIDGET_HEADER_RIGHT = "Reading.Widget/HeaderRight";
-    const char* READING_WIDGET_FOOTER_LEFT  = "Reading.Widget/FooterLeft";
-    const char* READING_WIDGET_FOOTER_RIGHT = "Reading.Widget/FooterRight";
+    const char* READING_WIDGET_HEADER_LEFT   = "Reading.Widget/HeaderLeft";
+    const char* READING_WIDGET_HEADER_CENTER = "Reading.Widget/HeaderCenter";
+    const char* READING_WIDGET_HEADER_RIGHT  = "Reading.Widget/HeaderRight";
+    const char* READING_WIDGET_FOOTER_LEFT   = "Reading.Widget/FooterLeft";
+    const char* READING_WIDGET_FOOTER_CENTER = "Reading.Widget/FooterCenter";
+    const char* READING_WIDGET_FOOTER_RIGHT  = "Reading.Widget/FooterRight";
 
     const char* READING_WIDGET_SEPARATOR = "Reading.Widget/Separator";
     const char* READING_WIDGET_SPACING   = "Reading.Widget/Spacing";
