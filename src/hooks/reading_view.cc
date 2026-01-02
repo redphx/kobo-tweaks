@@ -74,8 +74,8 @@ namespace ReadingViewHook {
         gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
 
         QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, [view, adapters, headerContainer, footerContainer, readingSettings] {
-            headerContainer->setupZones(readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
-            footerContainer->setupZones(readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
+            headerContainer->setupZones(view, adapters, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
+            footerContainer->setupZones(view, adapters, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
         });
     }
 

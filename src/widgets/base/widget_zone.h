@@ -19,7 +19,7 @@ class TwWidgetZone : public QWidget {
     Q_OBJECT
 
 public:
-    TwWidgetZone(int spacing, QWidget* parent = nullptr) : QWidget(parent) {
+    TwWidgetZone(TweaksReadingSettings stt, QWidget* parent = nullptr) : QWidget(parent), readingSettings(stt) {
         setContentsMargins(0, 0, 0, 0);
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         // container->setStyleSheet("border: 1px solid black;");
@@ -27,10 +27,10 @@ public:
         // Setup Widgets container's layout
         lay = new QHBoxLayout(this);
         lay->setContentsMargins(0, 0, 0, 0);
-        lay->setSpacing(spacing);
+        lay->setSpacing(readingSettings.widgetSpacing);
     }
 
-    void setupWidgets(ReadingViewAdapters adapters, ReadingView* readingView, TweaksReadingSettings readingSettings, bool isLeft, QVector<WidgetTypeEnum> widgetTypes) {
+    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, TweaksReadingSettings readingSettings, bool isLeft, QVector<WidgetTypeEnum> widgetTypes) {
         int idx = -1;
         for (auto widgetType : widgetTypes) {
             ++idx;
@@ -149,4 +149,5 @@ public:
 
 private:
     QHBoxLayout* lay;
+    TweaksReadingSettings readingSettings;
 };

@@ -2,6 +2,7 @@
 #include "../../common.h"
 #include "../../settings/settings.h"
 #include "../../adapters/reading_view.h"
+#include "../../widgets/base/widget_zone.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -11,7 +12,7 @@ class TwWidgetZonesContainer : public QWidget {
 
 public:
     TwWidgetZonesContainer(TweaksReadingSettings stt, const QString& qss, QWidget* parent = nullptr) : QWidget(parent), readingSettings(stt) {
-        setContentsMargins(0, 0, 0, 0);
+        setContentsMargins(readingSettings.headerFooterMargins, 0, readingSettings.headerFooterMargins, 0);
         setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
         setStyleSheet(qss);
 
@@ -20,7 +21,7 @@ public:
         lay->setContentsMargins(0, 0, 0, 0);
     }
 
-    void setupZones(QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum>, QVector<WidgetTypeEnum> rightWidgets) {
+    void setupZones(ReadingView* readingView, ReadingViewAdapters adapters, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum>, QVector<WidgetTypeEnum> rightWidgets) {
         if (addedWidgets) {
             return;
         }
@@ -28,32 +29,17 @@ public:
 
         bool isLeft = true;
         for (auto widgetTypes : {leftWidgets, rightWidgets}) {
-            // Setup Widgets container
-            QWidget* container = new QWidget;
-            // Set container's width to the original margin value
-            // container->setMinimumWidth(originalContentsMargins);
-            container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-            // container->setStyleSheet("border: 1px solid black;");
-
-            // Setup Widgets container's layout
-            QHBoxLayout* containerLayout = new QHBoxLayout(container);
-            containerLayout->setContentsMargins(0, 0, 0, 0);
-            containerLayout->setSpacing(readingSettings.widgetSpacing);
-
-            if (!isLeft) {
-                containerLayout->addStretch(1);
-            }
+            TwWidgetZone* zone = new TwWidgetZone(readingSettings);
+            zone->setupWidgets(readingView, adapters, readingSettings, isLeft, widgetTypes);
 
             // Insert widgets container into parent layout
             if (isLeft) {
                 // Insert left
-                container->setContentsMargins(readingSettings.headerFooterMargins, 0, 0, 0);
-                lay->addWidget(container, 0, Qt::AlignLeft);
+                lay->addWidget(zone, 0, Qt::AlignLeft);
                 // lay->addStretch(1);
             } else {
                 // Insert right
-                container->setContentsMargins(0, 0, readingSettings.headerFooterMargins, 0);
-                lay->addWidget(container, 0, Qt::AlignRight);
+                lay->addWidget(zone, 0, Qt::AlignRight);
             }
 
             if (isLeft) {
