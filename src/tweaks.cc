@@ -3,6 +3,7 @@
 #include "debug_utils.h"
 #include "widgets/clock_widget.h"
 #include "hooks/reading_view.h"
+#include "adapters/reading_view.h"
 
 #include <QWidget>
 #include <QString>
@@ -191,8 +192,8 @@ void hook_ReadingView_constructor(ReadingView* self) {
 
     if (hasNickelClock && ConfirmationDialogFactory_showOKDialog) {
         // Show a dialog prompting the user to reboot their device
-        auto readerDoneLoadingAdapter = new ReadingViewHook::ReaderDoneLoadingAdapter(self);
-        QObject::connect(readerDoneLoadingAdapter, &ReadingViewHook::ReaderDoneLoadingAdapter::readerDoneLoading, []() {
+        auto readerDoneLoadingAdapter = new ReadingViewAdapter::ReaderDoneLoading(self);
+        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, []() {
             ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please restart the device to complete the process."));
         });
     }

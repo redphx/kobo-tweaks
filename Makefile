@@ -14,6 +14,7 @@ override SOURCES += \
 	src/utils.cc \
 	src/settings/settings.cc \
 	src/debug_utils.cc \
+	src/adapters/reading_view.cc \
 	src/hooks/reading_view.cc
 
 override MOCS += \
@@ -32,6 +33,7 @@ override MOCS += \
 	src/widgets/chapter_title_widget.h \
 	src/widgets/clock_widget.h \
 	src/widgets/separator_label.h \
+	src/adapters/reading_view.h \
 	src/hooks/reading_view.h
 
 include NickelHook/NickelHook.mk
