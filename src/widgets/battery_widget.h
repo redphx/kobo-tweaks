@@ -14,7 +14,6 @@
 
 struct TwBatteryWidgetConfig {
     bool isDarkMode = false;
-    bool isLeft = false;
     BatteryStyleEnum defaultStyle = BatteryStyleEnum::IconLevel;
     BatteryStyleEnum chargingStyle = BatteryStyleEnum::IconLevel;
     int showWhenBelow = 100;
@@ -28,7 +27,6 @@ class TwBatteryWidget : public QWidget {
     QLabel* iconLabel = nullptr;
     QLabel* levelLabel = nullptr;
 
-    bool isLeft = false;
     int currentDarkMode = false;
     int currentBatteryLevel = -1;
     ChargingState currentChargingState = ChargingState::Unplugged;
@@ -48,7 +46,7 @@ class TwBatteryWidget : public QWidget {
 
 public:
     explicit TwBatteryWidget(TwBatteryWidgetConfig config, HardwareInterface* h, QWidget* parent = nullptr)
-        : QWidget(parent), isLeft(config.isLeft), currentDarkMode(config.isDarkMode), defaultStyle(config.defaultStyle), chargingStyle(config.chargingStyle), showWhenBelow(config.showWhenBelow), hw(h)
+        : QWidget(parent), currentDarkMode(config.isDarkMode), defaultStyle(config.defaultStyle), chargingStyle(config.chargingStyle), showWhenBelow(config.showWhenBelow), hw(h)
     {
         setObjectName(QStringLiteral("twks_battery"));
         setContentsMargins(0, 0, 0, 0);
@@ -232,11 +230,6 @@ private:
         layout->setSpacing(6);
         setLayout(layout);
 
-        // Align right -> stretch first
-        if (!isLeft) {
-            layout->addStretch(1);
-        }
-
         if (currentStyle == BatteryStyleEnum::LevelIcon) {
             layout->addWidget(levelLabel);
             layout->addWidget(iconLabel);
@@ -247,11 +240,6 @@ private:
         } else {
             layout->addWidget(iconLabel);
             layout->addWidget(levelLabel);
-        }
-
-        // Align left -> stretch last
-        if (isLeft) {
-            layout->addStretch(1);
         }
     }
 

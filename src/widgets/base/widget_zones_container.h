@@ -30,7 +30,7 @@ public:
         bool isLeft = true;
         for (auto widgetTypes : {leftWidgets, rightWidgets}) {
             TwWidgetZone* zone = new TwWidgetZone(readingSettings);
-            zone->setupWidgets(readingView, adapters, volume, readingSettings, isLeft, widgetTypes);
+            zone->setupWidgets(readingView, adapters, volume, readingSettings, widgetTypes);
 
             // Insert widgets container into parent layout
             if (isLeft) {

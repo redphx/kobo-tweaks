@@ -30,7 +30,7 @@ public:
         lay->setSpacing(readingSettings.widgetSpacing);
     }
 
-    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, const Volume* volume, TweaksReadingSettings readingSettings, bool isLeft, QVector<WidgetTypeEnum> widgetTypes) {
+    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, const Volume* volume, TweaksReadingSettings readingSettings, QVector<WidgetTypeEnum> widgetTypes) {
         int idx = -1;
         for (auto widgetType : widgetTypes) {
             ++idx;
@@ -60,7 +60,6 @@ public:
 
                         TwBatteryWidgetConfig config {};
                         config.isDarkMode = adapters.darkMode->getDarkMode();
-                        config.isLeft = isLeft;
                         config.defaultStyle = readingSettings.widgetBatteryStyle;
                         config.chargingStyle = readingSettings.widgetBatteryStyleCharging;
                         config.showWhenBelow = readingSettings.widgetBatteryShowWhenBelow;
