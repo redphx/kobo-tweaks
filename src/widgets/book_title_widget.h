@@ -11,13 +11,13 @@ class TwBookTitleWidget : public TwElidedLabel {
 public:
     TwBookTitleWidget(QWidget* parent = nullptr) : TwElidedLabel(parent) {}
 
-    void setTitle(const Content& content) {
+    void setTitle(const Content* content) {
         if (!Content_getTitle) {
             return;
         }
 
         QString title;
-        Content_getTitle(&title, &content);
+        Content_getTitle(&title, content);
 
         // TODO: remove this line when we're able to get the non-uppercase chapter title
         title = title.toUpper();

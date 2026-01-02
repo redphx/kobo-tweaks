@@ -31,20 +31,7 @@ namespace ReadingViewHook {
             return;
         }
 
-        // These adapters abstract the logic and ensure that the update methods on the widgets aren't called after either the widget or the ReadingView has been destroyed
-        auto pageChangedAdapter = new ReadingViewAdapter::PageChanged(view);
-        auto darkModeAdapter = new ReadingViewAdapter::DarkMode(gestureContainer, view);
-
-        auto renderVolumeAdapter = new ReadingViewAdapter::RenderVolume(view);
-        QObject::connect(renderVolumeAdapter, &ReadingViewAdapter::RenderVolume::renderVolume, [](const Volume& volume) {
-            currentVolume = &volume;
-        });
-
-        isDarkMode = darkModeAdapter->getDarkMode();
-        QObject::connect(darkModeAdapter, &ReadingViewAdapter::DarkMode::darkModeChanged, [](bool dark) {
-            isDarkMode = dark;
-        });
-
+        // Update QSS
         QString rootQss = view->styleSheet();
         view->setStyleSheet(Patch::ReadingView::reduceSpacerHeight(rootQss));
 
@@ -55,13 +42,24 @@ namespace ReadingViewHook {
         if (readingSettings.headerFooterHeightScale < 100) {
             patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
         }
-
         patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("TwWidgetZonesContainer"));
+
+        // These adapters abstract the logic and ensure that the update methods on the widgets aren't called after either the widget or the ReadingView has been destroyed
+        auto renderVolumeAdapter = new ReadingViewAdapter::RenderVolume(view);
+        QObject::connect(renderVolumeAdapter, &ReadingViewAdapter::RenderVolume::renderVolume, [](const Volume& volume) {
+            currentVolume = &volume;
+        });
+
+        auto darkModeAdapter = new ReadingViewAdapter::DarkMode(gestureContainer, view);
+        isDarkMode = darkModeAdapter->getDarkMode();
+        QObject::connect(darkModeAdapter, &ReadingViewAdapter::DarkMode::darkModeChanged, [](bool dark) {
+            isDarkMode = dark;
+        });
 
         auto readerDoneLoadingAdapter = new ReadingViewAdapter::ReaderDoneLoading(view);
 
         ReadingViewAdapters adapters {};
-        adapters.pageChanged = pageChangedAdapter;
+        adapters.pageChanged = new ReadingViewAdapter::PageChanged(view);
         adapters.darkMode = darkModeAdapter;
         adapters.renderVolume = renderVolumeAdapter;
         adapters.readerDoneLoading = readerDoneLoadingAdapter;
@@ -74,8 +72,8 @@ namespace ReadingViewHook {
         gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
 
         QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, [view, adapters, headerContainer, footerContainer, readingSettings] {
-            headerContainer->setupZones(view, adapters, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
-            footerContainer->setupZones(view, adapters, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
+            headerContainer->setupZones(view, adapters, currentVolume, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
+            footerContainer->setupZones(view, adapters, currentVolume, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
         });
     }
 
