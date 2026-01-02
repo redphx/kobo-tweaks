@@ -21,7 +21,7 @@ public:
         lay->setContentsMargins(0, 0, 0, 0);
     }
 
-    void setupZones(ReadingView* readingView, ReadingViewAdapters adapters, const Volume* volume, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum>, QVector<WidgetTypeEnum> rightWidgets) {
+    void setupZones(ReadingView* readingView, ReadingViewAdapters adapters, const QString& contentTitle, QVector<WidgetTypeEnum> leftWidgets, QVector<WidgetTypeEnum>, QVector<WidgetTypeEnum> rightWidgets) {
         if (addedWidgets) {
             return;
         }
@@ -30,7 +30,7 @@ public:
         bool isLeft = true;
         for (auto widgetTypes : {leftWidgets, rightWidgets}) {
             TwWidgetZone* zone = new TwWidgetZone(readingSettings);
-            zone->setupWidgets(readingView, adapters, volume, readingSettings, widgetTypes);
+            zone->setupWidgets(readingView, adapters, contentTitle, readingSettings, widgetTypes);
 
             // Insert widgets container into parent layout
             if (isLeft) {

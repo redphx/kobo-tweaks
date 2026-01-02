@@ -30,7 +30,7 @@ public:
         lay->setSpacing(readingSettings.widgetSpacing);
     }
 
-    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, const Volume* volume, TweaksReadingSettings readingSettings, QVector<WidgetTypeEnum> widgetTypes) {
+    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, const QString& contentTitle, TweaksReadingSettings readingSettings, QVector<WidgetTypeEnum> widgetTypes) {
         int idx = -1;
         for (auto widgetType : widgetTypes) {
             ++idx;
@@ -85,9 +85,7 @@ public:
                     break;
                 case WidgetTypeEnum::BookTitle:
                     {
-                        auto bookTitleWidget = new TwBookTitleWidget();
-                        bookTitleWidget->setTitle(volume);
-
+                        auto bookTitleWidget = new TwBookTitleWidget(contentTitle);
                         widget = bookTitleWidget;
                         stretch = true;
                     }

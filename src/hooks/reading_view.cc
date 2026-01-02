@@ -5,7 +5,8 @@ namespace ReadingViewHook {
     static TweaksSettings settings;
     static bool isDarkMode = false;
     static int originalContentsMargins = 0;
-    static const Volume* currentVolume = nullptr;
+
+    QString contentTitle;
 
     void constructor(ReadingView* view) {
         // Must parse settings before constructor since other widgets use them
@@ -47,7 +48,7 @@ namespace ReadingViewHook {
         // These adapters abstract the logic and ensure that the update methods on the widgets aren't called after either the widget or the ReadingView has been destroyed
         auto renderVolumeAdapter = new ReadingViewAdapter::RenderVolume(view);
         QObject::connect(renderVolumeAdapter, &ReadingViewAdapter::RenderVolume::renderVolume, [](const Volume& volume) {
-            currentVolume = &volume;
+            Content_getTitle(&contentTitle, &volume);
         });
 
         auto darkModeAdapter = new ReadingViewAdapter::DarkMode(gestureContainer, view);
@@ -72,8 +73,8 @@ namespace ReadingViewHook {
         gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
 
         QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, [view, adapters, headerContainer, footerContainer, readingSettings] {
-            headerContainer->setupZones(view, adapters, currentVolume, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
-            footerContainer->setupZones(view, adapters, currentVolume, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
+            headerContainer->setupZones(view, adapters, contentTitle, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
+            footerContainer->setupZones(view, adapters, contentTitle, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
         });
     }
 

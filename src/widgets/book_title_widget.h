@@ -9,18 +9,8 @@ class TwBookTitleWidget : public TwElidedLabel {
     Q_OBJECT
 
 public:
-    TwBookTitleWidget(QWidget* parent = nullptr) : TwElidedLabel(parent) {}
-
-    void setTitle(const Content* content) {
-        if (!Content_getTitle) {
-            return;
-        }
-
-        QString title;
-        Content_getTitle(&title, content);
-
-        // TODO: remove this line when we're able to get the non-uppercase chapter title
-        title = title.toUpper();
-        setFullText(title);
+    TwBookTitleWidget(const QString& contentTitle, QWidget* parent = nullptr) : TwElidedLabel(parent) {
+        // TODO: remove toUpper() when we're able to get the non-uppercase chapter title
+        setFullText(contentTitle.toUpper());
     }
 };
