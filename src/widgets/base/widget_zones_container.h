@@ -15,6 +15,7 @@ public:
         setContentsMargins(readingSettings.headerFooterMargins, 0, readingSettings.headerFooterMargins, 0);
         setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Minimum);
         setStyleSheet(qss);
+        setAttribute(Qt::WA_TransparentForMouseEvents);
 
         lay = new QHBoxLayout(this);
         lay->setSpacing(readingSettings.widgetSpacing);
