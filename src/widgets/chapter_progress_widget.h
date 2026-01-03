@@ -47,7 +47,7 @@ public:
             return;
         }
 
-        currentPercentage = qBound(1, currentPage * 100 / totalPages, 100);
+        currentPercentage = qBound(0, (currentPage - 1) * 100 / totalPages, 100);
         updateDisplay();
     }
 
