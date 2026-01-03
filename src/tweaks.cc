@@ -145,6 +145,36 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc     = "ReadingView::fullBookTotalPages()",
         .optional = true,
     },
+    {
+        .name     = "_ZN11ReadingView20hasValidReadingStatsEv",
+        .out      = nh_symoutptr(ReadingView_hasValidReadingStats),
+        .desc     = "ReadingView::hasValidReadingStats()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN11ReadingView12readingStatsEv",
+        .out      = nh_symoutptr(ReadingView_readingStats),
+        .desc     = "ReadingView::readingStats()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZNK12ReadingStats22currentChapterEstimateEv",
+        .out      = nh_symoutptr(ReadingStats_currentChapterEstimate),
+        .desc     = "ReadingStats::currentChapterEstimate()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZNK12ReadingStats22currentChapterEstimateEv",
+        .out      = nh_symoutptr(ReadingStats_currentChapterEstimate),
+        .desc     = "ReadingStats::currentChapterEstimate()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZN12ReadingStatsD1Ev",
+        .out      = nh_symoutptr(ReadingStats_deconstructor),
+        .desc     = "ReadingStats::deconstructor()",
+        .optional = true,
+    },
 
     {
         .name = "_ZN15HardwareFactory14sharedInstanceEv",

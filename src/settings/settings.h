@@ -103,7 +103,7 @@ enum class WidgetTypeEnum {
     Invalid,
     Battery,
     BookPage, BookTitle,
-    ChapterPage, ChapterProgress, ChapterTitle,
+    ChapterPage, ChapterProgress, ChapterTime, ChapterTitle,
     Clock
 };
 inline uint qHash(WidgetTypeEnum e, uint seed = 0) { return qHashEnum(e, seed); }
@@ -118,6 +118,7 @@ public:
             {QStringLiteral("booktitle"),       EnumType::BookTitle},
             {QStringLiteral("chapterpage"),     EnumType::ChapterPage},
             {QStringLiteral("chapterprogress"), EnumType::ChapterProgress},
+            {QStringLiteral("chaptertime"),     EnumType::ChapterTime},
             {QStringLiteral("chaptertitle"),    EnumType::ChapterTitle},
             {QStringLiteral("clock"),           EnumType::Clock},
         };
@@ -131,6 +132,7 @@ public:
             {EnumType::BookTitle,       QStringLiteral("BookTitle")},
             {EnumType::ChapterPage,     QStringLiteral("ChapterPage")},
             {EnumType::ChapterProgress, QStringLiteral("ChapterProgress")},
+            {EnumType::ChapterTime,     QStringLiteral("ChapterTime")},
             {EnumType::ChapterTitle,    QStringLiteral("ChapterTitle")},
             {EnumType::Clock,           QStringLiteral("Clock")},
             {EnumType::Invalid,         ""},

@@ -31,6 +31,7 @@ typedef QWidget ReadingFooter;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
 typedef void ReadingSettings;
+typedef void ReadingStats;
 
 class Content { public: virtual ~Content() {} };
 class Volume : public Content { public: virtual ~Volume() {} };
@@ -45,6 +46,10 @@ extern int (*ReadingView_chapterCurrentPage)(ReadingView* self);
 extern int (*ReadingView_chapterTotalPages)(ReadingView* self);
 extern int (*ReadingView_fullBookCurrentPage)(ReadingView* self);
 extern int (*ReadingView_fullBookTotalPages)(ReadingView* self);
+extern bool (*ReadingView_hasValidReadingStats)(ReadingView* self);
+extern ReadingStats* (*ReadingView_readingStats)(ReadingStats* result, ReadingView* self);
+extern int (*ReadingStats_currentChapterEstimate)(ReadingStats* self);
+extern void (*ReadingStats_deconstructor)(ReadingStats* self);
 extern void (*Content_getTitle)(QString* result, const Content* self);
 
 extern int (*ReadingSettings_getBookProgressType)(ReadingSettings* self);

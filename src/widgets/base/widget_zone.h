@@ -9,6 +9,7 @@
 #include "../../widgets/book_title_widget.h"
 #include "../../widgets/chapter_page_widget.h"
 #include "../../widgets/chapter_progress_widget.h"
+#include "../../widgets/chapter_time_widget.h"
 #include "../../widgets/chapter_title_widget.h"
 #include "../../widgets/separator_label.h"
 
@@ -119,6 +120,31 @@ public:
                             }
                         });
                         widget = chapterProgressWidget;
+                    }
+                    break;
+                case WidgetTypeEnum::ChapterTime:
+                    {
+                        TwChapterTimeWidgetConfig config {};
+                        config.isDarkMode = adapters.darkMode->getDarkMode();
+
+                        auto chapterTimeWidget = new TwChapterTimeWidget(config);
+                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, [readingView, chapterTimeWidget]() {
+                            bool hasValidStats = ReadingView_hasValidReadingStats(readingView);
+                            int seconds = 0;
+                            if (hasValidStats) {
+                                ReadingStats* stats = alloca(128);  // only needs 8
+                                ReadingView_readingStats(stats, readingView);
+                                seconds = ReadingStats_currentChapterEstimate(stats);
+                                ReadingStats_deconstructor(stats);
+                            } else {
+                                int currentPage = ReadingView_chapterCurrentPage(readingView);
+                                int totalPages = ReadingView_chapterTotalPages(readingView);
+                                seconds = qMax(1, totalPages - currentPage) * 60;
+                            }
+
+                            chapterTimeWidget->updateEstimation(seconds);
+                        });
+                        widget = chapterTimeWidget;
                     }
                     break;
                 case WidgetTypeEnum::ChapterTitle:

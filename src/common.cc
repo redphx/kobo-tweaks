@@ -6,6 +6,10 @@ int (*ReadingView_chapterCurrentPage)(ReadingView* self) = nullptr;
 int (*ReadingView_chapterTotalPages)(ReadingView* self) = nullptr;
 int (*ReadingView_fullBookCurrentPage)(ReadingView* self) = nullptr;
 int (*ReadingView_fullBookTotalPages)(ReadingView* self) = nullptr;
+bool (*ReadingView_hasValidReadingStats)(ReadingView* self) = nullptr;
+ReadingStats* (*ReadingView_readingStats)(ReadingStats* result, ReadingView* self) = nullptr;
+int (*ReadingStats_currentChapterEstimate)(ReadingStats* self) = nullptr;
+void (*ReadingStats_deconstructor)(ReadingStats* self) = nullptr;
 void (*Content_getTitle)(QString* result, const Content* self) = nullptr;
 
 int (*ReadingSettings_getBookProgressType)(ReadingSettings* self) = nullptr;

@@ -30,6 +30,7 @@ override MOCS += \
 	src/widgets/book_title_widget.h \
 	src/widgets/chapter_page_widget.h \
 	src/widgets/chapter_progress_widget.h \
+	src/widgets/chapter_time_widget.h \
 	src/widgets/chapter_title_widget.h \
 	src/widgets/clock_widget.h \
 	src/widgets/separator_label.h \

@@ -47,13 +47,13 @@
         <file alias="kobo_tweaks/images/battery_charged_dark.png">resources/images/battery_charged_dark.png</file>
 
         <file alias="kobo_tweaks/images/book_progress.png">resources/images/book_progress.png</file>
-        <file alias="kobo_tweaks/images/book_remaining.png">resources/images/book_remaining.png</file>
+        <file alias="kobo_tweaks/images/book_time.png">resources/images/book_time.png</file>
         <file alias="kobo_tweaks/images/chapter_progress.png">resources/images/chapter_progress.png</file>
-        <file alias="kobo_tweaks/images/chapter_remaining.png">resources/images/chapter_remaining.png</file>
+        <file alias="kobo_tweaks/images/chapter_time.png">resources/images/chapter_time.png</file>
 
         <file alias="kobo_tweaks/images/book_progress_dark.png">resources/images/book_progress_dark.png</file>
-        <file alias="kobo_tweaks/images/book_remaining_dark.png">resources/images/book_remaining_dark.png</file>
+        <file alias="kobo_tweaks/images/book_time_dark.png">resources/images/book_time_dark.png</file>
         <file alias="kobo_tweaks/images/chapter_progress_dark.png">resources/images/chapter_progress_dark.png</file>
-        <file alias="kobo_tweaks/images/chapter_remaining_dark.png">resources/images/chapter_remaining_dark.png</file>
+        <file alias="kobo_tweaks/images/chapter_time_dark.png">resources/images/chapter_time_dark.png</file>
     </qresource>
 </RCC>
