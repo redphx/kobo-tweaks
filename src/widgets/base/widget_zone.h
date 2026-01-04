@@ -73,15 +73,12 @@ public:
                     break;
                 case WidgetTypeEnum::BookPage:
                     {
-                        auto bookPageWidget = new TwBookPageWidget();
-                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, [readingView, bookPageWidget]() {
-                            if (ReadingView_fullBookCurrentPage && ReadingView_fullBookTotalPages) {
-                                int currentPage = ReadingView_fullBookCurrentPage(readingView);
-                                int totalPages = ReadingView_fullBookTotalPages(readingView);
-                                bookPageWidget->setProgress(currentPage, totalPages);
-                            }
-                        });
-                        widget = bookPageWidget;
+                        TwBookPageConfig config {};
+
+                        auto tmpWidget = new TwBookPageWidget(readingView, adapters, config);
+                        tmpWidget->init();
+
+                        widget = tmpWidget;
                     }
                     break;
                 case WidgetTypeEnum::BookTitle:
@@ -93,58 +90,36 @@ public:
                     break;
                 case WidgetTypeEnum::ChapterPage:
                     {
-                        auto chapterPageWidget = new TwChapterPageWidget();
-                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, [readingView, chapterPageWidget]() {
-                            if (ReadingView_chapterCurrentPage && ReadingView_chapterTotalPages) {
-                                int currentPage = ReadingView_chapterCurrentPage(readingView);
-                                int totalPages = ReadingView_chapterTotalPages(readingView);
-                                chapterPageWidget->setProgress(currentPage, totalPages);
-                            }
-                        });
-                        widget = chapterPageWidget;
+                        TwChapterPageConfig config {};
+
+                        auto tmpWidget = new TwChapterPageWidget(readingView, adapters, config);
+                        tmpWidget->init();
+
+                        widget = tmpWidget;
                     }
                     break;
                 case WidgetTypeEnum::ChapterProgress:
                     {
-                        TwChapterProgressWidgetConfig config {};
+                        TwChapterProgressConfig config {};
+                        config.showIcon = true;
                         config.isDarkMode = adapters.darkMode->getDarkMode();
 
-                        auto chapterProgressWidget = new TwChapterProgressWidget(config);
+                        auto tmpWidget = new TwChapterProgressWidget(readingView, adapters, config);
+                        tmpWidget->init();
 
-                        QObject::connect(adapters.darkMode, &ReadingViewAdapter::DarkMode::darkModeChanged, chapterProgressWidget, &TwChapterProgressWidget::setDarkMode, Qt::UniqueConnection);
-                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, [readingView, chapterProgressWidget]() {
-                            if (ReadingView_chapterCurrentPage && ReadingView_chapterTotalPages) {
-                                int currentPage = ReadingView_chapterCurrentPage(readingView);
-                                int totalPages = ReadingView_chapterTotalPages(readingView);
-                                chapterProgressWidget->setProgress(currentPage, totalPages);
-                            }
-                        });
-                        widget = chapterProgressWidget;
+                        widget = tmpWidget;
                     }
                     break;
                 case WidgetTypeEnum::ChapterTime:
                     {
-                        TwChapterTimeWidgetConfig config {};
+                        TwChapterTimeConfig config {};
+                        config.showIcon = true;
                         config.isDarkMode = adapters.darkMode->getDarkMode();
 
-                        auto chapterTimeWidget = new TwChapterTimeWidget(config);
-                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, [readingView, chapterTimeWidget]() {
-                            bool hasValidStats = ReadingView_hasValidReadingStats(readingView);
-                            int seconds = 0;
-                            if (hasValidStats) {
-                                ReadingStats* stats = alloca(128);  // only needs 8
-                                ReadingView_readingStats(stats, readingView);
-                                seconds = ReadingStats_currentChapterEstimate(stats);
-                                ReadingStats_deconstructor(stats);
-                            } else {
-                                int currentPage = ReadingView_chapterCurrentPage(readingView);
-                                int totalPages = ReadingView_chapterTotalPages(readingView);
-                                seconds = qMax(1, totalPages - currentPage) * 60;
-                            }
+                        auto tmpWidget = new TwChapterTimeWidget(readingView, adapters, config);
+                        tmpWidget->init();
 
-                            chapterTimeWidget->updateEstimation(seconds);
-                        });
-                        widget = chapterTimeWidget;
+                        widget = tmpWidget;
                     }
                     break;
                 case WidgetTypeEnum::ChapterTitle:

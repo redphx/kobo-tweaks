@@ -1,75 +1,41 @@
 #pragma once
 #include "../common.h"
+#include "../adapters/reading_view.h"
+#include "base/icon_label.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
 
-struct TwChapterTimeWidgetConfig {
-    bool isDarkMode = false;
-};
+struct TwChapterTimeConfig : TwIconLabelConfig {};
 
-class TwChapterTimeWidget : public QWidget {
+class TwChapterTimeWidget : public TwIconLabel {
     Q_OBJECT
 
 public:
-    TwChapterTimeWidget(TwChapterTimeWidgetConfig config, QWidget* parent = nullptr) : QWidget(parent), currentDarkMode(config.isDarkMode) {
-        setContentsMargins(0, 0, 0, 0);
-        setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    TwChapterTimeWidget(ReadingView* rdv, ReadingViewAdapters adapters, TwChapterTimeConfig config, QWidget* parent = nullptr) : TwIconLabel(rdv, adapters, config, parent) {}
 
-        iconLabel = new QLabel();
-        iconLabel->setContentsMargins(0, 0, 0, 0);
-        iconLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        loadIcon();
-
-        progressLabel = new QLabel();
-        progressLabel->setObjectName(QStringLiteral("twks_label"));
-        progressLabel->setContentsMargins(0, 0, 0, 0);
-        progressLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-        QHBoxLayout* layout = new QHBoxLayout(this);
-        layout->setContentsMargins(0, 0, 0, 0);
-        layout->setSpacing(6);
-        layout->addWidget(iconLabel, 0);
-        layout->addWidget(progressLabel, 0);
-        setLayout(layout);
-
-        show();
-    }
-
-    void setDarkMode(bool dark) {
-        currentDarkMode = dark;
-        updateDisplay();
-    }
-
-    void updateEstimation(int seconds) {
-        currentSeconds = seconds;
-        updateDisplay();
-    }
-
-private:
-    QLabel* iconLabel = nullptr;
-    QLabel* progressLabel = nullptr;
-
-    bool currentDarkMode = false;
-    int currentSeconds = 0;
-
-    bool lastDarkMode = false;
-
-    void loadIcon() {
-        QPixmap icon(currentDarkMode ? QStringLiteral(":/kobo_tweaks/images/chapter_time_dark.png") : QStringLiteral(":/kobo_tweaks/images/chapter_time.png"));
-        iconLabel->setPixmap(icon);
-        iconLabel->setFixedSize(icon.size());
-    }
-
-    void updateDisplay() {
-        if (currentDarkMode != lastDarkMode) {
-            lastDarkMode = currentDarkMode;
-            loadIcon();
+    void onPageChanged() override {
+        if (!ReadingView_hasValidReadingStats || !ReadingView_readingStats || !ReadingStats_currentChapterEstimate || !ReadingView_chapterCurrentPage || !ReadingView_chapterTotalPages) {
+            return;
         }
 
-        int hours = currentSeconds / 3600;
-        int minutes = (currentSeconds % 3600) / 60;
-        if (currentSeconds <= 60) {
+        bool hasValidStats = ReadingView_hasValidReadingStats(readingView);
+        int seconds = 0;
+        if (hasValidStats) {
+            ReadingStats* stats = alloca(128);  // only needs 8
+            ReadingView_readingStats(stats, readingView);
+            seconds = ReadingStats_currentChapterEstimate(stats);
+            ReadingStats_deconstructor(stats);
+        } else {
+            // No stats -> estimate 1 minute per page
+            int currentPage = ReadingView_chapterCurrentPage(readingView);
+            int totalPages = ReadingView_chapterTotalPages(readingView);
+            seconds = qMax(1, totalPages - currentPage) * 60;
+        }
+
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        if (seconds <= 60) {
             minutes = 1;
         }
 
@@ -84,6 +50,17 @@ private:
             text = QStringLiteral("%1m").arg(minutes);
         }
 
-        progressLabel->setText(text);
+        textLabel->setText(text);
+    }
+
+protected:
+    QString iconSrc() const override {
+        static const QString src = QStringLiteral(":/kobo_tweaks/images/chapter_time.png");
+        return src;
+    }
+
+    QString iconDarkSrc() const override {
+        static const QString src = QStringLiteral(":/kobo_tweaks/images/chapter_time_dark.png");
+        return src;
     }
 };
