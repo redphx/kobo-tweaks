@@ -48,7 +48,9 @@ extern int (*ReadingView_fullBookCurrentPage)(ReadingView* self);
 extern int (*ReadingView_fullBookTotalPages)(ReadingView* self);
 extern bool (*ReadingView_hasValidReadingStats)(ReadingView* self);
 extern ReadingStats* (*ReadingView_readingStats)(ReadingStats* result, ReadingView* self);
+extern int (*ReadingView_getCalculatedReadProgress)(ReadingView* self);
 extern int (*ReadingStats_currentChapterEstimate)(ReadingStats* self);
+extern int (*ReadingStats_restOfBookEstimate)(ReadingStats* self);
 extern void (*ReadingStats_deconstructor)(ReadingStats* self);
 extern void (*Content_getTitle)(QString* result, const Content* self);
 

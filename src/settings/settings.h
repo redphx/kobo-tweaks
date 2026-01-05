@@ -102,7 +102,7 @@ public:
 enum class WidgetTypeEnum {
     Invalid,
     Battery,
-    BookPage, BookTitle,
+    BookPage, BookProgress, BookTime, BookTitle,
     ChapterPage, ChapterProgress, ChapterTime, ChapterTitle,
     Clock
 };
@@ -115,6 +115,8 @@ public:
         static const QHash<QString, EnumType> map = {
             {QStringLiteral("battery"),         EnumType::Battery},
             {QStringLiteral("bookpage"),        EnumType::BookPage},
+            {QStringLiteral("bookprogress"),    EnumType::BookProgress},
+            {QStringLiteral("booktime"),        EnumType::BookTime},
             {QStringLiteral("booktitle"),       EnumType::BookTitle},
             {QStringLiteral("chapterpage"),     EnumType::ChapterPage},
             {QStringLiteral("chapterprogress"), EnumType::ChapterProgress},
@@ -129,6 +131,8 @@ public:
         static const QHash<EnumType, QString> map = {
             {EnumType::Battery,         QStringLiteral("Battery")},
             {EnumType::BookPage,        QStringLiteral("BookPage")},
+            {EnumType::BookProgress,    QStringLiteral("BookProgress")},
+            {EnumType::BookTime,        QStringLiteral("BookTime")},
             {EnumType::BookTitle,       QStringLiteral("BookTitle")},
             {EnumType::ChapterPage,     QStringLiteral("ChapterPage")},
             {EnumType::ChapterProgress, QStringLiteral("ChapterProgress")},

@@ -6,16 +6,16 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-struct TwChapterTimeConfig : TwIconLabelConfig {};
+struct TwBookTimeConfig : TwIconLabelConfig {};
 
-class TwChapterTimeWidget : public TwIconLabel {
+class TwBookTimeWidget : public TwIconLabel {
     Q_OBJECT
 
 public:
-    TwChapterTimeWidget(ReadingView* rdv, ReadingViewAdapters adapters, TwChapterTimeConfig config, QWidget* parent = nullptr) : TwIconLabel(rdv, adapters, config, parent) {}
+    TwBookTimeWidget(ReadingView* rdv, ReadingViewAdapters adapters, TwBookTimeConfig config, QWidget* parent = nullptr) : TwIconLabel(rdv, adapters, config, parent) {}
 
     void onPageChanged() override {
-        if (!ReadingView_hasValidReadingStats || !ReadingView_readingStats || !ReadingStats_currentChapterEstimate || !ReadingView_chapterCurrentPage || !ReadingView_chapterTotalPages) {
+        if (!ReadingView_hasValidReadingStats || !ReadingView_readingStats || !ReadingStats_restOfBookEstimate || !ReadingView_chapterCurrentPage || !ReadingView_chapterTotalPages) {
             return;
         }
 
@@ -24,7 +24,7 @@ public:
         if (hasValidStats) {
             ReadingStats* stats = alloca(128);  // only needs 8
             ReadingView_readingStats(stats, readingView);
-            seconds = ReadingStats_currentChapterEstimate(stats);
+            seconds = ReadingStats_restOfBookEstimate(stats);
             ReadingStats_deconstructor(stats);
         } else {
             // No stats -> estimate 1 minute per page
@@ -55,12 +55,12 @@ public:
 
 protected:
     QString iconSrc() const override {
-        static const QString src = QStringLiteral(":/kobo_tweaks/images/chapter_time.png");
+        static const QString src = QStringLiteral(":/kobo_tweaks/images/book_time.png");
         return src;
     }
 
     QString iconDarkSrc() const override {
-        static const QString src = QStringLiteral(":/kobo_tweaks/images/chapter_time_dark.png");
+        static const QString src = QStringLiteral(":/kobo_tweaks/images/book_time_dark.png");
         return src;
     }
 };

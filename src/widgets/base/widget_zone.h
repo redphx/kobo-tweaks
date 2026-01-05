@@ -6,6 +6,8 @@
 #include "../../widgets/clock_widget.h"
 #include "../../widgets/battery_widget.h"
 #include "../../widgets/book_page_widget.h"
+#include "../../widgets/book_progress_widget.h"
+#include "../../widgets/book_time_widget.h"
 #include "../../widgets/book_title_widget.h"
 #include "../../widgets/chapter_page_widget.h"
 #include "../../widgets/chapter_progress_widget.h"
@@ -76,6 +78,30 @@ public:
                         TwBookPageConfig config {};
 
                         auto tmpWidget = new TwBookPageWidget(readingView, adapters, config);
+                        tmpWidget->init();
+
+                        widget = tmpWidget;
+                    }
+                    break;
+                case WidgetTypeEnum::BookProgress:
+                    {
+                        TwBookProgressConfig config {};
+                        config.showIcon = true;
+                        config.isDarkMode = adapters.darkMode->getDarkMode();
+
+                        auto tmpWidget = new TwBookProgressWidget(readingView, adapters, config);
+                        tmpWidget->init();
+
+                        widget = tmpWidget;
+                    }
+                    break;
+                case WidgetTypeEnum::BookTime:
+                    {
+                        TwBookTimeConfig config {};
+                        config.showIcon = true;
+                        config.isDarkMode = adapters.darkMode->getDarkMode();
+
+                        auto tmpWidget = new TwBookTimeWidget(readingView, adapters, config);
                         tmpWidget->init();
 
                         widget = tmpWidget;

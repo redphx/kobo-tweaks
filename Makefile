@@ -18,16 +18,14 @@ override SOURCES += \
 	src/hooks/reading_view.cc
 
 override MOCS += \
-	src/tweaks.h \
-	src/patches.h \
-	src/utils.h \
-	src/settings/settings.h \
 	src/widgets/base/elided_label.h \
 	src/widgets/base/icon_label.h \
 	src/widgets/base/widget_zone.h \
 	src/widgets/base/widget_zones_container.h \
 	src/widgets/battery_widget.h \
 	src/widgets/book_page_widget.h \
+	src/widgets/book_progress_widget.h \
+	src/widgets/book_time_widget.h \
 	src/widgets/book_title_widget.h \
 	src/widgets/chapter_page_widget.h \
 	src/widgets/chapter_progress_widget.h \
@@ -36,6 +34,5 @@ override MOCS += \
 	src/widgets/clock_widget.h \
 	src/widgets/separator_label.h \
 	src/adapters/reading_view.h \
-	src/hooks/reading_view.h
 
 include NickelHook/NickelHook.mk

@@ -158,6 +158,12 @@ struct nh_dlsym TweaksDlsym[] = {
         .optional = true,
     },
     {
+        .name     = "_ZN11ReadingView25getCalculatedReadProgressEv",
+        .out      = nh_symoutptr(ReadingView_getCalculatedReadProgress),
+        .desc     = "ReadingView::getCalculatedReadProgress()",
+        .optional = true,
+    },
+    {
         .name     = "_ZNK12ReadingStats22currentChapterEstimateEv",
         .out      = nh_symoutptr(ReadingStats_currentChapterEstimate),
         .desc     = "ReadingStats::currentChapterEstimate()",
@@ -167,6 +173,12 @@ struct nh_dlsym TweaksDlsym[] = {
         .name     = "_ZNK12ReadingStats22currentChapterEstimateEv",
         .out      = nh_symoutptr(ReadingStats_currentChapterEstimate),
         .desc     = "ReadingStats::currentChapterEstimate()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZNK12ReadingStats18restOfBookEstimateEv",
+        .out      = nh_symoutptr(ReadingStats_restOfBookEstimate),
+        .desc     = "ReadingStats::restOfBookEstimate()",
         .optional = true,
     },
     {
