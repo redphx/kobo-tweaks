@@ -8,7 +8,7 @@ class TwElidedLabel : public QLabel {
 
 public:
     TwElidedLabel(QWidget* parent = nullptr) : QLabel(parent) {
-        setObjectName(QStringLiteral("twks_label"));
+        setObjectName(QStringLiteral("twksLabel"));
         setContentsMargins(0, 0, 0, 0);
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         setMinimumWidth(1);

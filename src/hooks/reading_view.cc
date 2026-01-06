@@ -39,7 +39,7 @@ namespace ReadingViewHook {
         view->setStyleSheet(Patch::ReadingView::reduceSpacerHeight(rootQss));
 
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
-        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twks_label") << QStringLiteral("#twks_separator"));
+        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twksLabel") << QStringLiteral("#twksSeparator"));
 
         auto readingSettings = settings.getReadingSettings();
         if (readingSettings.headerFooterHeightScale < 100) {
@@ -151,12 +151,12 @@ namespace ReadingViewHook {
         void updateBrightnessHeader(BrightnessEventFilter* self, const QString& text, const QString&) {
             self->setProperty("pendingText", text);
 
-            QTimer* hideTimer = self->findChild<QTimer*>("hideTimer");
+            QTimer* hideTimer = self->findChild<QTimer*>(QStringLiteral("hideTimer"));
             if (hideTimer) {
                 hideTimer->stop();
             } else {
                 hideTimer = new QTimer(self);
-                hideTimer->setObjectName("hideTimer");
+                hideTimer->setObjectName(QStringLiteral("hideTimer"));
                 hideTimer->setSingleShot(true);
 
                 QObject::connect(hideTimer, &QTimer::timeout, [self]() {
@@ -167,10 +167,10 @@ namespace ReadingViewHook {
                 });
             }
 
-            QTimer* showTimer = self->findChild<QTimer*>("showTimer");
+            QTimer* showTimer = self->findChild<QTimer*>(QStringLiteral("showTimer"));
             if (!showTimer) {
                 showTimer = new QTimer(self);
-                showTimer->setObjectName("showTimer");
+                showTimer->setObjectName(QStringLiteral("showTimer"));
                 showTimer->setSingleShot(true);
                 showTimer->setInterval(25);
 

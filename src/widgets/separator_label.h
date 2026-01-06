@@ -9,7 +9,7 @@ class TwSeparatorLabel : public QLabel {
 
 public:
     TwSeparatorLabel(WidgetSeparatorEnum type, QWidget* parent = nullptr) : QLabel(parent) {
-        setObjectName(QStringLiteral("twks_separator"));
+        setObjectName(QStringLiteral("twksSeparator"));
         setContentsMargins(0, 0, 0, 0);
         setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 

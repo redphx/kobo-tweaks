@@ -48,7 +48,6 @@ public:
     explicit TwBatteryWidget(TwBatteryWidgetConfig config, HardwareInterface* h, QWidget* parent = nullptr)
         : QWidget(parent), currentDarkMode(config.isDarkMode), defaultStyle(config.defaultStyle), chargingStyle(config.chargingStyle), showWhenBelow(config.showWhenBelow), hw(h)
     {
-        setObjectName(QStringLiteral("twks_battery"));
         setContentsMargins(0, 0, 0, 0);
         setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -68,7 +67,7 @@ public:
         // iconLabel->setStyleSheet("border: 1px solid black;");
 
         levelLabel = new QLabel();
-        levelLabel->setObjectName(QStringLiteral("twks_label"));
+        levelLabel->setObjectName(QStringLiteral("twksLabel"));
         levelLabel->setContentsMargins(0, 0, 0, 0);
         levelLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         // levelLabel->setStyleSheet("border: 1px solid black;");

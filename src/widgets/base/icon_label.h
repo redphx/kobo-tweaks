@@ -24,7 +24,7 @@ public:
         iconLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
         textLabel = new QLabel();
-        textLabel->setObjectName(QStringLiteral("twks_label"));
+        textLabel->setObjectName(QStringLiteral("twksLabel"));
         textLabel->setContentsMargins(0, 0, 0, 0);
         textLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
@@ -43,6 +43,7 @@ public:
 
     void init() {
         loadIcon();
+        lastConfig = currentConfig;
     }
 
     void onDarkModeChanged(bool state) {
