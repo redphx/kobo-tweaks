@@ -20,8 +20,12 @@ int (*ReadingSettings_getChapterProgressType)(ReadingSettings* self) = nullptr;
 void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin) = nullptr;
 void (*ReadingView_pageChanged)(ReadingView* self, int pageIndex) = nullptr;
 void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command) = nullptr;
-void (*ConfirmationDialogFactory_showOKDialog)(QString const& title, QString const& body) = nullptr;
+void (*ConfirmationDialogFactory_showOKDialog)(const QString& title, const QString& body) = nullptr;
 QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image) = nullptr;
+void (*BrightnessEventFilter_updateBrightnessHeader)(BrightnessEventFilter* self, const QString& text, const QString& sth) = nullptr;
+
+void* (*MainWindowController_sharedInstance)() = nullptr;
+QWidget* (*MainWindowController_currentView)(void*) = nullptr;
 
 HardwareInterface* (*HardwareFactory_sharedInstance)() = nullptr;
 uintptr_t** HardwareInterface_vtable = nullptr;

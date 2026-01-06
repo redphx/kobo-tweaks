@@ -15,4 +15,8 @@ namespace ReadingViewHook {
     namespace DogEarDelegate {
         QWidget* constructor(QWidget* self, QWidget* parent, const QString& image);
     }
+
+    namespace BrightnessEventFilterHook {
+        void updateBrightnessHeader(BrightnessEventFilter* self, const QString& text, const QString& sth);
+    }
 }

@@ -1,6 +1,8 @@
 #include "reading_view.h"
 #include "../adapters/reading_view.h"
 
+#include <QHBoxLayout>
+
 namespace ReadingViewHook {
     static TweaksSettings settings;
     static bool isDarkMode = false;
@@ -76,6 +78,22 @@ namespace ReadingViewHook {
             headerContainer->setupZones(view, adapters, contentTitle, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
             footerContainer->setupZones(view, adapters, contentTitle, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
         });
+
+        // Create a QLabel for showing "Brightness" text
+        // Put it inside #topSpacer
+        QWidget* topSpacer = gestureContainer->findChild<MediumVertSpacer*>(QStringLiteral("topSpacer"), Qt::FindDirectChildrenOnly);
+        if (topSpacer) {
+            QHBoxLayout* layout = new QHBoxLayout(topSpacer);
+            layout->setContentsMargins(readingSettings.headerFooterMargins, 0, readingSettings.headerFooterMargins, 0);
+
+            QLabel* label = new QLabel();
+            label->setObjectName(QStringLiteral("twksBrightnessLabel"));
+            label->setContentsMargins(0, 0, 0, 0);
+            label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+
+            // Left aligned because we don't want the text to slightly shift when the brightness value changes
+            layout->addWidget(label, 0, Qt::AlignLeft);
+        }
     }
 
     void setFooterMargin(QWidget* self, int margin) {
@@ -94,6 +112,84 @@ namespace ReadingViewHook {
             }
             auto view = DogEarDelegate_constructor(self, parent, imgPath);
             return view;
+        }
+    }
+
+    namespace BrightnessEventFilterHook {
+        QLabel* findBrightnessLabel(BrightnessEventFilter* self) {
+            // Check cached label
+            QObject* cachedObj = self->property("cachedLabel").value<QObject*>();
+            if (cachedObj) {
+                return static_cast<QLabel*>(cachedObj);
+            }
+
+            // Fint QLabel
+            void* mwc = MainWindowController_sharedInstance();
+            QWidget* view = MainWindowController_currentView(mwc);
+            QWidget* gestureContainer = view->findChild<GestureReceivingContainer*>(QStringLiteral("gestureContainer"), Qt::FindDirectChildrenOnly);
+            if (!gestureContainer) {
+                return nullptr;
+            }
+
+            QWidget* topSpacer = gestureContainer->findChild<MediumVertSpacer*>(QStringLiteral("topSpacer"), Qt::FindDirectChildrenOnly);
+            if (!topSpacer) {
+                return nullptr;
+            }
+            QLabel* label = topSpacer->findChild<QLabel*>(QStringLiteral("twksBrightnessLabel"), Qt::FindDirectChildrenOnly);
+            if (label) {
+                // Cache
+                self->setProperty("cachedLabel", QVariant::fromValue((QObject*)label));
+                // Remove cached property when the label is destroyed
+                QObject::connect(label, &QObject::destroyed, self, [self]() {
+                    self->setProperty("cachedLabel", QVariant());
+                });
+            }
+
+            return label;
+        }
+
+        void updateBrightnessHeader(BrightnessEventFilter* self, const QString& text, const QString&) {
+            self->setProperty("pendingText", text);
+
+            QTimer* hideTimer = self->findChild<QTimer*>("hideTimer");
+            if (hideTimer) {
+                hideTimer->stop();
+            } else {
+                hideTimer = new QTimer(self);
+                hideTimer->setObjectName("hideTimer");
+                hideTimer->setSingleShot(true);
+
+                QObject::connect(hideTimer, &QTimer::timeout, [self]() {
+                    QLabel* label = findBrightnessLabel(self);
+                    if (label) {
+                        label->hide();
+                    }
+                });
+            }
+
+            QTimer* showTimer = self->findChild<QTimer*>("showTimer");
+            if (!showTimer) {
+                showTimer = new QTimer(self);
+                showTimer->setObjectName("showTimer");
+                showTimer->setSingleShot(true);
+                showTimer->setInterval(25);
+
+                QObject::connect(showTimer, &QTimer::timeout, self, [self, hideTimer]() {
+                    QLabel* label = findBrightnessLabel(self);
+                    if (!label) {
+                        return;
+                    }
+
+                    QString finalText = self->property("pendingText").toString();
+
+                    label->show();
+                    label->setText(finalText);
+
+                    hideTimer->start(2000);
+                });
+            }
+
+            showTimer->start();
         }
     }
 }

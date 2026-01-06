@@ -44,12 +44,25 @@ namespace Patch {
         QString reduceSpacerHeight(const QString& qss) {
             QString result(qss);
 
+            // Reduce spacer's height by 50%
+            // Set font-size to 80% of height
             result += QStringLiteral("\n")
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsTrilogy=true] { min-height: 12px; max-height: 12px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsTrilogy=true] { font-size: 10px; }\n")
+
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsPhoenix=true] { min-height: 16px; max-height: 16px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsPhoenix=true] { font-size: 13px; }\n")
+
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsDragon=true] { min-height: 22px; max-height: 22px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsDragon=true] { font-size: 18px; }\n")
+
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsDaylight=true] { min-height: 28px; max-height: 28px; }\n")
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsStorm=true] { min-height: 25px; max-height: 25px; }\n");
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsDaylight=true] { font-size: 22px; }\n")
+
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsStorm=true] { min-height: 25px; max-height: 25px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsStorm=true] { font-size: 20px; }\n")
+
+                + QStringLiteral("#twksBrightnessLabel[qApp_tolino=true] { font-size: 26px; }\n");
 
             return result;
         }

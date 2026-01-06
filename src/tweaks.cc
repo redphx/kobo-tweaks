@@ -90,11 +90,19 @@ struct nh_hook TweaksHook[] = {
         .optional = true,
     },
     {
+        .sym      = "_ZN21BrightnessEventFilter22updateBrightnessHeaderERK7QStringS2_",
+        .sym_new  = "hook_BrightnessEventFilter_updateBrightnessHeader",
+        .lib      = "libnickel.so.1.0.0",
+        .out      = nh_symoutptr(BrightnessEventFilter_updateBrightnessHeader),
+        .desc     = "BrightnessEventFilter::updateBrightnessHeader()",
+        .optional = true,
+    },
+    {
         .sym      = "_ZNK28SearchAutoCompleteController21handleSpecialCommandsERK7QString",
         .sym_new  = "hook_SearchAutoCompleteController_handleSpecialCommands",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(SearchAutoCompleteController_handleSpecialCommands),
-        .desc     = "ReadingView",
+        .desc     = "SearchAutoCompleteController::handleSpecialCommands()",
         .optional = true,
     },
     {
@@ -102,7 +110,7 @@ struct nh_hook TweaksHook[] = {
         .sym_new  = "hook_DogEarDelegate_constructor",
         .lib      = "libnickel.so.1.0.0",
         .out      = nh_symoutptr(DogEarDelegate_constructor),
-        .desc     = "ReadingView",
+        .desc     = "DogEarDelegate::constructor()",
         .optional = true,
     },
     {0}
@@ -215,6 +223,14 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc     = "ConfirmationDialogFactory::showOKDialog()",
         .optional = true,
     },
+    {
+		.name = "_ZN20MainWindowController14sharedInstanceEv",
+		.out  = nh_symoutptr(MainWindowController_sharedInstance),
+	},
+	{
+		.name = "_ZNK20MainWindowController11currentViewEv",
+		.out  = nh_symoutptr(MainWindowController_currentView),
+	},
 
     {0},
 };
@@ -262,13 +278,19 @@ void hook_SearchAutoCompleteController_handleSpecialCommands(SearchAutoCompleteC
 }
 
 extern "C" __attribute__((visibility("default")))
+int hook_ReadingSettings_getChapterProgressType(ReadingSettings*) {
+    // always hide header
+    return 0;
+}
+
+extern "C" __attribute__((visibility("default")))
 int hook_ReadingSettings_getBookProgressType(ReadingSettings*) {
     // always hide footer
     return 0;
 }
 
 extern "C" __attribute__((visibility("default")))
-int hook_ReadingSettings_getChapterProgressType(ReadingSettings*) {
-    // always hide header
-    return 0;
-}
+void hook_BrightnessEventFilter_updateBrightnessHeader(BrightnessEventFilter* self, const QString& text, const QString& sth) {
+    // BrightnessEventFilter_updateBrightnessHeader(self, text, sth);
+    ReadingViewHook::BrightnessEventFilterHook::updateBrightnessHeader(self, text, sth);
+};

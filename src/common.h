@@ -28,10 +28,12 @@ enum class ReadingFooterPosition { Header, Footer };
 typedef QWidget ReadingView;
 typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
+typedef QWidget MediumVertSpacer;
 typedef QObject HardwareInterface;
 typedef void SearchAutoCompleteController;
 typedef void ReadingSettings;
 typedef void ReadingStats;
+typedef QObject BrightnessEventFilter;
 
 class Content { public: virtual ~Content() {} };
 class Volume : public Content { public: virtual ~Volume() {} };
@@ -61,6 +63,10 @@ extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
 extern void (*ConfirmationDialogFactory_showOKDialog)(const QString& title, const QString& body);
 extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
+extern void (*BrightnessEventFilter_updateBrightnessHeader)(BrightnessEventFilter* self, const QString& text, const QString& sth);
+
+extern void* (*MainWindowController_sharedInstance)();
+extern QWidget* (*MainWindowController_currentView)(void*);
 
 extern HardwareInterface* (*HardwareFactory_sharedInstance)();
 extern uintptr_t** HardwareInterface_vtable;
