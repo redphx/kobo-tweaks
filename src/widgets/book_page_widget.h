@@ -28,7 +28,7 @@ public:
             return;
         }
 
-        textLabel->setText(QStringLiteral("%1 / %2").arg(currentPage).arg(totalPages));
+        textLabel->setText(QStringLiteral("%1/%2").arg(currentPage).arg(totalPages));
     }
 
 protected:

@@ -86,7 +86,7 @@ public:
                 case WidgetTypeEnum::BookProgress:
                     {
                         TwBookProgressConfig config {};
-                        config.showIcon = true;
+                        config.showIcon = false;
                         config.isDarkMode = adapters.darkMode->getDarkMode();
 
                         auto tmpWidget = new TwBookProgressWidget(readingView, adapters, config);
@@ -98,7 +98,7 @@ public:
                 case WidgetTypeEnum::BookTime:
                     {
                         TwBookTimeConfig config {};
-                        config.showIcon = true;
+                        config.showIcon = false;
                         config.isDarkMode = adapters.darkMode->getDarkMode();
 
                         auto tmpWidget = new TwBookTimeWidget(readingView, adapters, config);
@@ -127,7 +127,7 @@ public:
                 case WidgetTypeEnum::ChapterProgress:
                     {
                         TwChapterProgressConfig config {};
-                        config.showIcon = true;
+                        config.showIcon = false;
                         config.isDarkMode = adapters.darkMode->getDarkMode();
 
                         auto tmpWidget = new TwChapterProgressWidget(readingView, adapters, config);
@@ -139,7 +139,7 @@ public:
                 case WidgetTypeEnum::ChapterTime:
                     {
                         TwChapterTimeConfig config {};
-                        config.showIcon = true;
+                        config.showIcon = false;
                         config.isDarkMode = adapters.darkMode->getDarkMode();
 
                         auto tmpWidget = new TwChapterTimeWidget(readingView, adapters, config);
