@@ -137,13 +137,7 @@ QString TweaksSettings::getStringValue(const QString& key, const QString& defaul
 }
 
 void TweaksSettings::validateWidgets() {
-    // Don't allow BookTitle and ChapterTitle to be placed in HeaderRight and FooterRight
-    for (auto p : { WidgetTypeEnum::BookTitle, WidgetTypeEnum::ChapterTitle }) {
-        readingSettings.widgetHeaderRight.removeOne(p);
-        readingSettings.widgetFooterRight.removeOne(p);
-    }
-
-    // Only allow each widget appear once
+    // Only allow each widget to appear once
     uint32_t seenMask = 0;
     for (auto* zone : {&readingSettings.widgetHeaderLeft, &readingSettings.widgetHeaderRight, &readingSettings.widgetFooterLeft, &readingSettings.widgetFooterRight}) {
         auto it = std::remove_if(zone->begin(), zone->end(), [&](WidgetTypeEnum w) {
@@ -162,14 +156,4 @@ void TweaksSettings::validateWidgets() {
 
         zone->erase(it, zone->end());
     }
-
-    // Don't allow BookTitle and ChapterTitle to be placed in the same header or footer
-    auto checkTitles = [](QVector<WidgetTypeEnum>& left, QVector<WidgetTypeEnum>& center) {
-        if (left.contains(WidgetTypeEnum::BookTitle) || center.contains(WidgetTypeEnum::BookTitle)) {
-            left.removeOne(WidgetTypeEnum::ChapterTitle);
-            center.removeOne(WidgetTypeEnum::ChapterTitle);
-        }
-    };
-    checkTitles(readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter);
-    checkTitles(readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter);
 }
