@@ -22,18 +22,30 @@ class TwWidgetZone : public QWidget {
     Q_OBJECT
 
 public:
-    TwWidgetZone(TweaksReadingSettings stt, QWidget* parent = nullptr) : QWidget(parent), readingSettings(stt) {
+    TwWidgetZone(TweaksReadingSettings stt, ReadingView* readingView, ReadingViewAdapters adapters, const QString& contentTitle, QVector<WidgetTypeEnum> widgetTypes, bool isRight = false, QWidget* parent = nullptr) : QWidget(parent), readingSettings(stt) {
         setContentsMargins(0, 0, 0, 0);
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         // container->setStyleSheet("border: 1px solid black;");
 
         // Setup Widgets container's layout
-        lay = new QHBoxLayout(this);
-        lay->setContentsMargins(0, 0, 0, 0);
-        lay->setSpacing(readingSettings.widgetSpacing);
+        if (!widgetTypes.isEmpty()) {
+            lay = new QHBoxLayout(this);
+            lay->setContentsMargins(0, 0, 0, 0);
+            lay->setSpacing(readingSettings.widgetSpacing);
+
+            setupWidgets(readingView, adapters, contentTitle, widgetTypes, isRight);
+        }
     }
 
-    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, const QString& contentTitle, TweaksReadingSettings readingSettings, QVector<WidgetTypeEnum> widgetTypes) {
+private:
+    QHBoxLayout* lay;
+    TweaksReadingSettings readingSettings;
+
+    void setupWidgets(ReadingView* readingView, ReadingViewAdapters adapters, const QString& contentTitle, QVector<WidgetTypeEnum> widgetTypes, bool isRight) {
+        if (isRight) {
+            lay->addStretch(1);
+        }
+
         int idx = -1;
         for (auto widgetType : widgetTypes) {
             ++idx;
@@ -171,8 +183,4 @@ public:
             }
         }
     }
-
-private:
-    QHBoxLayout* lay;
-    TweaksReadingSettings readingSettings;
 };

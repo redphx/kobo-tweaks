@@ -75,8 +75,9 @@ namespace ReadingViewHook {
         gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
 
         QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, [view, adapters, headerContainer, footerContainer, readingSettings] {
-            headerContainer->setupZones(view, adapters, contentTitle, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
-            footerContainer->setupZones(view, adapters, contentTitle, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
+            int minimumSideWidth = qMax(10, originalContentsMargins - readingSettings.headerFooterMargins);
+            headerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
+            footerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
         });
 
         // Create a QLabel for showing "Brightness" text
