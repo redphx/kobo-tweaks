@@ -44,7 +44,7 @@ public:
             if (minutes == 0) {
                 text = QStringLiteral("%1h").arg(hours);
             } else {
-                text = QStringLiteral("%1h%2m").arg(hours).arg(minutes);
+                text = QStringLiteral("%1h %2m").arg(hours).arg(minutes);
             }
         } else {
             text = QStringLiteral("%1m").arg(minutes);
