@@ -9,15 +9,8 @@ namespace Patch {
     namespace ReadingView {
         QString scaleHeaderFooterHeight(const QString& qss, int scale) {
             // Based on: Reduce new header/footer height - jackie_w
-
-            const QVariant fn = QVariant::fromValue<QssPropertyFunc>([&](const QString& property, const QString& value) {
-                bool ok;
-                int rawNumber = QString(value).replace(QStringLiteral("px"), "").toInt(&ok);
-                if (ok) {
-                    return QStringLiteral("%1:%2px;").arg(property).arg(rawNumber * scale / 100);
-                }
-
-                return QStringLiteral("%1:%2;").arg(property).arg(value);
+            const QVariant fn = QVariant::fromValue<QssPropertyFunc>([scale](const QString& property, const QString& value) {
+                return Qss::scaleValue(property, value, scale);
             });
 
             const QVector<QPair<QString, QVariant>> properties = {

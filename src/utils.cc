@@ -120,6 +120,16 @@ namespace Qss {
 
         return result;
     }
+
+    QString scaleValue(const QString& property, const QString& value, int scale) {
+        bool ok;
+        int rawNumber = QString(value).replace(QStringLiteral("px"), "").toInt(&ok);
+        if (ok) {
+            return QStringLiteral("%1:%2px;").arg(property).arg(rawNumber * qMax(0, scale) / 100);
+        }
+
+        return QStringLiteral("%1:%2;").arg(property).arg(value);
+    }
 }
 
 namespace Utils {
