@@ -39,10 +39,10 @@ namespace ReadingViewHook {
 
         // Hide topSpacer & bottomSpacer
         if (readingSettings.widgetHeaderLeft.isEmpty() && readingSettings.widgetHeaderCenter.isEmpty() && readingSettings.widgetHeaderRight) {
-            rootQss = Patch::ReadingView::reduceSpacerHeight(rootQss, QStringLiteral("#topSpacer"), 0);
+            rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), 0);
         }
         if (readingSettings.widgetFooterLeft.isEmpty() && readingSettings.widgetFooterCenter.isEmpty() && readingSettings.widgetFooterRight) {
-            rootQss = Patch::ReadingView::reduceSpacerHeight(rootQss, QStringLiteral("#bottomSpacer"), 0);
+            rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), 0);
         }
 
         rootQss = Patch::ReadingView::addBrightnessLabelQss(rootQss);

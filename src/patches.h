@@ -4,7 +4,7 @@
 namespace Patch {
     namespace ReadingView {
         QString scaleHeaderFooterHeight(const QString& qss, int scale);
-        QString reduceSpacerHeight(const QString& qss, const QString& selector, int scale);
+        QString setFixedHeight(const QString& qss, const QString& selector, int height);
         QString addBrightnessLabelQss(const QString& qss);
     }
 }

@@ -34,26 +34,9 @@ namespace Patch {
             return result;
         }
 
-        QString reduceSpacerHeight(const QString& qss, const QString& selector, int scale) {
+        QString setFixedHeight(const QString& qss, const QString& selector, int height) {
             QString result(qss);
-
-            const QVector<QPair<QString, int>> properties = {
-                {QStringLiteral("Trilogy"), 24},
-                {QStringLiteral("Phoenix"), 32},
-                {QStringLiteral("Dragon"), 44},
-                {QStringLiteral("Storm"), 50},
-                {QStringLiteral("Daylight"), 56},
-            };
-
-            result += QStringLiteral("\n");
-
-            for (const QPair<QString, int>& pair : properties) {
-                QString device = pair.first;
-                int newValue = pair.second * qMax(0, scale) / 100;
-
-                result += QStringLiteral("%1[qApp_deviceIs%2=true] { min-height: %3px; max-height: %3px; }\n").arg(selector).arg(device).arg(newValue);
-            }
-
+            result += QStringLiteral("\n%1 { min-height: %2px; max-height: %2px; }\n").arg(selector).arg(newValue);
             return result;
         }
 
