@@ -48,21 +48,25 @@ namespace Patch {
             // Set font-size to 80% of height
             result += QStringLiteral("\n")
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsTrilogy=true] { min-height: 12px; max-height: 12px; }\n")
-                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsTrilogy=true] { font-size: 10px; }\n")
-
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsPhoenix=true] { min-height: 16px; max-height: 16px; }\n")
-                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsPhoenix=true] { font-size: 13px; }\n")
-
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsDragon=true] { min-height: 22px; max-height: 22px; }\n")
-                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsDragon=true] { font-size: 18px; }\n")
-
                 + QStringLiteral("MediumVertSpacer[qApp_deviceIsDaylight=true] { min-height: 28px; max-height: 28px; }\n")
-                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsDaylight=true] { font-size: 22px; }\n")
+                + QStringLiteral("MediumVertSpacer[qApp_deviceIsStorm=true] { min-height: 25px; max-height: 25px; }\n");
 
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsStorm=true] { min-height: 25px; max-height: 25px; }\n")
-                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsStorm=true] { font-size: 20px; }\n")
+            return result;
+        }
 
-                + QStringLiteral("#twksBrightnessLabel[qApp_tolino=true] { font-size: 26px; }\n");
+        QString addBrightnessLabelQss(const QString& qss) {
+            QString result(qss);
+
+            result += QStringLiteral("\n")
+                + QStringLiteral("#twksBrightnessLabel { border: 1px solid black; background: white; padding: 6px; }\n")
+                + QStringLiteral("#gestureContainer[darkMode=true] #twksBrightnessLabel { border: 1px solid white; background: black; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsTrilogy=true] { font-size: 14px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsPhoenix=true] { font-size: 17px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsDragon=true] { font-size: 25px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsStorm=true] { font-size: 29px; }\n")
+                + QStringLiteral("#twksBrightnessLabel[qApp_deviceIsDaylight=true] { font-size: 32px; }\n");
 
             return result;
         }

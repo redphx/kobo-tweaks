@@ -36,7 +36,9 @@ namespace ReadingViewHook {
 
         // Update QSS
         QString rootQss = view->styleSheet();
-        view->setStyleSheet(Patch::ReadingView::reduceSpacerHeight(rootQss));
+        rootQss = Patch::ReadingView::reduceSpacerHeight(rootQss);
+        rootQss = Patch::ReadingView::addBrightnessLabelQss(rootQss);
+        view->setStyleSheet(rootQss);
 
         QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
         QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twksLabel") << QStringLiteral("#twksSeparator"));
@@ -81,20 +83,12 @@ namespace ReadingViewHook {
         });
 
         // Create a QLabel for showing "Brightness" text
-        // Put it inside #topSpacer
-        QWidget* topSpacer = gestureContainer->findChild<MediumVertSpacer*>(QStringLiteral("topSpacer"), Qt::FindDirectChildrenOnly);
-        if (topSpacer) {
-            QHBoxLayout* layout = new QHBoxLayout(topSpacer);
-            layout->setContentsMargins(readingSettings.headerFooterMargins, 0, readingSettings.headerFooterMargins, 0);
-
-            QLabel* label = new QLabel();
-            label->setObjectName(QStringLiteral("twksBrightnessLabel"));
-            label->setContentsMargins(0, 0, 0, 0);
-            label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
-
-            // Left aligned because we don't want the text to slightly shift when the brightness value changes
-            layout->addWidget(label, 0, Qt::AlignLeft);
-        }
+        // Add directly to #gestureContainer
+        QLabel* label = new QLabel(gestureContainer);
+        label->hide();
+        label->setObjectName(QStringLiteral("twksBrightnessLabel"));
+        label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        label->move(20, 20);
     }
 
     void setFooterMargin(QWidget* self, int margin) {
@@ -132,11 +126,7 @@ namespace ReadingViewHook {
                 return nullptr;
             }
 
-            QWidget* topSpacer = gestureContainer->findChild<MediumVertSpacer*>(QStringLiteral("topSpacer"), Qt::FindDirectChildrenOnly);
-            if (!topSpacer) {
-                return nullptr;
-            }
-            QLabel* label = topSpacer->findChild<QLabel*>(QStringLiteral("twksBrightnessLabel"), Qt::FindDirectChildrenOnly);
+            QLabel* label = gestureContainer->findChild<QLabel*>(QStringLiteral("twksBrightnessLabel"), Qt::FindDirectChildrenOnly);
             if (label) {
                 // Cache
                 self->setProperty("cachedLabel", QVariant::fromValue((QObject*)label));
@@ -185,6 +175,7 @@ namespace ReadingViewHook {
 
                     label->show();
                     label->setText(finalText);
+                    label->adjustSize();
 
                     hideTimer->start(2000);
                 });
