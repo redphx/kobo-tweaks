@@ -34,17 +34,25 @@ namespace Patch {
             return result;
         }
 
-        QString reduceSpacerHeight(const QString& qss) {
+        QString reduceSpacerHeight(const QString& qss, const QString& selector, int scale) {
             QString result(qss);
 
-            // Reduce spacer's height by 50%
-            // Set font-size to 80% of height
-            result += QStringLiteral("\n")
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsTrilogy=true] { min-height: 12px; max-height: 12px; }\n")
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsPhoenix=true] { min-height: 16px; max-height: 16px; }\n")
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsDragon=true] { min-height: 22px; max-height: 22px; }\n")
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsDaylight=true] { min-height: 28px; max-height: 28px; }\n")
-                + QStringLiteral("MediumVertSpacer[qApp_deviceIsStorm=true] { min-height: 25px; max-height: 25px; }\n");
+            const QVector<QPair<QString, int>> properties = {
+                {QStringLiteral("Trilogy"), 24},
+                {QStringLiteral("Phoenix"), 32},
+                {QStringLiteral("Dragon"), 44},
+                {QStringLiteral("Storm"), 50},
+                {QStringLiteral("Daylight"), 56},
+            };
+
+            result += QStringLiteral("\n");
+
+            for (const QPair<QString, int>& pair : properties) {
+                QString device = pair.first;
+                int newValue = pair.second * qMax(0, scale) / 100;
+
+                result += QStringLiteral("%1[qApp_deviceIs%2=true] { min-height: %3px; max-height: %3px; }\n").arg(selector).arg(device).arg(newValue);
+            }
 
             return result;
         }
