@@ -36,7 +36,7 @@ namespace Patch {
 
         QString setFixedHeight(const QString& qss, const QString& selector, int height) {
             QString result(qss);
-            result += QStringLiteral("\n%1 { min-height: %2px; max-height: %2px; }\n").arg(selector).arg(newValue);
+            result += QStringLiteral("\n%1 { min-height: %2px; max-height: %2px; }\n").arg(selector).arg(height);
             return result;
         }
 
