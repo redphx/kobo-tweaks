@@ -22,6 +22,8 @@ public:
 
         lastWidth = -1;
         fullText = newText;
+        QLabel::setText(fullText);
+
         // Tell the layout the ideal size (sizeHint) has changed
         updateGeometry(); 
         // Update the actual elision for the current width
