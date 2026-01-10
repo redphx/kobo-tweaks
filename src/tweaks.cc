@@ -251,7 +251,7 @@ void hook_ReadingView_constructor(ReadingView* self) {
     if (hasNickelClock && ConfirmationDialogFactory_showOKDialog) {
         // Show a dialog prompting the user to reboot their device
         auto readerDoneLoadingAdapter = new ReadingViewAdapter::ReaderDoneLoading(self);
-        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, []() {
+        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, self, []() {
             ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please restart the device to complete the process."));
         });
     }

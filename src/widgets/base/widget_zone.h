@@ -163,12 +163,13 @@ private:
                 case WidgetTypeEnum::ChapterTitle:
                     {
                         auto chapterTitleWidget = new TwChapterTitleWidget();
-                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, [readingView, chapterTitleWidget]() {
+                        QObject::connect(adapters.pageChanged, &ReadingViewAdapter::PageChanged::pageChanged, chapterTitleWidget, [readingView, chapterTitleWidget]() {
                             // TODO: find another way to get chapter title, as this method always returns an uppercase string
                             QString title;
                             ReadingView_getChapterTitle(&title, readingView);
                             chapterTitleWidget->setTitle(title);
                         });
+
                         widget = chapterTitleWidget;
                         stretch = true;
                     }

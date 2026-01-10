@@ -49,13 +49,13 @@ namespace ReadingViewHook {
 
         // These adapters abstract the logic and ensure that the update methods on the widgets aren't called after either the widget or the ReadingView has been destroyed
         auto renderVolumeAdapter = new ReadingViewAdapter::RenderVolume(view);
-        QObject::connect(renderVolumeAdapter, &ReadingViewAdapter::RenderVolume::renderVolume, [](const Volume& volume) {
+        QObject::connect(renderVolumeAdapter, &ReadingViewAdapter::RenderVolume::renderVolume, view, [](const Volume& volume) {
             Content_getTitle(&contentTitle, &volume);
         });
 
         auto darkModeAdapter = new ReadingViewAdapter::DarkMode(gestureContainer, view);
         isDarkMode = darkModeAdapter->getDarkMode();
-        QObject::connect(darkModeAdapter, &ReadingViewAdapter::DarkMode::darkModeChanged, [](bool dark) {
+        QObject::connect(darkModeAdapter, &ReadingViewAdapter::DarkMode::darkModeChanged, view, [](bool dark) {
             isDarkMode = dark;
         });
 
@@ -82,7 +82,7 @@ namespace ReadingViewHook {
         gestureLayout->insertWidget(gestureLayout->indexOf(header) + 1, headerContainer);
         gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
 
-        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, [view, adapters, headerContainer, footerContainer, readingSettings] {
+        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, view, [view, adapters, headerContainer, footerContainer, readingSettings] {
             int minimumSideWidth = qMax(10, originalContentsMargins - readingSettings.headerFooterMargins);
             headerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
             footerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
@@ -156,7 +156,7 @@ namespace ReadingViewHook {
                 hideTimer->setObjectName(QStringLiteral("hideTimer"));
                 hideTimer->setSingleShot(true);
 
-                QObject::connect(hideTimer, &QTimer::timeout, [self]() {
+                QObject::connect(hideTimer, &QTimer::timeout, self, [self]() {
                     QLabel* label = findBrightnessLabel(self);
                     if (label) {
                         label->hide();
