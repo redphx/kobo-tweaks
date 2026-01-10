@@ -27,6 +27,11 @@ void TweaksSettings::setMissingKeys() {
     // Set default positions for Clock & Battery widgets
     checkValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(WidgetTypeEnum::Clock));
     checkValue(READING_WIDGET_HEADER_RIGHT, WidgetTypeSetting::toString(WidgetTypeEnum::Battery));
+
+    // Set default positions for Book & Chapter widgets
+    checkValue(READING_WIDGET_HEADER_CENTER, QStringList() << WidgetTypeSetting::toString(WidgetTypeEnum::ChapterTitle) << WidgetTypeSetting::toString(WidgetTypeEnum::ChapterPage));
+    checkValue(READING_WIDGET_FOOTER_CENTER, QStringList() << WidgetTypeSetting::toString(WidgetTypeEnum::BookTitle) << WidgetTypeSetting::toString(WidgetTypeEnum::BookPage));
+
     // Set default widget separator
     checkValue(READING_WIDGET_SEPARATOR, WidgetSeparatorSetting::toString(WidgetSeparatorEnum::Dot));
 
