@@ -22,3 +22,7 @@ namespace Qss {
 namespace Utils {
     QString appendFileName(const QString& filePath, const QString append);
 }
+
+namespace WidgetUtils {
+    void syncSeparatorVisibility(QWidget* w);
+}

@@ -79,29 +79,6 @@ public:
             rightZone->setMinimumWidth(minimumSideWidth);
             rightZone->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
         }
-
-        /*
-        bool isLeft = true;
-        for (auto widgetTypes : {leftWidgets, rightWidgets}) {
-            TwWidgetZone* zone = new TwWidgetZone(readingSettings);
-            zone->setupWidgets(readingView, adapters, contentTitle, readingSettings, widgetTypes);
-
-            // Insert widgets container into parent layout
-            if (isLeft) {
-                // Insert left
-                lay->addWidget(zone, 0, Qt::AlignLeft);
-                // lay->addStretch(1);
-            } else {
-                // Insert right
-                lay->addWidget(zone, 0, Qt::AlignRight);
-            }
-
-            if (isLeft) {
-                // containerLayout->addStretch(1);
-                isLeft = false;
-            }
-        }
-        */
     }
 
 private:

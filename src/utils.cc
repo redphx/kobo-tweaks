@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "widgets/separator_label.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -6,6 +7,8 @@
 #include <QVector>
 #include <QPair>
 #include <QRegularExpression>
+#include <QWidget>
+#include <QLayout>
 
 static const int qssMetaReg = qRegisterMetaType<QssPropertyFunc>();
 
@@ -153,5 +156,36 @@ namespace Utils {
         }
 
         return out;
+    }
+}
+
+namespace WidgetUtils {
+    void syncSeparatorVisibility(QWidget* widget) {
+        QWidget* parentWidget = widget->parentWidget();
+        QLayout* parentLayout = parentWidget ? parentWidget->layout() : nullptr;
+        if (!parentLayout) {
+            return;
+        }
+
+        int index = parentLayout->indexOf(widget);
+        if (index == -1) {
+            return;
+        }
+
+        int targetIndex;
+        if (index == 0) {
+            // at the beginning -> find separator on the right side
+            targetIndex = index + 1;
+        } else {
+            // in the middle or at the end -> find separator on the left side
+            targetIndex = index - 1;
+        }
+
+        if (targetIndex >= 0 && targetIndex < parentLayout->count()) {
+            QLayoutItem* item = parentLayout->itemAt(targetIndex);
+            if (auto* separator = qobject_cast<TwSeparatorLabel*>(item->widget())) {
+                separator->setVisible(!widget->isHidden());
+            }
+        }
     }
 }

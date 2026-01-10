@@ -1,5 +1,6 @@
 #pragma once
 #include "../../common.h"
+#include "../../utils.h"
 
 #include <QLabel>
 
@@ -16,13 +17,17 @@ public:
     }
 
     void setFullText(const QString& newText) {
-        if (fullText == newText) {
+        QString simplified = newText.simplified();
+        if (!fullText.isNull() && fullText == simplified) {
             return;
         }
 
         lastWidth = -1;
-        fullText = newText;
+        fullText = simplified;
         QLabel::setText(fullText);
+
+        setVisible(!fullText.isEmpty());
+        syncSeparatorVisibility();
 
         // Tell the layout the ideal size (sizeHint) has changed
         updateGeometry(); 
@@ -55,17 +60,16 @@ protected:
             return;
         }
 
-        if (fullText.isEmpty()) {
-            QLabel::setText(fullText);
-            return;
-        }
-
         QString elidedText = fontMetrics().elidedText(fullText, Qt::ElideRight, contentsRect().width());
         if (elidedText != QLabel::text()) {
             bool blocked = blockSignals(true);
             QLabel::setText(elidedText);
             blockSignals(blocked);
         }
+    }
+
+    void syncSeparatorVisibility() {
+        WidgetUtils::syncSeparatorVisibility(this);
     }
 
 private:
