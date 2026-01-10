@@ -48,7 +48,7 @@ void TweaksSettings::loadReadingSettings() {
         readingSettings.bookmarkImage = validateImage(readingSettings.bookmarkImage);
 
         if (!readingSettings.bookmarkImage.isEmpty()) {
-            QString darkImage = Utils::appendFileName(readingSettings.bookmarkImage, "_dark");
+            QString darkImage = Utils::appendFileName(readingSettings.bookmarkImage, QStringLiteral("_dark"));
             readingSettings.bookmarkImageDark = validateImage(darkImage);
         }
     }
