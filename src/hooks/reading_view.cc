@@ -75,17 +75,27 @@ namespace ReadingViewHook {
         }
         patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("TwWidgetZonesContainer"));
 
-        TwWidgetZonesContainer* headerContainer = new TwWidgetZonesContainer(readingSettings, patchedQss);
-        TwWidgetZonesContainer* footerContainer = new TwWidgetZonesContainer(readingSettings, patchedQss);
-
         QVBoxLayout* gestureLayout = qobject_cast<QVBoxLayout*>(gestureContainer->layout());
-        gestureLayout->insertWidget(gestureLayout->indexOf(header) + 1, headerContainer);
-        gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
+        TwWidgetZonesContainer* headerContainer = emptyHeader ? nullptr : new TwWidgetZonesContainer(readingSettings, patchedQss);
+        TwWidgetZonesContainer* footerContainer = emptyFooter ? nullptr : new TwWidgetZonesContainer(readingSettings, patchedQss);
 
-        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, view, [view, adapters, headerContainer, footerContainer, readingSettings] {
+        if (headerContainer) {
+            gestureLayout->insertWidget(gestureLayout->indexOf(header) + 1, headerContainer);
+        }
+
+        if (footerContainer) {
+            gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
+        }
+
+        QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, view, [view, gestureContainer, adapters, readingSettings, headerContainer, footerContainer] {
             int minimumSideWidth = qMax(10, originalContentsMargins - readingSettings.headerFooterMargins);
-            headerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
-            footerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
+            if (headerContainer) {
+                headerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetHeaderLeft, readingSettings.widgetHeaderCenter, readingSettings.widgetHeaderRight);
+            }
+
+            if (footerContainer) {
+                footerContainer->setupZones(view, adapters, contentTitle, minimumSideWidth, readingSettings.widgetFooterLeft, readingSettings.widgetFooterCenter, readingSettings.widgetFooterRight);
+            }
         });
 
         // Create a QLabel for showing "Brightness" text
