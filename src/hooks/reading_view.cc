@@ -35,27 +35,17 @@ namespace ReadingViewHook {
         }
 
         // Update QSS
+        auto readingSettings = settings.getReadingSettings();
         QString rootQss = view->styleSheet();
 
-        // Hide topSpacer & bottomSpacer
-        if (readingSettings.widgetHeaderLeft.isEmpty() && readingSettings.widgetHeaderCenter.isEmpty() && readingSettings.widgetHeaderRight) {
-            rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), 0);
-        }
-        if (readingSettings.widgetFooterLeft.isEmpty() && readingSettings.widgetFooterCenter.isEmpty() && readingSettings.widgetFooterRight) {
-            rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), 0);
-        }
+        // Adjust topSpacer & bottomSpacer's heights
+        bool emptyHeader = readingSettings.widgetHeaderLeft.isEmpty() && readingSettings.widgetHeaderCenter.isEmpty() && readingSettings.widgetHeaderRight.isEmpty();
+        bool emptyFooter = readingSettings.widgetFooterLeft.isEmpty() && readingSettings.widgetFooterCenter.isEmpty() && readingSettings.widgetFooterRight.isEmpty();
+        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), emptyHeader ? readingSettings.headerSpacerHeight : 0);
+        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), emptyFooter ? readingSettings.footerSpacerHeight : 0);
 
         rootQss = Patch::ReadingView::addBrightnessLabelQss(rootQss);
         view->setStyleSheet(rootQss);
-
-        QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
-        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twksLabel") << QStringLiteral("#twksSeparator"));
-
-        auto readingSettings = settings.getReadingSettings();
-        if (readingSettings.headerFooterHeightScale < 100) {
-            patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
-        }
-        patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("TwWidgetZonesContainer"));
 
         // These adapters abstract the logic and ensure that the update methods on the widgets aren't called after either the widget or the ReadingView has been destroyed
         auto renderVolumeAdapter = new ReadingViewAdapter::RenderVolume(view);
@@ -76,6 +66,14 @@ namespace ReadingViewHook {
         adapters.darkMode = darkModeAdapter;
         adapters.renderVolume = renderVolumeAdapter;
         adapters.readerDoneLoading = readerDoneLoadingAdapter;
+
+        // Patch QSS
+        QString readingFooterQss = Qss::getContent(QStringLiteral(":/qss/ReadingFooter.qss"));
+        QString patchedQss = Qss::copySelectors(readingFooterQss, QStringLiteral("#caption"), QStringList() << QStringLiteral("#twksLabel") << QStringLiteral("#twksSeparator"));
+        if (readingSettings.headerFooterHeightScale < 100) {
+            patchedQss = Patch::ReadingView::scaleHeaderFooterHeight(patchedQss, readingSettings.headerFooterHeightScale);
+        }
+        patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("TwWidgetZonesContainer"));
 
         TwWidgetZonesContainer* headerContainer = new TwWidgetZonesContainer(readingSettings, patchedQss);
         TwWidgetZonesContainer* footerContainer = new TwWidgetZonesContainer(readingSettings, patchedQss);

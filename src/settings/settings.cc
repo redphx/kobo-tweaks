@@ -51,6 +51,9 @@ void TweaksSettings::loadReadingSettings() {
     readingSettings.headerFooterHeightScale = qBound(50, getIntValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale), 100);
     readingSettings.headerFooterMargins = qBound(0, getIntValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins), 100);
 
+    readingSettings.headerSpacerHeight = qBound(0, getIntValue(READING_HEADER_SPACER_HEIGHT, readingSettings.headerSpacerHeight), 100);
+    readingSettings.footerSpacerHeight = qBound(0, getIntValue(READING_FOOTER_SPACER_HEIGHT, readingSettings.footerSpacerHeight), 100);
+
     // [Reading.Widget]
     readingSettings.widgetSeparator = WidgetSeparatorSetting::fromSetting(qSettings, READING_WIDGET_SEPARATOR, readingSettings.widgetSeparator);
     readingSettings.widgetSpacing = qBound(0, getIntValue(READING_WIDGET_SPACING, readingSettings.widgetSpacing), 20);
@@ -84,6 +87,9 @@ void TweaksSettings::sync() {
     qSettings.setValue(READING_BOOKMARK_IMAGE, readingSettings.bookmarkImage);
     qSettings.setValue(READING_HEADER_FOOTER_HEIGHT_SCALE, readingSettings.headerFooterHeightScale);
     qSettings.setValue(READING_HEADER_FOOTER_MARGINS, readingSettings.headerFooterMargins);
+
+    qSettings.setValue(READING_HEADER_SPACER_HEIGHT, readingSettings.headerSpacerHeight);
+    qSettings.setValue(READING_FOOTER_SPACER_HEIGHT, readingSettings.footerSpacerHeight);
 
     qSettings.setValue(READING_WIDGET_HEADER_LEFT, WidgetTypeSetting::toString(readingSettings.widgetHeaderLeft));
     qSettings.setValue(READING_WIDGET_HEADER_CENTER, WidgetTypeSetting::toString(readingSettings.widgetHeaderCenter));

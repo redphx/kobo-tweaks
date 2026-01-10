@@ -213,6 +213,8 @@ struct TweaksReadingSettings {
     QString bookmarkImageDark = "";
     int headerFooterHeightScale = 100;
     int headerFooterMargins = 50;
+    int headerSpacerHeight = 0;
+    int footerSpacerHeight = 0;
 
     QVector<WidgetTypeEnum> widgetHeaderLeft   = {};
     QVector<WidgetTypeEnum> widgetHeaderCenter = {};
@@ -235,6 +237,8 @@ class TweaksSettings {
     const char* READING_BOOKMARK_IMAGE = "Reading/BookmarkImage";
     const char* READING_HEADER_FOOTER_HEIGHT_SCALE = "Reading/HeaderFooterHeightScale";
     const char* READING_HEADER_FOOTER_MARGINS = "Reading/HeaderFooterMargins";
+    const char* READING_HEADER_SPACER_HEIGHT = "Reading/HeaderSpacerHeight";
+    const char* READING_FOOTER_SPACER_HEIGHT = "Reading/FooterSpacerHeight";
 
     const char* READING_WIDGET_HEADER_LEFT   = "Reading.Widget/HeaderLeft";
     const char* READING_WIDGET_HEADER_CENTER = "Reading.Widget/HeaderCenter";
