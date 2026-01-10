@@ -18,7 +18,7 @@ public:
         setAttribute(Qt::WA_TransparentForMouseEvents);
 
         lay = new QHBoxLayout(this);
-        lay->setSpacing(readingSettings.widgetSpacing);
+        lay->setSpacing(qMax(20, readingSettings.widgetSpacing));
         lay->setContentsMargins(0, 0, 0, 0);
     }
 
