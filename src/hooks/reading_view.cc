@@ -41,8 +41,8 @@ namespace ReadingViewHook {
         // Adjust topSpacer & bottomSpacer's heights
         bool emptyHeader = readingSettings.widgetHeaderLeft.isEmpty() && readingSettings.widgetHeaderCenter.isEmpty() && readingSettings.widgetHeaderRight.isEmpty();
         bool emptyFooter = readingSettings.widgetFooterLeft.isEmpty() && readingSettings.widgetFooterCenter.isEmpty() && readingSettings.widgetFooterRight.isEmpty();
-        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), emptyHeader ? readingSettings.headerSpacerHeight : 0);
-        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), emptyFooter ? readingSettings.footerSpacerHeight : 0);
+        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), readingSettings.headerSpacerHeight);
+        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), readingSettings.footerSpacerHeight);
 
         rootQss = Patch::ReadingView::addBrightnessLabelQss(rootQss);
         view->setStyleSheet(rootQss);
