@@ -255,6 +255,10 @@ void hook_ReadingView_constructor(ReadingView* self) {
             ConfirmationDialogFactory_showOKDialog(QStringLiteral("Kobo Tweaks"), QStringLiteral("NickelClock has been successfully uninstalled.<br>Please restart the device to complete the process."));
         });
     }
+
+    if (QFile::exists(QStringLiteral(DATA_DIR "/debug"))) {
+        QTimer::singleShot(2000, self, [self] { DebugUtils::dumpWidgetToFile(QString("/mnt/onboard/_ReadingView.log"), self); });
+    }
 }
 
 extern "C" __attribute__((visibility("default")))
