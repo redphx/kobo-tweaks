@@ -167,6 +167,12 @@ namespace WidgetUtils {
             return;
         }
 
+        int widgetsCount = parentLayout->count();
+        if (widgetsCount < 3) {
+            // Count < 3 => no separator
+            return;
+        }
+
         int index = parentLayout->indexOf(widget);
         if (index == -1) {
             return;
@@ -181,10 +187,28 @@ namespace WidgetUtils {
             targetIndex = index - 1;
         }
 
-        if (targetIndex >= 0 && targetIndex < parentLayout->count()) {
-            QLayoutItem* item = parentLayout->itemAt(targetIndex);
-            if (auto* separator = qobject_cast<TwSeparatorLabel*>(item->widget())) {
-                separator->setVisible(!widget->isHidden());
+        if (targetIndex < 0 || targetIndex >= widgetsCount) {
+            return;
+        }
+
+        QLayoutItem* item = parentLayout->itemAt(targetIndex);
+        if (auto* separator = qobject_cast<TwSeparatorLabel*>(item->widget())) {
+            bool thisVisible = !widget->isHidden();
+
+            if (index == 0) {
+                // When current widget is at the beginning, its separator has two owners
+                // Get the widget after separator
+                QLayoutItem* otherItem = parentLayout->itemAt(2);
+                auto* otherWidget = qobject_cast<QWidget*>(otherItem->widget());
+                // Separator is visible only when both widgets are visible
+                if (otherWidget) {
+                    bool otherVisible = !otherWidget->isHidden();
+                    separator->setVisible(thisVisible && otherVisible);
+                } else {
+                    separator->setVisible(thisVisible);
+                }
+            } else {
+                separator->setVisible(thisVisible);
             }
         }
     }

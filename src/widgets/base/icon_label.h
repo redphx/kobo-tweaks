@@ -1,5 +1,6 @@
 #pragma once
 #include "../../common.h"
+#include "../../utils.h"
 #include "../../adapters/reading_view.h"
 
 #include <QLabel>
@@ -88,5 +89,9 @@ protected:
             lastConfig.isDarkMode = currentConfig.isDarkMode;
             loadIcon();
         }
+    }
+
+    void syncSeparatorVisibility() {
+        WidgetUtils::syncSeparatorVisibility(this);
     }
 };

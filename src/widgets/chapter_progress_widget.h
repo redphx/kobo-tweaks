@@ -21,14 +21,17 @@ public:
 
         int currentPage = ReadingView_chapterCurrentPage(readingView);
         int totalPages = ReadingView_chapterTotalPages(readingView);
+        bool shouldBeVisible = (currentPage >= 1 && totalPages >= 1 && currentPage <= totalPages);
 
-        if (currentPage < 1 || totalPages < 1 || currentPage > totalPages) {
-            textLabel->setText(QString());
-            return;
+        if (shouldBeVisible) {
+            int percentage = qBound(0, (currentPage - 1) * 100 / totalPages, 100);
+            textLabel->setText(QStringLiteral("%1%").arg(percentage));
         }
 
-        int percentage = qBound(0, (currentPage - 1) * 100 / totalPages, 100);
-        textLabel->setText(QStringLiteral("%1%").arg(percentage));
+        if (shouldBeVisible != !isHidden()) {
+            setVisible(shouldBeVisible);
+            syncSeparatorVisibility();
+        }
     }
 
 protected:

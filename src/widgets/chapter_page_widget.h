@@ -22,13 +22,16 @@ public:
 
         int currentPage = ReadingView_chapterCurrentPage(readingView);
         int totalPages = ReadingView_chapterTotalPages(readingView);
+        bool shouldBeVisible = (currentPage >= 1 && totalPages >= 1 && currentPage <= totalPages);
 
-        if (currentPage < 1 || totalPages < 1 || currentPage > totalPages) {
-            textLabel->setText(QString());
-            return;
+        if (shouldBeVisible) {
+            textLabel->setText(QStringLiteral("%1/%2").arg(currentPage).arg(totalPages));
         }
 
-        textLabel->setText(QStringLiteral("%1/%2").arg(currentPage).arg(totalPages));
+        if (shouldBeVisible != !isHidden()) {
+            setVisible(shouldBeVisible); // Use setVisible for conciseness
+            syncSeparatorVisibility();
+        }
     }
 
 protected:
