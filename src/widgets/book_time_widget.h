@@ -15,7 +15,7 @@ public:
     TwBookTimeWidget(ReadingView* rdv, ReadingViewAdapters adapters, TwBookTimeConfig config, QWidget* parent = nullptr) : TwIconLabel(rdv, adapters, config, parent) {}
 
     void onPageChanged() override {
-        if (!ReadingView_hasValidReadingStats || !ReadingView_readingStats || !ReadingStats_restOfBookEstimate || !ReadingView_chapterCurrentPage || !ReadingView_chapterTotalPages) {
+        if (!ReadingView_hasValidReadingStats || !ReadingView_readingStats || !ReadingStats_restOfBookEstimate || !ReadingView_fullBookCurrentPage || !ReadingView_fullBookTotalPages) {
             return;
         }
 
@@ -28,8 +28,8 @@ public:
             ReadingStats_deconstructor(stats);
         } else {
             // No stats -> estimate 1 minute per page
-            int currentPage = ReadingView_chapterCurrentPage(readingView);
-            int totalPages = ReadingView_chapterTotalPages(readingView);
+            int currentPage = ReadingView_fullBookCurrentPage(readingView);
+            int totalPages = ReadingView_fullBookTotalPages(readingView);
             seconds = qMax(1, totalPages - currentPage) * 60;
         }
 
