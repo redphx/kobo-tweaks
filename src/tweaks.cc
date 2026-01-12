@@ -47,6 +47,10 @@ int tweaksInit() {
         nickelClockFailsafe.remove();
     }
 
+    // Migrate settings
+    TweaksSettings* tweaksSettings = new TweaksSettings();
+    tweaksSettings->migrate();
+
     return 0;
 }
 

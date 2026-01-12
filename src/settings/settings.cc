@@ -168,3 +168,28 @@ void TweaksSettings::validateWidgets() {
         zone->erase(it, zone->end());
     }
 }
+
+void TweaksSettings::migrate() {
+    QVector<QPair<QString, QString>> migrations = {
+        {QStringLiteral("Reading.Widget/BatteryStyle"), READING_WIDGET_BATTERY_STYLE},
+        {QStringLiteral("Reading.Widget/BatteryStyleCharging"), READING_WIDGET_BATTERY_STYLE_CHARGING},
+        {QStringLiteral("Reading.Widget/BatteryShowWhenBelow"), READING_WIDGET_BATTERY_SHOW_WHEN_BELOW},
+
+        {QStringLiteral("Reading.Widget/Clock24hFormat"), READING_WIDGET_CLOCK_24H_FORMAT},
+    };
+
+    for (const auto& pair : migrations) {
+        const QString& oldKey = pair.first;
+        const QString& newKey = pair.second;
+
+        if (qSettings.contains(oldKey)) {
+            // Only migrate if newKey doesn't exist
+            if (!qSettings.contains(newKey)) {
+                qSettings.setValue(newKey, qSettings.value(oldKey));
+            }
+            qSettings.remove(oldKey);
+        }
+    }
+
+    qSettings.sync();
+}

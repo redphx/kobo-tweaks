@@ -250,11 +250,11 @@ class TweaksSettings {
     const char* READING_WIDGET_SEPARATOR = "Reading.Widget/Separator";
     const char* READING_WIDGET_SPACING   = "Reading.Widget/Spacing";
 
-    const char* READING_WIDGET_BATTERY_STYLE           = "Reading.Widget/BatteryStyle";
-    const char* READING_WIDGET_BATTERY_STYLE_CHARGING  = "Reading.Widget/BatteryStyleCharging";
-    const char* READING_WIDGET_BATTERY_SHOW_WHEN_BELOW = "Reading.Widget/BatteryShowWhenBelow";
+    const char* READING_WIDGET_BATTERY_STYLE           = "Reading.Widget.Battery/Style";
+    const char* READING_WIDGET_BATTERY_STYLE_CHARGING  = "Reading.Widget.Battery/StyleCharging";
+    const char* READING_WIDGET_BATTERY_SHOW_WHEN_BELOW = "Reading.Widget.Battery/ShowWhenBelow";
 
-    const char* READING_WIDGET_CLOCK_24H_FORMAT = "Reading.Widget/Clock24hFormat";
+    const char* READING_WIDGET_CLOCK_24H_FORMAT = "Reading.Widget.Clock/24hFormat";
 
     public:
         QString getReadingBookmarkImage(bool isDarkMode);
@@ -263,6 +263,7 @@ class TweaksSettings {
         TweaksSettings();
         void sync();
         void load();
+        void migrate();
 
     private:
         QSettings qSettings;
