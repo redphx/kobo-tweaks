@@ -3,7 +3,9 @@
 
 #include <QVector>
 
-TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {}
+TweaksSettings::TweaksSettings() : qSettings(DATA_DIR "/settings.ini", QSettings::IniFormat) {
+    qSettings.setIniCodec("UTF-8");
+}
 
 QString validateImage(const QString& path) {
     QPixmap pix;
