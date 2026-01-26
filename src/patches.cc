@@ -34,10 +34,34 @@ namespace Patch {
             return result;
         }
 
-        QString setFixedHeight(const QString& qss, const QString& selector, int height) {
-            QString result(qss);
-            result += QStringLiteral("\n%1 { min-height: %2px; max-height: %2px; }\n").arg(selector).arg(height);
-            return result;
+        QString setFixedHeight(QString qss, const QString& selector, int height) {
+            qss.append(
+                QStringLiteral("\n%1 { min-height: %2px; max-height: %2px; }\n")
+                    .arg(selector)
+                    .arg(height)
+            );
+            return qss;
+        }
+
+        QString resetHeight(QString qss, const QString& selector) {
+            // 16777215 = QWIDGETSIZE_MAX
+            qss.append(
+                QStringLiteral("\n%1 { min-height: 0px; max-height: 16777215px; }\n")
+                    .arg(selector)
+            );
+            return qss;
+        }
+
+        QString setPaddings(QString qss, const QString& selector, int top, int right, int bottom, int left) {
+            qss.append(
+                QStringLiteral("\n%1 { padding-top: %2px; padding-right: %3px; padding-bottom: %4px; padding-left: %5px; }\n")
+                    .arg(selector)
+                    .arg(top)
+                    .arg(right)
+                    .arg(bottom)
+                    .arg(left)
+            );
+            return qss;
         }
 
         QString addBrightnessLabelQss(const QString& qss) {

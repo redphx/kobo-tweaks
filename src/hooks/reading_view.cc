@@ -26,11 +26,11 @@ namespace ReadingViewHook {
             return;
         }
 
-        // Find "header"
-        QWidget* header = gestureContainer->findChild<ReadingFooter*>(QStringLiteral("header"), Qt::FindDirectChildrenOnly);
-        QWidget* footer = gestureContainer->findChild<ReadingFooter*>(QStringLiteral("footer"), Qt::FindDirectChildrenOnly);
-        if (!header || !footer) {
-            nh_log("could not find \"header/footer\"");
+        // Find topSpacer/bottomSpacer
+        QWidget* topSpacer = gestureContainer->findChild<ReadingFooter*>(QStringLiteral("topSpacer"), Qt::FindDirectChildrenOnly);
+        QWidget* bottomSpacer = gestureContainer->findChild<ReadingFooter*>(QStringLiteral("bottomSpacer"), Qt::FindDirectChildrenOnly);
+        if (!topSpacer || !bottomSpacer) {
+            nh_log("could not find \"topSpacer/bottomSpacer\"");
             return;
         }
 
@@ -41,8 +41,19 @@ namespace ReadingViewHook {
         // Adjust topSpacer & bottomSpacer's heights
         bool emptyHeader = readingSettings.widgetHeaderLeft.isEmpty() && readingSettings.widgetHeaderCenter.isEmpty() && readingSettings.widgetHeaderRight.isEmpty();
         bool emptyFooter = readingSettings.widgetFooterLeft.isEmpty() && readingSettings.widgetFooterCenter.isEmpty() && readingSettings.widgetFooterRight.isEmpty();
-        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), readingSettings.headerSpacerHeight);
-        rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), readingSettings.footerSpacerHeight);
+
+        // Set heights of topSpacer and bottomSpacer
+        if (emptyHeader) {
+            rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#topSpacer"), readingSettings.headerSpacerHeight);
+        } else {
+            rootQss = Patch::ReadingView::resetHeight(rootQss, QStringLiteral("#topSpacer"));
+        }
+
+        if (emptyFooter) {
+            rootQss = Patch::ReadingView::setFixedHeight(rootQss, QStringLiteral("#bottomSpacer"), readingSettings.footerSpacerHeight);
+        } else {
+            rootQss = Patch::ReadingView::resetHeight(rootQss, QStringLiteral("#bottomSpacer"));
+        }
 
         rootQss = Patch::ReadingView::addBrightnessLabelQss(rootQss);
         view->setStyleSheet(rootQss);
@@ -75,16 +86,21 @@ namespace ReadingViewHook {
         }
         patchedQss.replace(QStringLiteral("ReadingFooter"), QStringLiteral("TwWidgetZonesContainer"));
 
-        QVBoxLayout* gestureLayout = qobject_cast<QVBoxLayout*>(gestureContainer->layout());
         TwWidgetZonesContainer* headerContainer = emptyHeader ? nullptr : new TwWidgetZonesContainer(readingSettings, patchedQss);
         TwWidgetZonesContainer* footerContainer = emptyFooter ? nullptr : new TwWidgetZonesContainer(readingSettings, patchedQss);
 
         if (headerContainer) {
-            gestureLayout->insertWidget(gestureLayout->indexOf(header) + 1, headerContainer);
+            // add to topSpacer
+            QHBoxLayout* layout = new QHBoxLayout(topSpacer);
+            layout->setContentsMargins(0, readingSettings.headerSpacerHeight, 0, 0);
+            layout->addWidget(headerContainer, 1);
         }
 
         if (footerContainer) {
-            gestureLayout->insertWidget(gestureLayout->indexOf(footer) + 1, footerContainer);
+            // add to bottomSpacer
+            QHBoxLayout* layout = new QHBoxLayout(bottomSpacer);
+            layout->setContentsMargins(0, 0, 0, readingSettings.footerSpacerHeight);
+            layout->addWidget(footerContainer, 1);
         }
 
         QObject::connect(readerDoneLoadingAdapter, &ReadingViewAdapter::ReaderDoneLoading::readerDoneLoading, view, [view, gestureContainer, adapters, readingSettings, headerContainer, footerContainer] {
