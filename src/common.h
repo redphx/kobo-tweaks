@@ -62,7 +62,7 @@ extern int (*ReadingSettings_getChapterProgressType)(ReadingSettings* self);
 extern void (*ReadingFooter_setFooterMargin)(QWidget* self, int margin);
 extern void (*SearchAutoCompleteController_handleSpecialCommands)(SearchAutoCompleteController* self, const QString& command);
 extern void (*ConfirmationDialogFactory_showOKDialog)(const QString& title, const QString& body);
-extern QWidget* (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
+extern void (*DogEarDelegate_constructor)(QWidget* self, QWidget* parent, const QString& image);
 extern void (*BrightnessEventFilter_updateBrightnessHeader)(BrightnessEventFilter* self, const QString& text, const QString& sth);
 
 extern void* (*MainWindowController_sharedInstance)();
@@ -72,3 +72,7 @@ extern HardwareInterface* (*HardwareFactory_sharedInstance)();
 extern uintptr_t** HardwareInterface_vtable;
 extern int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self);
 extern uint (*HardwareInterface_chargingState)(HardwareInterface* self);
+
+// libadobe
+typedef void PluginState;
+extern void (*AdobeReader_constructor)(QWidget* self, QWidget* parent, PluginState* state, const QString& image);
