@@ -136,14 +136,6 @@ struct nh_hook TweaksHook[] = {
         .optional = true,
     },
     {
-        .sym      = "_ZNK24SearchKeyboardController6newKeyEPKcii",
-        .sym_new  = "hook_SearchKeyboardController_newKey",
-        .lib      = "libnickel.so.1.0.0",
-        .out      = nh_symoutptr(SearchKeyboardController_newKey),
-        .desc     = "SearchKeyboardController::hook_SearchKeyboardController_newKey()",
-        .optional = true,
-    },
-    {
         .sym      = "_ZN23PopupKeyboardControllerC1EP26ExtendedKeyboardControllerP15VirtualKeyboard7QVectorI17KeyboardLayoutRowE",
         .sym_new  = "hook_PopupKeyboardController_constructor",
         .lib      = "libnickel.so.1.0.0",
@@ -271,6 +263,12 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc     = "VirtualKeyboard::keySize()",
         .optional = true,
     },
+    {
+        .name     = "_ZNK24SearchKeyboardController6newKeyEPKcii",
+		.out      = nh_symoutptr(SearchKeyboardController_newKey),
+        .desc     = "SearchKeyboardController_newKey::newKey()",
+        .optional = true,
+    },
 
     {
         .name = "_ZN15HardwareFactory14sharedInstanceEv",
@@ -373,14 +371,6 @@ void hook_BrightnessEventFilter_updateBrightnessHeader(BrightnessEventFilter* se
     // BrightnessEventFilter_updateBrightnessHeader(self, text, sth);
     ReadingViewHook::BrightnessEventFilterHook::updateBrightnessHeader(self, text, sth);
 };
-
-extern "C" __attribute__((visibility("default")))
-VirtualKey* hook_SearchKeyboardController_newKey(SearchKeyboardController* self, const char* label, int keyId, int weight) {
-    nh_log(QString("hook_SearchKeyboardController_newKey: %1 %2").arg(label).arg(keyId).toUtf8().constData());
-    auto virtualKey = SearchKeyboardController_newKey(self, label, keyId, weight);
-
-    return virtualKey;
-}
 
 QPointer<QWidget> globalPopupKeyboardController = nullptr;
 
