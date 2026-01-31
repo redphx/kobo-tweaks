@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSize>
+#include <QPointer>
 
 
 class PopupKeyboardControllerShowFilter : public QObject {
@@ -259,9 +260,9 @@ struct nh_dlsym TweaksDlsym[] = {
         .optional = true,
     },
     {
-        .name     = "_ZNK15VirtualKeyboard7keySizeEv",
-		.out      = nh_symoutptr(VirtualKeyboard_keySize),
-        .desc     = "VirtualKeyboard::keySize()",
+        .name     = "_ZNK10VirtualKey4textEv",
+        .out      = nh_symoutptr(VirtualKey_text),
+        .desc     = "VirtualKey::text()",
         .optional = true,
     },
 
@@ -368,22 +369,20 @@ void hook_BrightnessEventFilter_updateBrightnessHeader(BrightnessEventFilter* se
 };
 
 extern "C" __attribute__((visibility("default")))
-VirtualKey* hook_SearchKeyboardController_newKey(SearchKeyboardController* self, const char* label, int keyCode, int weight) {
-    nh_log(QString("hook_SearchKeyboardController_newKey: %1 %2").arg(label).arg(keyCode).toUtf8().constData());
-    auto virtualKey = SearchKeyboardController_newKey(self, label, keyCode, weight);
-
-    // Expose label & keyCode so they can be used in other places
-    virtualKey->setProperty("twksLabel", QVariant::fromValue(QString(label)));
-    virtualKey->setProperty("twksKeyCode", QVariant::fromValue(keyCode));
+VirtualKey* hook_SearchKeyboardController_newKey(SearchKeyboardController* self, const char* label, int keyId, int weight) {
+    nh_log(QString("hook_SearchKeyboardController_newKey: %1 %2").arg(label).arg(keyId).toUtf8().constData());
+    auto virtualKey = SearchKeyboardController_newKey(self, label, keyId, weight);
 
     return virtualKey;
 }
 
-QWidget* globalPopupKeyboardController = nullptr;
+QPointer<QWidget> globalPopupKeyboardController = nullptr;
 
 extern "C" __attribute__((visibility("default")))
 void hook_SearchKeyboardController_popupKeyboard(SearchKeyboardController* self, VirtualKey* key, QVector<KeyboardLayoutRow> rows) {
-    QString label = key->property("twksLabel").toString();
+    QString label = *reinterpret_cast<QString*>(VirtualKey_text(key));
+    bool customPopupKeys = true;
+
     if (label == "a") {
         rows.clear();
         KeyboardLayoutRow row1;
@@ -442,41 +441,22 @@ void hook_SearchKeyboardController_popupKeyboard(SearchKeyboardController* self,
 
         KeyboardLayoutRow row3;
         rows.append(row3);
+    } else {
+        customPopupKeys = false;
     }
 
-    /*
-    row3.keys.append(SearchKeyboardController_newKey(self, "ấ", 0xffffcf20, 10));
-    row3.keys.append(SearchKeyboardController_newKey(self, "ầ", 0xffffcf21, 10));
-    row3.keys.append(SearchKeyboardController_newKey(self, "ẩ", 0xffffcf22, 10));
-    row3.keys.append(SearchKeyboardController_newKey(self, "ẫ", 0xffffcf23, 10));
-    row3.keys.append(SearchKeyboardController_newKey(self, "ậ", 0xffffcf24, 10));
-    row3.leftSpacer = 0;
-    row3.rightSpacer = 0;
-    rows.append(row3);
-    */
     SearchKeyboardController_popupKeyboard(self, key, rows);
-    nh_log(QString("virtualkey: %1 %2").arg(key->property("twksLabel").toString()).arg(key->property("twksKeyCode").toString()).toUtf8().constData());
-
-    /*
-    KeyboardLayoutRow* current = rows.data(); 
-    KeyboardLayoutRow* end = current + rows.size();
-
-    for (; current != end; ++current) { // Increments by sizeof(KeyboardLayoutRow) = 12
-        // Inner Loop: Access the keys QVector
-        QVector<VirtualKey*> rowKeys = current->keys;
-        for (VirtualKey* k : rowKeys) {
-            nh_log(QString("virtualkey row: %1 %2").arg(k->property("twksLabel").toString()).arg(k->property("twksKeyCode").toString()).toUtf8().constData());
-        }
+    if (!customPopupKeys) {
+        globalPopupKeyboardController = nullptr;
+        return;
     }
-    */
+
+    nh_log(QString("virtualkey: %1").arg(label).toUtf8().constData());
 
     if (globalPopupKeyboardController && PopupKeyboardController_menu) {
         NickelTouchMenu* menu = PopupKeyboardController_menu(globalPopupKeyboardController);
         PopupKeyboard* popupKeyboard = menu->findChild<PopupKeyboard*>(QString());
         if (popupKeyboard && rows.size() > 1) {
-            QSize size = VirtualKeyboard_keySize(popupKeyboard);
-            nh_log(QString("VirtualKeyboard_keySize %1 %2").arg(size.width()).arg(size.height()).toUtf8().constData());
-
             QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(popupKeyboard->layout());
             rootLayout->setSpacing(10);
 
@@ -560,10 +540,9 @@ void hook_SearchKeyboardController_popupKeyboard(SearchKeyboardController* self,
             popupKeyboard->setFixedSize(popupKeyboard->width(), popupKeyboard->height() * (1 + additionalRows.size()));
         }
 
-        DebugUtils::dumpWidgetToFile(QString("/mnt/onboard/_popup.txt"), menu);
+        // DebugUtils::dumpWidgetToFile(QString("/mnt/onboard/_popup.txt"), menu);
     }
 
-    globalPopupKeyboardController = nullptr;
 };
 
 

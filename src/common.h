@@ -85,11 +85,11 @@ extern uintptr_t** HardwareInterface_vtable;
 extern int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self);
 extern uint (*HardwareInterface_chargingState)(HardwareInterface* self);
 
-extern VirtualKey* (*SearchKeyboardController_newKey)(SearchKeyboardController* self, const char* label, int keyCode, int weight);
+extern VirtualKey* (*SearchKeyboardController_newKey)(SearchKeyboardController* self, const char* label, int keyId, int weight);
 extern void (*SearchKeyboardController_popupKeyboard)(SearchKeyboardController* self, VirtualKey* key, QVector<KeyboardLayoutRow> rows);
 extern void (*PopupKeyboardController_constructor)(PopupKeyboardController* self, QWidget* parent, VirtualKeyboard* keyboard, QVector<KeyboardLayoutRow> rows);
 extern NickelTouchMenu* (*PopupKeyboardController_menu)(PopupKeyboardController* self);
-extern QSize (*VirtualKeyboard_keySize)(VirtualKeyboard* self);
+extern int (*VirtualKey_text)(VirtualKey* self);
 
 // libadobe
 typedef void PluginState;
