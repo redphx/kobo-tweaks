@@ -265,6 +265,12 @@ struct nh_dlsym TweaksDlsym[] = {
         .desc     = "VirtualKey::text()",
         .optional = true,
     },
+    {
+        .name     = "_ZNK15VirtualKeyboard7keySizeEv",
+		.out      = nh_symoutptr(VirtualKeyboard_keySize),
+        .desc     = "VirtualKeyboard::keySize()",
+        .optional = true,
+    },
 
     {
         .name = "_ZN15HardwareFactory14sharedInstanceEv",
@@ -446,19 +452,20 @@ void hook_SearchKeyboardController_popupKeyboard(SearchKeyboardController* self,
         return;
     }
 
+    QSize* keySize = VirtualKeyboard_keySize(popupKeyboard);
     QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(popupKeyboard->layout());
     rootLayout->setSpacing(10);
 
     for (int i = 0; i < additionalRows.size(); ++i) {
         QHBoxLayout* hRow = new QHBoxLayout();
         // Set spacing between keys in this row (Horizontal)
-        hRow->setSpacing(2);
+        hRow->setSpacing(10);
 
         // Add every key in this row to the horizontal layout
         const QVector<VirtualKey*>& keys = additionalRows[i].keys;
         for (VirtualKey* k : keys) {
             k->setContentsMargins(0, 0, 0, 0);
-            k->setFixedSize(100, 100);
+            k->setFixedSize(keySize->width(), keySize->height());
             hRow->addWidget(k);
         }
 

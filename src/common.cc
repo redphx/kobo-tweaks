@@ -38,6 +38,7 @@ void (*SearchKeyboardController_popupKeyboard)(SearchKeyboardController* self, V
 void (*PopupKeyboardController_constructor)(PopupKeyboardController* self, QWidget* parent, VirtualKeyboard* keyboard, QVector<KeyboardLayoutRow> rows) = nullptr;
 NickelTouchMenu* (*PopupKeyboardController_menu)(PopupKeyboardController* self) = nullptr;
 int (*VirtualKey_text)(VirtualKey* self) = nullptr;
+QSize* (*VirtualKeyboard_keySize)(VirtualKeyboard* self) = nullptr;
 
 // libadobe
 void (*AdobeReader_constructor)(QWidget* self, QWidget* parent, PluginState* state, const QString& image) = nullptr;

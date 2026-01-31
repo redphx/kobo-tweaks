@@ -90,6 +90,7 @@ extern void (*SearchKeyboardController_popupKeyboard)(SearchKeyboardController* 
 extern void (*PopupKeyboardController_constructor)(PopupKeyboardController* self, QWidget* parent, VirtualKeyboard* keyboard, QVector<KeyboardLayoutRow> rows);
 extern NickelTouchMenu* (*PopupKeyboardController_menu)(PopupKeyboardController* self);
 extern int (*VirtualKey_text)(VirtualKey* self);
+extern QSize* (*VirtualKeyboard_keySize)(VirtualKeyboard* self);
 
 // libadobe
 typedef void PluginState;
