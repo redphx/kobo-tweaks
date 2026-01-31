@@ -399,21 +399,14 @@ void hook_SearchKeyboardController_popupKeyboard(SearchKeyboardController* self,
                 ++i;
                 KeyboardLayoutRow keysRow;
 
-                for (const auto& keyData : popupRow) {
-                    const char* keyLabel;
-
-                    if (keyData.key == nullptr) {
-                        keyLabel = "";
-                    } else {
-                        keyLabel = keyData.key;
-                    }
+                for (const char* keyLabel : popupRow) {
                     keysRow.keys.append(SearchKeyboardController_newKey(self, keyLabel,  0xffff0000, 10));
                 }
 
                 if (i == 0) {
                     rows.append(keysRow);
                 } else {
-                    // Add empty row so Kobo increase the popup's height
+                    // Add empty row so Kobo increases the popup's height
                     rows.append(KeyboardLayoutRow());
                     additionalRows.append(keysRow);
                 }
