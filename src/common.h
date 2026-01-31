@@ -30,10 +30,22 @@ typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
 typedef QWidget MediumVertSpacer;
 typedef QObject HardwareInterface;
-typedef void SearchAutoCompleteController;
 typedef void ReadingSettings;
 typedef void ReadingStats;
 typedef QObject BrightnessEventFilter;
+typedef QWidget VirtualKey;
+typedef QWidget VirtualKeyboard;
+typedef VirtualKeyboard PopupKeyboard;
+typedef QWidget PopupKeyboardController;
+typedef QWidget SearchKeyboardController;
+typedef QWidget NickelTouchMenu;
+typedef void SearchAutoCompleteController;
+
+struct KeyboardLayoutRow {
+    QVector<VirtualKey*> keys;
+    float leftSpacer = 0;
+    float rightSpacer = 0;
+};
 
 class Content { public: virtual ~Content() {} };
 class Volume : public Content { public: virtual ~Volume() {} };
@@ -72,6 +84,12 @@ extern HardwareInterface* (*HardwareFactory_sharedInstance)();
 extern uintptr_t** HardwareInterface_vtable;
 extern int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self);
 extern uint (*HardwareInterface_chargingState)(HardwareInterface* self);
+
+extern VirtualKey* (*SearchKeyboardController_newKey)(SearchKeyboardController* self, const char* label, int keyCode, int weight);
+extern void (*SearchKeyboardController_popupKeyboard)(SearchKeyboardController* self, VirtualKey* key, QVector<KeyboardLayoutRow> rows);
+extern void (*PopupKeyboardController_constructor)(PopupKeyboardController* self, QWidget* parent, VirtualKeyboard* keyboard, QVector<KeyboardLayoutRow> rows);
+extern NickelTouchMenu* (*PopupKeyboardController_menu)(PopupKeyboardController* self);
+extern QSize (*VirtualKeyboard_keySize)(VirtualKeyboard* self);
 
 // libadobe
 typedef void PluginState;

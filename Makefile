@@ -15,6 +15,7 @@ override SOURCES += \
 	src/settings/settings.cc \
 	src/debug_utils.cc \
 	src/adapters/reading_view.cc \
+	src/hooks/keyboard.cc \
 	src/hooks/reading_view.cc
 
 override MOCS += \

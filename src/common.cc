@@ -33,5 +33,11 @@ uintptr_t** HardwareInterface_vtable = nullptr;
 int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self) = nullptr;
 uint (*HardwareInterface_chargingState)(HardwareInterface* self) = nullptr;
 
+VirtualKey* (*SearchKeyboardController_newKey)(SearchKeyboardController* self, const char* label, int keyCode, int weight) = nullptr;
+void (*SearchKeyboardController_popupKeyboard)(SearchKeyboardController* self, VirtualKey* key, QVector<KeyboardLayoutRow> rows) = nullptr;
+void (*PopupKeyboardController_constructor)(PopupKeyboardController* self, QWidget* parent, VirtualKeyboard* keyboard, QVector<KeyboardLayoutRow> rows) = nullptr;
+NickelTouchMenu* (*PopupKeyboardController_menu)(PopupKeyboardController* self) = nullptr;
+QSize (*VirtualKeyboard_keySize)(VirtualKeyboard* self) = nullptr;
+
 // libadobe
 void (*AdobeReader_constructor)(QWidget* self, QWidget* parent, PluginState* state, const QString& image) = nullptr;
