@@ -1,23 +1,51 @@
 #pragma once
 #include <vector>
 #include <QString>
+#include <QMap>
 
 #include "../common.h"
 
-struct KeyboardRowData {
+struct KeyboardKeyData {
     const char* key;
-    int code;
+    const char* upperKey;
 };
 
-struct KeyboardMap {
-    const char* parentKey;
-    std::vector<std::vector<KeyboardRowData>> rows;
+using KeyboardRows = std::vector<std::vector<KeyboardKeyData>>;
+struct KeyboardData {
+    const char* displayName;
+    int startingKeyId;
+    QMap<QString, KeyboardRows> popupMap;
 };
 
-const std::vector<KeyboardMap> VIETNAMESE_KEYBOARD_MAP = {
-    {"a", {
-        {{"á", 0x1}, {"à", 0x2}, {"ả", 0x3}, {"ã", 0x4}, {"ạ", 0x5}},
-        {{"â", 0x6}, {"ấ", 0x7}, {"ầ", 0x8}, {"ẩ", 0x9}, {"ẫ", 0x10}},
-        {{"ă", 0x11}, {"ắ", 0x12}, {"ằ", 0x13}, {"ẳ", 0x14}, {"ẵ", 0x15}}
+const QMap<QString, KeyboardData> KEYBOARD_MAP = {
+    {"vi-VN", {
+        "VN",
+        (int) 0xffff0000,
+        {
+            {"a", {
+                {{"â", "Â"}, {"ấ", "Ấ"}, {"ầ", "Ầ"}, {"ẩ", "Ẩ"}, {"ẫ", "Ẫ"}, {"ậ", "Ậ"}},
+                {{"ă", "Ă"}, {"ắ", "Ắ"}, {"ằ", "Ằ"}, {"ẳ", "Ẳ"}, {"ẵ", "Ẵ"}, {"ặ", "Ặ"}},
+                {{        }, {"á", "Á"}, {"à", "À"}, {"ả", "Ả"}, {"ã", "Ã"}, {"ạ", "Ạ"}},
+            }},
+            {"o", {
+                {{"ô", "Ô"}, {"ố", "Ố"}, {"ồ", "Ồ"}, {"ổ", "Ổ"}, {"ỗ", "Ỗ"}, {"ộ", "Ộ"}},
+                {{"ơ", "Ơ"}, {"ớ", "Ớ"}, {"ờ", "Ờ"}, {"ở", "Ở"}, {"ỡ", "Ỡ"}, {"ợ", "Ợ"}},
+                {{        }, {"ó", "Ó"}, {"ò", "Ò"}, {"ỏ", "Ỏ"}, {"õ", "Õ"}, {"ọ", "Ọ"}},
+            }},
+            {"u", {
+                {{"ư", "Ư"}, {"ứ", "Ứ"}, {"ừ", "Ừ"}, {"ử", "Ử"}, {"ữ", "Ữ"}, {"ự", "Ự"}},
+                {{        }, {"ú", "Ú"}, {"ù", "Ù"}, {"ủ", "Ủ"}, {"ũ", "Ũ"}, {"ụ", "Ụ"}},
+            }},
+            {"e", {
+                {{"ê", "Ê"}, {"ế", "Ế"}, {"ề", "Ề"}, {"ể", "Ể"}, {"ễ", "Ễ"}, {"ệ", "Ệ"}},
+                {{        }, {"é", "É"}, {"è", "È"}, {"ẻ", "Ẻ"}, {"ẽ", "Ẽ"}, {"ẹ", "Ẹ"}},
+            }},
+            {"i", {
+                {{"í", "Í"}, {"ì", "Ì"}, {"ỉ", "Ỉ"}, {"ĩ", "Ĩ"}, {"ị", "Ị"}},
+            }},
+            {"y", {
+                {{"ý", "Ý"}, {"ỳ", "Ỳ"}, {"ỷ", "Ỷ"}, {"ỹ", "Ỹ"}, {"ỵ", "Ỵ"}},
+            }},
+        },
     }},
 };

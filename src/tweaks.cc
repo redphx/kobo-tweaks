@@ -380,169 +380,93 @@ QPointer<QWidget> globalPopupKeyboardController = nullptr;
 
 extern "C" __attribute__((visibility("default")))
 void hook_SearchKeyboardController_popupKeyboard(SearchKeyboardController* self, VirtualKey* key, QVector<KeyboardLayoutRow> rows) {
+    const QString keyboardLocale = "vi-VN";
+
+    QVector<KeyboardLayoutRow> additionalRows;
+    bool customPopupKeys = false;
     QString label = *reinterpret_cast<QString*>(VirtualKey_text(key));
-    bool customPopupKeys = true;
 
-    if (label == "a") {
-        rows.clear();
-        KeyboardLayoutRow row1;
-        row1.keys.append(SearchKeyboardController_newKey(self, "",  0xffff0000, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "á", 0xffff0001, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "à", 0xffff0002, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ả", 0xffff0003, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ã", 0xffff0004, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ạ", 0xffff0005, 10));
-        rows.append(row1);
+    // Get custom popup keys
+    if (KEYBOARD_MAP.contains(keyboardLocale)) {
+        const auto& keyboardData = KEYBOARD_MAP[keyboardLocale];
+        if (keyboardData.popupMap.contains(label)) {
+            customPopupKeys = true;
 
-        KeyboardLayoutRow row2;
-        rows.append(row2);
+            // Remove old keys
+            rows.clear();
 
-        KeyboardLayoutRow row3;
-        rows.append(row3);
-    } else if (label == "e") {
-        rows.clear();
-        KeyboardLayoutRow row1;
-        row1.keys.append(SearchKeyboardController_newKey(self, "",  0xffff0100, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "é", 0xffff0101, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "è", 0xffff0102, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ẻ", 0xffff0103, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ẽ", 0xffff0104, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ẹ", 0xffff0105, 10));
-        rows.append(row1);
+            // Only setup keys in the first row
+            auto popupRows = keyboardData.popupMap[label];
 
-        KeyboardLayoutRow row2;
-        rows.append(row2);
-    } else if (label == "u") {
-        rows.clear();
-        KeyboardLayoutRow row1;
-        row1.keys.append(SearchKeyboardController_newKey(self, "",  0xffff0200, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ú", 0xffff0201, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ù", 0xffff0202, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ủ", 0xffff0203, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ũ", 0xffff0204, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ụ", 0xffff0205, 10));
-        rows.append(row1);
+            int i = -1;
+            for (const auto& popupRow : popupRows) {
+                ++i;
+                KeyboardLayoutRow keysRow;
 
-        KeyboardLayoutRow row2;
-        rows.append(row2);
-    } else if (label == "o") {
-        rows.clear();
-        KeyboardLayoutRow row1;
-        row1.keys.append(SearchKeyboardController_newKey(self, "",  0xffff0300, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ó", 0xffff0301, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ò", 0xffff0302, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ỏ", 0xffff0303, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "õ", 0xffff0304, 10));
-        row1.keys.append(SearchKeyboardController_newKey(self, "ọ", 0xffff0305, 10));
-        rows.append(row1);
+                for (const auto& keyData : popupRow) {
+                    const char* keyLabel;
 
-        KeyboardLayoutRow row2;
-        rows.append(row2);
+                    if (keyData.key == nullptr) {
+                        keyLabel = "";
+                    } else {
+                        keyLabel = keyData.key;
+                    }
+                    keysRow.keys.append(SearchKeyboardController_newKey(self, keyLabel,  0xffff0000, 10));
+                }
 
-        KeyboardLayoutRow row3;
-        rows.append(row3);
-    } else {
-        customPopupKeys = false;
+                if (i == 0) {
+                    rows.append(keysRow);
+                } else {
+                    // Add empty row so Kobo increase the popup's height
+                    rows.append(KeyboardLayoutRow());
+                    additionalRows.append(keysRow);
+                }
+            }
+        }
     }
 
+    // Let Kobo setup the keys
     SearchKeyboardController_popupKeyboard(self, key, rows);
     if (!customPopupKeys) {
         globalPopupKeyboardController = nullptr;
         return;
     }
 
-    nh_log(QString("virtualkey: %1").arg(label).toUtf8().constData());
-
-    if (globalPopupKeyboardController && PopupKeyboardController_menu) {
-        NickelTouchMenu* menu = PopupKeyboardController_menu(globalPopupKeyboardController);
-        PopupKeyboard* popupKeyboard = menu->findChild<PopupKeyboard*>(QString());
-        if (popupKeyboard && rows.size() > 1) {
-            QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(popupKeyboard->layout());
-            rootLayout->setSpacing(10);
-
-            // QLabel* label = new QLabel();
-            // label->setText("test");
-            QVector<KeyboardLayoutRow> additionalRows;
-
-            if (label == "a") {
-                KeyboardLayoutRow row2;
-                row2.keys.append(SearchKeyboardController_newKey(self, "ă", 0xffff0010, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ắ", 0xffff0011, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ằ", 0xffff0012, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ẳ", 0xffff0013, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ẵ", 0xffff0014, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ặ", 0xffff0015, 10));
-                additionalRows.append(row2);
-
-                KeyboardLayoutRow row3;
-                row3.keys.append(SearchKeyboardController_newKey(self, "â", 0xffff0021, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ấ", 0xffff0020, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ầ", 0xffff0022, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ẩ", 0xffff0023, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ẫ", 0xffff0024, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ậ", 0xffff0025, 10));
-                additionalRows.append(row3);
-            } else if (label == "e") {
-                KeyboardLayoutRow row2;
-                row2.keys.append(SearchKeyboardController_newKey(self, "ê", 0xffff0110, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ế", 0xffff0111, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ề", 0xffff0112, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ể", 0xffff0113, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ễ", 0xffff0114, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ệ", 0xffff0115, 10));
-                additionalRows.append(row2);
-            } else if (label == "u") {
-                KeyboardLayoutRow row2;
-                row2.keys.append(SearchKeyboardController_newKey(self, "ư", 0xffff0210, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ứ", 0xffff0211, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ừ", 0xffff0212, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ử", 0xffff0213, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ữ", 0xffff0214, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ự", 0xffff0215, 10));
-                additionalRows.append(row2);
-            } else if (label == "o") {
-                KeyboardLayoutRow row2;
-                row2.keys.append(SearchKeyboardController_newKey(self, "ơ", 0xffff0310, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ớ", 0xffff0311, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ờ", 0xffff0312, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ở", 0xffff0313, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ỡ", 0xffff0314, 10));
-                row2.keys.append(SearchKeyboardController_newKey(self, "ợ", 0xffff0315, 10));
-                additionalRows.append(row2);
-
-                KeyboardLayoutRow row3;
-                row3.keys.append(SearchKeyboardController_newKey(self, "ô", 0xffff0321, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ố", 0xffff0320, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ồ", 0xffff0322, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ổ", 0xffff0323, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ỗ", 0xffff0324, 10));
-                row3.keys.append(SearchKeyboardController_newKey(self, "ộ", 0xffff0325, 10));
-                additionalRows.append(row3);
-            }
-
-            for (int i = 0; i < additionalRows.size(); ++i) {
-                QHBoxLayout* hRow = new QHBoxLayout();
-                // Set spacing between keys in this row (Horizontal)
-                hRow->setSpacing(2);
-
-                // Add every key in this row to the horizontal layout
-                const QVector<VirtualKey*>& keys = additionalRows[i].keys;
-                for (VirtualKey* k : keys) {
-                    k->setContentsMargins(0, 0, 0, 0);
-                    k->setFixedSize(100, 100);
-                    hRow->addWidget(k);
-                }
-
-                // Add this horizontal row to the vertical root layout
-                rootLayout->insertLayout(0, hRow);
-            }
-
-            popupKeyboard->setFixedSize(popupKeyboard->width(), popupKeyboard->height() * (1 + additionalRows.size()));
-        }
-
-        // DebugUtils::dumpWidgetToFile(QString("/mnt/onboard/_popup.txt"), menu);
+    if (additionalRows.isEmpty()) {
+        return;
     }
 
+    if (!globalPopupKeyboardController || !PopupKeyboardController_menu) {
+        return;
+    }
+
+    NickelTouchMenu* menu = PopupKeyboardController_menu(globalPopupKeyboardController);
+    PopupKeyboard* popupKeyboard = menu->findChild<PopupKeyboard*>(QString());
+    if (!popupKeyboard) {
+        return;
+    }
+
+    QVBoxLayout* rootLayout = qobject_cast<QVBoxLayout*>(popupKeyboard->layout());
+    rootLayout->setSpacing(10);
+
+    for (int i = 0; i < additionalRows.size(); ++i) {
+        QHBoxLayout* hRow = new QHBoxLayout();
+        // Set spacing between keys in this row (Horizontal)
+        hRow->setSpacing(2);
+
+        // Add every key in this row to the horizontal layout
+        const QVector<VirtualKey*>& keys = additionalRows[i].keys;
+        for (VirtualKey* k : keys) {
+            k->setContentsMargins(0, 0, 0, 0);
+            k->setFixedSize(100, 100);
+            hRow->addWidget(k);
+        }
+
+        // Add this horizontal row to the vertical root layout
+        rootLayout->addLayout(hRow);
+    }
+
+    popupKeyboard->setFixedSize(popupKeyboard->width(), popupKeyboard->height() * (1 + additionalRows.size()));
 };
 
 
