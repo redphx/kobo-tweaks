@@ -2,6 +2,10 @@
 #include <vector>
 #include <QString>
 #include <QMap>
+#include <QPointer>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+
 
 #include "../common.h"
 
@@ -77,3 +81,11 @@ const QMap<QString, KeyboardData> KEYBOARD_MAP = {
         },
     }},
 };
+
+namespace SearchKeyboardControllerHook {
+    void popupKeyboard(SearchKeyboardController* self, VirtualKey* key, QVector<KeyboardLayoutRow> rows);
+}
+
+namespace PopupKeyboardControllerHook {
+    void constructor(PopupKeyboardController* self, QWidget* parent, VirtualKeyboard* keyboard, QVector<KeyboardLayoutRow> rows);
+}
