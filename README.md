@@ -5,7 +5,10 @@ A beginner-friendly addon for customizing Kobo eReaders.
 ## 🔥 1. Features
 - Customize various UI elements and features of Kobo eReaders (similar to [KoboPatch](https://github.com/pgaskin/kobopatch), can be used with patched firmware)
   - Reduces header and footer's heights  
-- Add Battery and Clock widgets while reading a book (similar to [NickelClock](https://github.com/shermp/NickelClock))
+- Widgets for Reading view:
+  - Battery and Clock widgets (similar to [NickelClock](https://github.com/shermp/NickelClock))
+  - Book widgets: title, progress, pages, remaining time
+  - Chapter widgets: title, progress, pages, remaining time
 - Customize bookmark image
 - More to come...
 
@@ -97,9 +100,41 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 
 | Setting and description | Values |
 |-|-|
-| `BookmarkImage`<br>---<br><i>Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`<br>🐞 **Known bug:** it only works when reading Kepub books at the moment (see https://github.com/redphx/kobo-tweaks/issues/20)</i>| String |
+| `BookmarkImage`<br>---<br><i>Custom bookmark image file name, including extension, located in the `.adds/tweaks/images`</i>| String |
 | `HeaderFooterHeightScale`<br>---<br><i>Percentage-based scaling factor applied to the original header and footer height.<br>For example, a value of `66` means the header and footer are rendered at `66 percent` of their original height.</i> | <b>Unit:</b> %<br><b>Range:</b> 50-100<br><b>Default:</b> 100 |
 | `HeaderFooterMargins`<br>---<br><i>Sets the left and right margins for both header and footer</i> | <b>Range:</b> 0-100<br><b>Default:</b> 50 |
+| `HeaderSpacerHeight`, `FooterSpacerHeight`<br>---<br><i>Sets the amount of space between header/footer and the text</i> | <b>Range:</b> 0-100<br><b>Default:</b> 0 |
+
+### [Reading.Widget]
+> Applies after reopening the book
+
+| Setting and description | Values (case-insensitive) |
+|-|-|
+| `HeaderLeft`, `HeaderCenter`, `HeaderRight`<br>`FooterLeft`, `FooterCenter`, `FooterRight`<br>---<br><i>Defines the widget position and type</i> | - Check the list of supported widgets below<br>- Multiple widgets can be placed in one slot |
+| `Separator`<br>---<br><i>Symbol between widgets</i> | `Bullet` •<br>`Dot` ·<br>`Pipe` \|<br>or blank |
+| `Spacing`<br>---<br><i>Space between widgets</i> | <b>Range:</b> 0-20<br><b>Default:</b> 10 |
+
+- All widgets support Dark mode
+- Supported widgets:
+  - `Battery`
+  - `Clock`
+  - `BookPage`, `BookProgress`, `BookTime`, `BookTitle`
+  - `ChapterPage`, `ChapterProgress`, `ChapterTime`, `ChapterTitle`
+
+### [Reading.Widget.Battery]
+> The Battery widget updates only when you turn a page or unlock the device.
+
+| Setting and description | Values (case-insensitive) |
+|-|-|
+| `Style`, `StyleCharging`<br>---<br><i>Specifies the battery style for normal and charging states</i> | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
+| `ShowWhenBelow`<br>---<br><i>Shows the battery widget only when the battery level is less than or equal to this value</i> | <b>Unit:</b> %<br><b>Range:</b> 10-100<br><b>Default:</b> 100 (always visible) |
+
+### [Reading.Widget.Clock]
+> The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
+
+| Setting and description | Values (case-insensitive) |
+|-|-|
+| `24hFormat`<br>---<br><i>Enables or disables 24-hour time format</i> | `true`, `false`, `on`, `off` |
 
 #### 🐶👂 Bookmark image
 
@@ -125,21 +160,6 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 | Libra 2, Libra Colour, Libra H2O | | | | x |
 | Aura One<br>Elipsa, Elipsa 2E<br>Forma<br>Sage | | | | | x |
 
-
-### [Reading.Widget]
-> Applies after reopening the book
-
-| Setting and description | Values (case-insensitive) |
-|-|-|
-| `HeaderLeft`, `HeaderRight`, `FooterLeft`, `FooterRight`<br>---<br><i>Defines the widget position and type</i> | `Battery`, `Clock`<br>or leave it blank to show nothing |
-| `BatteryStyle`, `BatteryStyleCharging`<br>---<br><i>Specifies the battery style for normal and charging states</i> | `IconLevel`, `LevelIcon`, `Icon`, `Level` |
-| `BatteryShowWhenBelow`<br>---<br><i>Shows the battery widget only when the battery level is less than or equal to this value</i> | <b>Unit:</b> %<br><b>Range:</b> 10-100<br><b>Default:</b> 100 (always visible) |
-| `Clock24hFormat`<br>---<br><i>Enables or disables 24-hour time format</i> | `true`, `false`, `on`, `off` |
-
-- All widgets support Dark mode
-- The Battery widget updates only when you turn a page or unlock the device.
-- The Clock widget updates when you turn a page, when the device is unlocked, and every two minutes after the last update.
-- ⚠️ If you place a widget in the `HeaderRight` position, you may see a visual glitch when opening a book if the first page is already bookmarked. Turn the page forward and back to fix it.
 
 ## 👩‍🔧 4. Troubleshooting  
 
