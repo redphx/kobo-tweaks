@@ -93,6 +93,9 @@ To uninstall **Kobo Tweaks**, delete the `DELETE_TO_UNINSTALL.txt` file and rest
 
 ## 💃 3. Customization
 
+> [!WARNING]
+> After installation, the `Reading settings > Reading progress > Header/Footer` values will always be `Off`. You can only use widgets provided by Kobo Tweaks.
+
 Settings can be customized by editing the `.adds/tweaks/settings.ini` file on your Kobo eReader.
 
 ### [Reading]
@@ -110,7 +113,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
 
 | Setting and description | Values (case-insensitive) |
 |-|-|
-| `HeaderLeft`, `HeaderCenter`, `HeaderRight`<br>`FooterLeft`, `FooterCenter`, `FooterRight`<br>---<br><i>Defines the widget position and type</i> | - Check the list of supported widgets below<br>- Multiple widgets can be placed in one slot |
+| `HeaderLeft`, `HeaderCenter`, `HeaderRight`<br>`FooterLeft`, `FooterCenter`, `FooterRight`<br>---<br><i>Defines the widget position and type</i> | - Check the list of supported widgets below<br>- Multiple widgets can be placed in one slot<br>- Each widget can only be used once |
 | `Separator`<br>---<br><i>Symbol between widgets</i> | `Bullet` •<br>`Dot` ·<br>`Pipe` \|<br>or blank |
 | `Spacing`<br>---<br><i>Space between widgets</i> | <b>Range:</b> 0-20<br><b>Default:</b> 10 |
 
@@ -147,7 +150,7 @@ Settings can be customized by editing the `.adds/tweaks/settings.ini` file on yo
   │  ├─ images/
   │  │  ├─ bongo_cat.png
   │  │  ├─ bongo_cat_dark.png</pre>
-- There are no restrictions on the dimension, but it's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
+- The custom bookmark might not work if it's too big. It's recommended to use dimensions similar to the original. Below are the dimensions of Kobo's default bookmark image.
 
 > [!NOTE]
 > This info needs to be verified
@@ -186,20 +189,19 @@ To build **Kobo Tweaks**: install Docker, then run the `build.sh` file
 - Thanks to the [shermp/NickelClock](https://github.com/shermp/NickelClock) project for giving me the idea of how to add widgets to the Reading view.
 - And thank you for using!
 
-## ✨ 7. Other Kobo addons from me
+## ✨ 7. Other Kobo projects from me
 
-[Nickel Screensaver](https://github.com/redphx/nickel-screensaver) is an addon that brings the transparent screensaver feature to Kobo eReaders, similar to the one on KOReader.
+- [Chokobo](https://github.com/redphx/chokobo): setup your own free, personal, private utility to convert epub books to kepub on Dropbox for Kobo e-readers (alternative to send.djazz.se)
+- [Nickel Screensaver](https://github.com/redphx/nickel-screensaver) is an addon that brings the transparent screensaver feature to Kobo eReaders, similar to the one on KOReader.
 
 <table>
   <tbody>
     <tr>
       <td>Transparent overlay + book screenshot</td>
-      <td>Transparent overlay + book cover</td>
       <td>Transparent overlay + wallpaper</td>
     </tr>
     <tr>
       <td><img height="600" src="https://github.com/user-attachments/assets/5c243395-efae-4d15-9b3c-3a092723015a"></td>
-      <td><img height="600" src="https://github.com/user-attachments/assets/f1470098-1210-4dc3-b8ab-6ef31f875f81"></td>
       <td><img height="600" src="https://github.com/user-attachments/assets/1f38b2a3-ebf4-45e2-8ecb-66836ad44b4c"></td>
     </tr>
   </tbody>
