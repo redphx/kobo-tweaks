@@ -24,10 +24,19 @@ A beginner-friendly addon for customizing Kobo eReaders.
   - Downside: it conflicts with **NickelClock**. You can [uninstall NickelClock](https://github.com/shermp/NickelClock#uninstall-nickelclock) manually, or let **Kobo Tweaks** handle the uninstallation automatically.
 
 <table align="center">
+  <thead>
+    <tr>
+      <td align="center"><b>Before</b></td>
+      <td align="center"><b>After</b></td>
+      </tr>
+  </thead>
   <tbody>
     <tr>
-      <td colspan="2">
-        <img height="600" alt="image" src="https://github.com/user-attachments/assets/febc1ce1-f912-4d90-80dc-76d8a2da68fb" />
+      <td align="center" width="50%">
+        <img height="600" alt="image" src="./resources/screenshots/demo-before.png" />
+      </td>
+      <td align="center">
+        <img height="600" alt="image" src="./resources/screenshots/demo-after.png" />
       </td>
     </tr>
     <tr>
@@ -35,26 +44,37 @@ A beginner-friendly addon for customizing Kobo eReaders.
         <b>Changes:</b><br><br>
         <ul>
           <li>Reduced header and footer's heights</li>
-          <li>Clock and Battery widgets</li>
+          <li>Clock, Battery, Book and Chapter widgets</li>
           <li>Custom bookmark image</li>
         </ul>
       </td>
       <td>
         <b>Settings used:</b><br><br>
         <pre lang="INI">[Reading]
-BookmarkImage=bongo_cat.png
-HeaderFooterHeightScale=60
-HeaderFooterMargins=50
-&nbsp;
+BookmarkImage=bongo-cat.png
+FooterSpacerHeight=10
+HeaderFooterHeightScale=50
+HeaderFooterMargins=46
+HeaderSpacerHeight=10
+
 [Reading.Widget]
-BatteryShowWhenBelow=100
-BatteryStyle=Icon
-BatteryStyleCharging=LevelIcon
-Clock24hFormat=true
-FooterLeft=
-FooterRight=Battery
-HeaderLeft=Clock
-HeaderRight=</pre>
+FooterCenter=
+FooterLeft=BookTitle, BookPage, BookProgress, BookTime
+FooterRight=Battery, Clock
+HeaderCenter=
+HeaderLeft=ChapterTitle, ChapterPage, ChapterProgress, ChapterTime
+HeaderRight=
+Separator=Dot
+Spacing=5
+
+[Reading.Widget.Battery]
+ShowWhenBelow=20
+Style=Icon
+StyleCharging=LevelIcon
+
+[Reading.Widget.Clock]
+24hFormat=true
+</pre>
       </td>
     </tr>
   </tbody>
@@ -76,7 +96,7 @@ Follow these steps to install **Kobo Tweaks**:
 After it installs and reboots, open a book and you'll see new Clock and Battery widgets on the header. To customize **Kobo Tweaks**, check the **Customization** section below.
 
 > [!IMPORTANT]
-> <table align="center"><tr><td align="center"><img height="200" alt="image" src="https://github.com/user-attachments/assets/03b362c1-06c0-43bf-9c20-1629a74ef990" /></td></tr><tr><td>Since <b>Kobo Tweaks</b> cannot be used with <b>NickelClock</b>, it automatically detects and uninstalls <b>NickelClock</b> for you.<br><br>If this dialog appears when opening a book and the layout is broken, restart the device once again before continuing. If it doesn't work, try to <a href="https://github.com/shermp/NickelClock#uninstall-nickelclock">uninstall NickelClock</a> manually.</td></tr></table>
+> <table align="center"><tr><td align="center"><img height="200" alt="image" src="./resources/screenshots/dialog-nickelclock.png" /></td></tr><tr><td>Since <b>Kobo Tweaks</b> cannot be used with <b>NickelClock</b>, it automatically detects and uninstalls <b>NickelClock</b> for you.<br><br>If this dialog appears when opening a book and the layout is broken, restart the device once again before continuing. If it doesn't work, try to <a href="https://github.com/shermp/NickelClock#uninstall-nickelclock">uninstall NickelClock</a> manually.</td></tr></table>
 
 There are a few new files and folders in your Kobo eRreader:
 <pre>.adds/
@@ -191,7 +211,7 @@ To build **Kobo Tweaks**: install Docker, then run the `build.sh` file
 
 ## ✨ 7. Other Kobo projects from me
 
-- [Chokobo](https://github.com/redphx/chokobo): setup your own free, personal, private utility to convert epub books to kepub on Dropbox for Kobo e-readers (alternative to send.djazz.se)
+- [Chokobo](https://github.com/redphx/chokobo): setup your own free, personal, private utility to convert epub books to kepub on Dropbox for Kobo e-readers (alternative to [send.djazz.se](https://send.djazz.se))
 - [Nickel Screensaver](https://github.com/redphx/nickel-screensaver) is an addon that brings the transparent screensaver feature to Kobo eReaders, similar to the one on KOReader.
 
 <table>
