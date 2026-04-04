@@ -26,17 +26,13 @@ A beginner-friendly addon for customizing Kobo eReaders.
 <table align="center">
   <thead>
     <tr>
-      <td align="center"><b>Before</b></td>
-      <td align="center"><b>After</b></td>
-      </tr>
+      <td align="center" colspan="2"><b>Before/After</b></td>
+    </tr>
   </thead>
   <tbody>
     <tr>
-      <td align="center" width="50%">
-        <img height="600" alt="image" src="./resources/screenshots/demo-before.png" />
-      </td>
-      <td align="center">
-        <img height="600" alt="image" src="./resources/screenshots/demo-after.png" />
+      <td align="center" colspan="2">
+        <img height="600" alt="image" src="./resources/screenshots/demo-before.png" /><img height="600" alt="image" src="./resources/screenshots/demo-after.png" />
       </td>
     </tr>
     <tr>
@@ -56,7 +52,7 @@ FooterSpacerHeight=10
 HeaderFooterHeightScale=50
 HeaderFooterMargins=46
 HeaderSpacerHeight=10
-
+&nbsp;
 [Reading.Widget]
 FooterCenter=
 FooterLeft=BookTitle, BookPage, BookProgress, BookTime
@@ -66,12 +62,12 @@ HeaderLeft=ChapterTitle, ChapterPage, ChapterProgress, ChapterTime
 HeaderRight=
 Separator=Dot
 Spacing=5
-
+&nbsp;
 [Reading.Widget.Battery]
 ShowWhenBelow=20
 Style=Icon
 StyleCharging=LevelIcon
-
+&nbsp;
 [Reading.Widget.Clock]
 24hFormat=true
 </pre>
