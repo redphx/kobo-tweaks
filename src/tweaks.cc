@@ -20,6 +20,8 @@ struct nh_info Tweaks = {
 };
 
 static bool hasNickelClock = false;
+bool kt_has_color_display = false;
+
 int tweaksInit() {
     // Init folder structure
     QDir imagesDir(IMAGES_DIR);
@@ -45,6 +47,11 @@ int tweaksInit() {
         // Uninstall NickelClock
         nickelClock.remove();
         nickelClockFailsafe.remove();
+    }
+
+    // Detect colour display (used to fix flashing on Kaleido panels after text selection)
+    if (Device_hasColorDisplay && Device_getCurrentDevice) {
+        kt_has_color_display = Device_hasColorDisplay(Device_getCurrentDevice());
     }
 
     // Migrate settings
@@ -222,6 +229,18 @@ struct nh_dlsym TweaksDlsym[] = {
     {
         .name = "_ZN15HardwareFactory14sharedInstanceEv",
         .out  = nh_symoutptr(HardwareFactory_sharedInstance),
+    },
+    {
+        .name     = "_ZN6Device16getCurrentDeviceEv",
+        .out      = nh_symoutptr(Device_getCurrentDevice),
+        .desc     = "Device::getCurrentDevice()",
+        .optional = true,
+    },
+    {
+        .name     = "_ZNK6Device15hasColorDisplayEv",
+        .out      = nh_symoutptr(Device_hasColorDisplay),
+        .desc     = "Device::hasColorDisplay()",
+        .optional = true,
     },
     {
         .name    = "_ZTV17HardwareInterface",

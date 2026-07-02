@@ -29,6 +29,8 @@ void* (*MainWindowController_sharedInstance)() = nullptr;
 QWidget* (*MainWindowController_currentView)(void*) = nullptr;
 
 HardwareInterface* (*HardwareFactory_sharedInstance)() = nullptr;
+Device* (*Device_getCurrentDevice)() = nullptr;
+bool (*Device_hasColorDisplay)(Device* self) = nullptr;
 uintptr_t** HardwareInterface_vtable = nullptr;
 int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self) = nullptr;
 uint (*HardwareInterface_chargingState)(HardwareInterface* self) = nullptr;

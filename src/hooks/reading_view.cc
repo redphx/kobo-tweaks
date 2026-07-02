@@ -1,7 +1,66 @@
 #include "reading_view.h"
 #include "../adapters/reading_view.h"
+#include "colour_attr_cleaner.h"
 
 #include <QHBoxLayout>
+#include <QMetaEnum>
+#include <vector>
+
+// On colour Kobos, SelectionController::onInlineDefinitionResults adds two
+// extra Qt::WidgetAttribute flags to the ReadingView when the dictionary popup
+// appears (enabling "full colour refresh" waveform), but never clears them.
+// Because they are never cleared, our widgets that repaint periodically also
+// flash with the expensive waveform every time they update.
+//
+// We fix this by connecting to SelectionController::closeFooterMenu (the
+// canonical selection teardown signal) and clearing those attrs from the
+// ReadingView. The attrs are looked up by name via QMetaEnum so we don't
+// hardcode magic numbers that may shift between firmware versions, and the
+// whole path is gated behind Device::hasColorDisplay() so it is a no-op on
+// B&W devices.
+static const char* const kExtraColourAttrs[] = {
+    "WA_KoboEpdUpdateModeFull",
+    "WA_KoboEpdWfModeGCC16",
+};
+
+// QObject::staticQtMetaObject is protected; re-expose via a derived class
+// so we can look up Qt namespace enums by name on older Qt (pre-Q_NAMESPACE).
+namespace {
+struct QtMetaAccess : QObject {
+    using QObject::staticQtMetaObject;
+};
+}
+
+const std::vector<Qt::WidgetAttribute>& resolvedColourAttrs()
+{
+    static const std::vector<Qt::WidgetAttribute> v = [] {
+        std::vector<Qt::WidgetAttribute> r;
+
+        if (!kt_has_color_display) {
+            nh_log("No colour display, skipping SelectionController colour-flash fix");
+            return r;
+        }
+
+        const QMetaObject& mo = QtMetaAccess::staticQtMetaObject;
+        int enumIdx = mo.indexOfEnumerator("WidgetAttribute");
+        if (enumIdx < 0) {
+            nh_log("could not find Qt::WidgetAttribute meta enum");
+            return r;
+        }
+        QMetaEnum me = mo.enumerator(enumIdx);
+        for (auto& name : kExtraColourAttrs) {
+            bool ok = false;
+            int value = me.keyToValue(name, &ok);
+            if (ok) {
+                r.push_back(static_cast<Qt::WidgetAttribute>(value));
+            } else {
+                nh_log("unknown Qt::WidgetAttribute key: %s", name);
+            }
+        }
+        return r;
+    }();
+    return v;
+}
 
 namespace ReadingViewHook {
     static TweaksSettings settings;
@@ -18,6 +77,23 @@ namespace ReadingViewHook {
         ReadingView_constructor(view);
 
         // MUST NOT KEEP REFS TO THE WIDGETS, AS WE DON'T CONTROL THE LIFETIME
+
+        // Fix flashing widgets on colour Kobos after text is selected / dictionary is shown.
+        // SelectionController::onInlineDefinitionResults sets WA_KoboEpdUpdateModeFull (and
+        // WA_KoboEpdWfModeGCC16) on the ReadingView but never clears them, causing every
+        // subsequent repaint (including our periodic widget updates) to use the slow full-colour
+        // waveform. Connect to closeFooterMenu — the canonical selection teardown signal — and
+        // clear those attrs. resolvedColourAttrs() returns an empty list on B&W devices.
+        auto children = view->findChildren<QObject*>(QString(), Qt::FindDirectChildrenOnly);
+        for (auto child : children) {
+            if (QLatin1String("SelectionController") == child->metaObject()->className()) {
+                // Parent the cleaner to the SelectionController so lifetime is tied to it
+                auto* cleaner = new ColourAttrCleaner(view, child);
+                QObject::connect(child, SIGNAL(closeFooterMenu()),
+                                 cleaner, SLOT(onFooterMenuClosed()));
+                break;
+            }
+        }
 
         // Note: created and passed to grabGestures in the constructor, most events are passed to it
         QWidget* gestureContainer = view->findChild<GestureReceivingContainer*>(QStringLiteral("gestureContainer"), Qt::FindDirectChildrenOnly);

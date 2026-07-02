@@ -30,6 +30,7 @@ typedef QWidget GestureReceivingContainer;
 typedef QWidget ReadingFooter;
 typedef QWidget MediumVertSpacer;
 typedef QObject HardwareInterface;
+typedef QObject Device;
 typedef void SearchAutoCompleteController;
 typedef void ReadingSettings;
 typedef void ReadingStats;
@@ -69,6 +70,10 @@ extern void* (*MainWindowController_sharedInstance)();
 extern QWidget* (*MainWindowController_currentView)(void*);
 
 extern HardwareInterface* (*HardwareFactory_sharedInstance)();
+extern Device* (*Device_getCurrentDevice)();
+extern bool (*Device_hasColorDisplay)(Device* self);
+
+extern bool kt_has_color_display;
 extern uintptr_t** HardwareInterface_vtable;
 extern int (*HardwareInterface_getBatteryLevel)(HardwareInterface* self);
 extern uint (*HardwareInterface_chargingState)(HardwareInterface* self);
