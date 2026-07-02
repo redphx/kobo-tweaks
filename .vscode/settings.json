@@ -1,0 +1,10 @@
+{
+    "files.exclude": {
+        "**/*.moc": true,
+        "**/*.o": true,
+        "**/*.rcc": true,
+        "**/*.qrc.cpp": true,
+        "**/*.so": true,
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
